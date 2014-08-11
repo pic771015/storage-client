@@ -3,13 +3,13 @@ module.exports = function(config){
 
     basePath : "../",
 
-    autoWatch : true,
-
     frameworks: ["mocha", "chai", "chai-as-promised"],
 
     browsers : ["PhantomJS"],
 
     reporters: ["spec"],
+
+    specReporter: {"maxLogLines": 5},
 
     plugins : [
             "karma-firefox-launcher",

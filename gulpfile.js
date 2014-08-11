@@ -179,18 +179,10 @@ gulp.task("build", ["clean", "config", "html", "view", "files", "img", "css"]);
 
 
 gulp.task("test", function() {
-  // Be sure to return the stream
-  return gulp.src(testFiles).pipe(
-    watch(function(files) {
-      return files.pipe(karma({
-        configFile: "test/karma.conf.js",
-        action: "start"
-      }))
-      .on("error", function(err) {
-        // Make sure failed tests cause gulp to exit non-zero
-        throw err;
-      });  
-    }));
+  gulp.src(testFiles).pipe(karma({
+    configFile: "test/karma.conf.js",
+    action: "watch"
+  }));
 });
 
 gulp.task("test-ci", function() {
