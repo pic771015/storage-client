@@ -8,11 +8,14 @@
 <p>When a file is selected, the storage selector will send a message to its parent window.
    The message will contain the url of the selected file.</p>
 
-<p>The current window will load the iframe and is responsible for providing the company id 
-   as well as any desired styling on the iframe. </p>
+<p>The current window will load the iframe and is responsible for providing the Company ID
+as well as any desired styling on the iframe. </p>
 
-<p>Company id can be found in the url of the rise vision company configuration page.</p>
+<p>To retrieve the Company ID click on Settings from the menu of the Rise Vision Application.
+The ID for the currently selected Company can be found in the URL where the ID is everything to the right of "company=", for example:</p>
+<hljs>http://rva.risevision.com/#COMPANY_MANAGE/company=XXXXXXXX-XXXX-XXXX-XXXXXXXXXXXX</hljs>
 
+<h3>Sample Implementation</h3>
 <hljs include="'sample-usage'"></hljs>
 <script type="text/ng-template" id="sample-usage">
   function loadStorageModal() {
@@ -88,4 +91,4 @@
 
 <h3>Click below to see an example</h3>
 <button type="button" class="btn btn-default" onclick="loadStorageSelector()">load iframe</button>
-<h6>URL message:</h6><p style="background-color: #dddddd" id="urlMessage"></p>
+<h6>URL message:</h6><p style="background-color: #dddddd; min-height: 2em" id="urlMessage"></p>
