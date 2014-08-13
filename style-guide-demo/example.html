@@ -31,24 +31,41 @@
   }
 </script>
 
+<style>
+.backdrop-example {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-color: #e7e7e7;
+  opacity: 0.9
+}
+
+.iframe-example {
+  width: 90%;
+  height: 500px;
+  position: absolute;
+  top: 20%;
+  left: 5%;
+  border-radius: 10px;
+  box-shadow: 10px 10px 10px #aaaaaa;
+  border-style: ridge;
+  border-radius: 10px;
+  border-width: 5px;
+  padding: 5px;
+  background-color: #f4f4f4;
+}
+</style>
+
 <script>
   function loadStorageSelector() {
     backDrop = document.createElement("div");
-    backDrop.style.position = 'absolute';
-    backDrop.style.top = '0px';
-    backDrop.style.left = '0px';
-    backDrop.style.width = "100%";
-    backDrop.style.height = "100%";
-    backDrop.style.backgroundColor = "#e7e7e7";
-    backDrop.style.opacity = "0.7";
+    backDrop.className = "backdrop-example";
     document.body.appendChild(backDrop);
     storageModal = document.createElement("iframe");
     storageModal.src = "http://storage.risevision.com/storage-modal.html#/files/b428b4e8-c8b9-41d5-8a10-b4193c789443";
-    storageModal.style.width = "90%";
-    storageModal.style.height = "500px";
-    storageModal.style.position = "absolute";
-    storageModal.style.top = "20%";
-    storageModal.style.left = "5%";
+    storageModal.className = "iframe-example";
     storageModal = document.body.appendChild(storageModal);
     backDrop.onclick=function(event){
       if (event.target === backDrop) {
@@ -69,8 +86,6 @@
   }
 </script>
 
-<h3>Click to see an example</h3>
-<button type="button" onclick="loadStorageSelector()">iframe</button>
-<button type="button" disabled onclick="loadStorageSelector()">new tab</button>
-<button type="button" disabled onclick="loadStorageSelector()">pop-up window</button>
+<h3>Click below to see an example</h3>
+<button type="button" class="btn btn-default" onclick="loadStorageSelector()">load iframe</button>
 <h6>URL message:</h6><p style="background-color: #dddddd" id="urlMessage"></p>
