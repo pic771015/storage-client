@@ -18,57 +18,33 @@ The ID for the currently selected Company can be found in the URL where the ID i
 <h3>Sample Implementation</h3>
 <hljs include="'sample-usage'"></hljs>
 <script type="text/ng-template" id="sample-usage">
-  function loadStorageModal() {
+  function loadStorageSelector() {
+    backDrop = document.createElement("div");
+    backDrop.className = "storage-selector-backdrop";
+    document.body.appendChild(backDrop);
     storageModal = document.createElement("iframe");
-    storageModal.src = "http://storage.risevision.com/storage-modal.html#/files/company-uuid-string";
-    storageModal.style.width = "90%";
-    storageModal.style.height = "500px";
+    storageModal.src = "http://storage.risevision.com/storage-modal.html#/files/company-id";
+    storageModal.className = "storage-selector-iframe";
     storageModal = document.body.appendChild(storageModal);
   }
 
-  window.addEventListener("load", loadStorageModal);
+  window.addEventListener("load", loadStorageSelector);
   window.addEventListener("message", handleStorageMessage, false);
 
   function handleStorageMessage(event) {
-    console.log(event.data);   //log the selected file's url
+    console.log(event.data);
   }
 </script>
 
-<style>
-.backdrop-example {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  background-color: #e7e7e7;
-  opacity: 0.9
-}
-
-.iframe-example {
-  width: 90%;
-  height: 500px;
-  position: absolute;
-  top: 20%;
-  left: 5%;
-  border-radius: 10px;
-  box-shadow: 10px 10px 10px #aaaaaa;
-  border-style: ridge;
-  border-radius: 10px;
-  border-width: 5px;
-  padding: 5px;
-  background-color: #f4f4f4;
-}
-</style>
 
 <script>
   function loadStorageSelector() {
     backDrop = document.createElement("div");
-    backDrop.className = "backdrop-example";
+    backDrop.className = "storage-selector-backdrop";
     document.body.appendChild(backDrop);
     storageModal = document.createElement("iframe");
     storageModal.src = "http://storage.risevision.com/storage-modal.html#/files/b428b4e8-c8b9-41d5-8a10-b4193c789443";
-    storageModal.className = "iframe-example";
+    storageModal.className = "storage-selector-iframe";
     storageModal = document.body.appendChild(storageModal);
     backDrop.onclick=function(event){
       if (event.target === backDrop) {
