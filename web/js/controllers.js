@@ -18,6 +18,7 @@ angular.module("medialibrary")
   $scope.$on("CheckedCountChange", function(event, count, folder) {
     $scope.downloadDisabled = count !== 1 || folder;
     $scope.deleteDisabled = !count;
+    $scope.selectDisabled = !count;
     $scope.uploadDisabled = count;
   });
 
