@@ -31,6 +31,9 @@
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="deleteDisabled || actionsDisabled">
       <i class="glyphicons bin"></i>
     </button>
+    <button class="btn btn-link" type="button" title="Select" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
+      <i class="glyphicons left_arrow"></i>
+    </button>
   </div>
   <div class="col-sm-5 storage-used-info">
     <div>Total file size: {{librarySize | fileSizeFilter}} </div>
