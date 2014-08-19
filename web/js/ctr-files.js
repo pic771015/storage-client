@@ -133,45 +133,52 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
     };
 
   $scope.$on("FileSelectAction", function(event, file) {
-    if (!file) {
-      file = getSelectedFile();
-    }
+    var fileUrl = $rootScope.bucketUrl + file.name;
+    var data = { params: [fileUrl] };
 
-    if (file) {
-      var fileUrl = $rootScope.bucketUrl + file.name;
-      var data = { params: fileUrl };
-
-      if ($scope.fileIsCurrentFolder(file)) {
-        $scope.$location.path("/files/" + $routeParams.companyId); 
-      } else if ($scope.fileIsFolder(file)) {
-        $scope.$location
-              .path("/files/" + $routeParams.companyId + 
-                    "/folder/" + file.name);
-      } else {
-        $window.parent.postMessage(fileUrl, "*");
-        gadgets.rpc.call("", "rscmd_saveSettings", null, data);
-      }
+    if ($scope.fileIsCurrentFolder(file)) {
+      $scope.$location.path("/files/" + $routeParams.companyId); 
+    } else if ($scope.fileIsFolder(file)) {
+      $scope.$location
+            .path("/files/" + $routeParams.companyId + 
+                  "/folder/" + file.name);
+    } else {
+      $window.parent.postMessage([fileUrl], "*");
+      gadgets.rpc.call("", "rscmd_saveSettings", null, data);
     }
   });
 	
+  $scope.$on("SelectorButtonAction", function() {
+    var fileUrls = [], data = {};
+    data.params = [];
+
+    getSelectedFiles().forEach(function(file) {
+      fileUrls.push($rootScope.bucketUrl + file.name);
+      data.params.push($rootScope.bucketUrl + file.name);
+    });
+
+    $window.parent.postMessage(fileUrls, "*");
+    gadgets.rpc.call("", "rscmd_saveSettings", null, data);
+  });
+
   $scope.$on("FileDownloadAction", function(event, file) {
     if (!file) {
-      file = getSelectedFile();
+      file = getSelectedFiles()[0];
     }
-    $scope.selectedFile = file;
-
-    if ($scope.selectedFile) {
+    if (file) {
       $window.location.assign("https://www.googleapis.com/storage/v1/b/" +
                               $rootScope.bucketName + "/o/" +
-                              $scope.selectedFile + "?alt=media");
+                              file.name + "?alt=media");
     }
   });
 
   $scope.$on("FileDeleteAction", function() {
-    var selectedFiles = getSelectedFiles();
+    var selectedFileNames = getSelectedFiles().map(function(file) {
+      return file.name;
+    });
     var confirmationMessage = "Please confirm PERMANENT deletion of:\n\n";
 
-    selectedFiles.forEach(function(val) {
+    selectedFileNames.forEach(function(val) {
       if (val.substr(-1) === "/") {
         confirmationMessage += "folder: " + val + " and all its contents" + "\n";
       } else {
@@ -180,7 +187,7 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
     });
 
     if (confirm(confirmationMessage)) {
-      apiStorage.deleteFiles($routeParams.companyId, selectedFiles)
+      apiStorage.deleteFiles($routeParams.companyId, selectedFileNames)
                 .then(function() {$scope.updateFileList();});
     }
   });
@@ -193,21 +200,12 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
               .then(function() {$scope.updateFileList();});
   });
 
-  function getSelectedFile() {
-    var file;
-    var files = getSelectedFiles();
-    if (files && files.length > 0) {
-      file = files[0];
-    }
-    return file;
-  }
-
   function getSelectedFiles() {
     var selectedFiles = [];
 
     for ( var i = 0; i < $scope.mediaFiles.length; ++i ) {
       if ($scope.mediaFiles[ i ].checked) {
-        selectedFiles.push($scope.mediaFiles[ i ].name);
+        selectedFiles.push($scope.mediaFiles[i]);
       }
     }
     return selectedFiles;

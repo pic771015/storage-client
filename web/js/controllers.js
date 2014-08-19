@@ -33,6 +33,10 @@ angular.module("medialibrary")
     $rootScope.$broadcast("FileDeleteAction");
   };
 
+  $scope.selectButtonClick = function() {
+    $rootScope.$broadcast("SelectorButtonAction");
+  };
+
   $scope.newFolderButtonClick = function() {
     $rootScope.$broadcast("NewFolderAction");
   };
