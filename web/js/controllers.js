@@ -8,11 +8,12 @@ angular.module("medialibrary")
   };
 }])
 .controller("ButtonsController",
-            ["$scope", "$rootScope", "$routeParams",
-            function ($scope, $rootScope, $routeParams) {
+            ["$scope", "$rootScope", "$routeParams", "$window",
+            function ($scope, $rootScope, $routeParams, $window) {
   $scope.downloadDisabled = true;
   $scope.uploadDisabled = false;
   $scope.deleteDisabled = true;	
+  $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   $scope.newFolderDisabled = ($routeParams.folder ? true : false);
 
   $scope.$on("CheckedCountChange", function(event, count, folder) {

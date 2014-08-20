@@ -19,10 +19,10 @@
 </div>
 <div>
   <div id="buttons-action" ng-controller="ButtonsController">
-    <button type="button" ng-click="cancelButtonClick()" title="Cancel" class="btn btn-primary btn-fixed-width">
+    <button type="button" ng-click="cancelButtonClick()" ng-if="storageModal" title="Cancel" class="btn btn-primary btn-fixed-width">
         Cancel <i class="glyphicons white remove_2 icon-right"></i>
     </button>  
-    <button type="button" title="select" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
+    <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
         Select <i class="glyphicons white ok_2 icon-right"></i>
     </button>
     <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="actionsDisabled || uploadDisabled">
