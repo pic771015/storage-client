@@ -62,9 +62,13 @@ The ID for the currently selected Company can be found in the URL where the ID i
       storageModal.parentNode.removeChild(storageModal);
       backDrop.parentNode.removeChild(backDrop);
     }
+    if (event.data === "close") {
+      storageModal.parentNode.removeChild(storageModal);
+      backDrop.parentNode.removeChild(backDrop);
+    }
   }
 </script>
 
 <h3>Click below to see an example</h3>
-<img src="libs/storage-selector/dist/img/widget-icon-storage.png" class="btn btn-default" onclick="loadStorageSelector()" />
+<button class="btn btn-widget-icon-storage" onclick="loadStorageSelector()" type="button" />
 <h6>URL message:</h6><p style="background-color: #dddddd; min-height: 2em" id="urlMessage"></p>

@@ -17,10 +17,13 @@
     </div>
   </div>
 </div>
-<div class="row commands">
-  <div id="buttons-action" class="col-sm-7 btn-group add-bottom" ng-controller="ButtonsController">
-    <button class="btn btn-link" style="padding-right: 2em" type="button" title="Select" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
-      <i class="glyphicons ok_2 icon-right"></i>
+<div>
+  <div id="buttons-action" ng-controller="ButtonsController">
+    <button type="button" ng-click="cancelButtonClick()" title="Cancel" class="btn btn-primary btn-fixed-width">
+        Cancel <i class="glyphicons white remove_2 icon-right"></i>
+    </button>  
+    <button type="button" title="select" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
+        Select <i class="glyphicons white ok_2 icon-right"></i>
     </button>
     <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="actionsDisabled || uploadDisabled">
       <i class="glyphicons cloud-upload"></i>
@@ -34,11 +37,11 @@
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="deleteDisabled || actionsDisabled">
       <i class="glyphicons bin"></i>
     </button>
-  </div>
-  <div class="col-sm-5 storage-used-info">
-    <div>Total file size: {{librarySize | fileSizeFilter}} </div>
-    <div ng-controller="BandwidthController" ng-show="bandwidthUse">
-      This month's bandwidth use: {{bandwidthUse}} MB
+    <div class="storage-used-info">
+      <div>Total file size: {{librarySize | fileSizeFilter}} </div>
+      <div ng-controller="BandwidthController" ng-show="bandwidthUse">
+        This month's bandwidth use: {{bandwidthUse}} MB
+      </div>
     </div>
   </div>
 </div>

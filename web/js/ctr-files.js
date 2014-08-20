@@ -89,6 +89,8 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
         if (item.checked) {
           checkedCount++;
           if (item.name.substr(-1) === "/") { folderChecked = true;}
+        } else {
+          $scope.selectAll = false;
         }
         $rootScope.librarySize = getLibrarySize(items);
       });
@@ -115,8 +117,6 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
         */
 
   $scope.selectAllCheckboxes = function() {
-    $scope.selectAll = !$scope.selectAll;
-
     for ( var i = 0; i < $scope.mediaFiles.length; ++i ) {
       if (!$scope.fileIsCurrentFolder($scope.mediaFiles[i])) {
         $scope.mediaFiles[ i ].checked = $scope.selectAll;
@@ -198,6 +198,10 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
     if (folderName.indexOf("/") > -1) {return;}
     apiStorage.createFolder($routeParams.companyId, folderName)
               .then(function() {$scope.updateFileList();});
+  });
+
+  $scope.$on("CancelSelectAction", function() {
+    $window.parent.postMessage("close", "*");
   });
 
   function getSelectedFiles() {

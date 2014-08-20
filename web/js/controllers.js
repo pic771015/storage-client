@@ -22,6 +22,10 @@ angular.module("medialibrary")
     $scope.uploadDisabled = count;
   });
 
+  $scope.cancelButtonClick = function() {
+    $rootScope.$broadcast("CancelSelectAction");
+  };
+
   $scope.uploadButtonClick = function() {
     $("#file").click();
   };
