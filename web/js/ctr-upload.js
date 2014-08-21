@@ -1,95 +1,53 @@
 "use strict";
 
-angular.module("medialibrary").controller("UploadController", ["$scope", "$rootScope", "$route", "$routeParams", "$http", "$timeout", "apiStorage",
-	function ($scope, $rootScope, $route, $routeParams, $http, $timeout, apiStorage) {
-  $scope.uploadFileName = "";
-  $scope.uploadFileSize = "";
+angular.module("medialibrary").controller("UploadController", ["$scope", "$rootScope", "$route", "$routeParams", "$http", "apiStorage", "FileUploader", "UploadURIService",
+function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploader, uriSvc) {
+  var uploader = $scope.uploader = new FileUploader();
   $scope.uploadComplete = false;
-  $scope.uploadActive = false;
   $scope.uploadError = false;
+  $scope.uploadActive = false;
 
-  $scope.googleAccessId = "452091732215@developer.gserviceaccount.com";
-  $scope.responseUrl = location.protocol + "//" + location.hostname + ":" + location.port + "/uploadComplete";
-  $scope.fileName = "";
-  $scope.contentType = "";
+  uploader.method = "PUT";
+  uploader.removeAfterUpload = true;
 
-  $scope.uploadFile = function(element) {
-    $("#uploadform").attr("action", $rootScope.bucketUrl);
-
-    for (var i = 0; i < element.files.length; i++) {
-
-      $scope.uploadFileName = element.files[i].name;
-      $scope.uploadFileSize = element.files[i].size;
-      $scope.contentType = element.files[i].type;
-
-      if ($scope.uploadFileName.indexOf("/") > -1) {return;}
-
-      if ($routeParams.folder) {
-        $scope.uploadFileName = $routeParams.folder + "/" + $scope.uploadFileName;
-      }
-
-      $scope.uploadActive = true;
-      $scope.uploadComplete = false;
-      $scope.uploadError = false;
-
-      $scope.policyBase64 = apiStorage.getUploadPolicyBase64($rootScope.bucketName, $scope.uploadFileName, $scope.contentType, $scope.responseUrl);
-
-      apiStorage.getSignedPolicy($routeParams.companyId, $scope.policyBase64).then(onSignedPolicy);
-
-
-      break;
-
+  uploader.onAfterAddingFile = function(fileItem) {
+    console.info("onAfterAddingFile", fileItem);
+    $scope.uploadActive = true;
+    if ($routeParams.folder) {
+      fileItem.file.name = $routeParams.folder + "/" + fileItem.file.name;
     }
 
+    $scope.statusMessage = "Uploading " + fileItem.file.name;
+
+    uriSvc.getURI($routeParams.companyId, fileItem.file.name)
+    .then(function(resp) {
+      fileItem.url = resp;
+      fileItem.upload();
+    });
   };
 
-  function onSignedPolicy(response) {
-    $scope.signature = response;
+  uploader.onCompleteItem = function(item) {
+    $scope.statusMessage = "Verifying";
 
-    if ($scope.signature) {
-
-      $timeout(function() {
-
-        $("#uploadform").submit();
-
-      });
-
-    }
-  }
-
-  $("#uploadcompleteframe").load(function(event) {
-    try {
-      if (event.target.contentWindow.name && $scope.uploadActive === true) {
-        onUploadComplete();
-      }
-      else {
-        onUploadError();
-      }
-    } catch (err) {
-      onUploadError();
+    function verifySize(size) {
+      return parseInt(size) === item.file.size;
     }
 
-  });
-
-  function onUploadComplete() {
-
-    $("#uploadform").trigger("reset");
-
-    $rootScope.$broadcast("file.uploaded");
-    $scope.uploadComplete = true;
-    $scope.uploadError = false;
-    $scope.uploadActive = false;
-
-  }
-
-  function onUploadError() {
-
-    $("#uploadform").trigger("reset");
-
-    $scope.uploadError = true;
-    $scope.uploadComplete = false;
-    $scope.uploadActive = false;
-
-  }
+    $http({method: "GET",
+           url: "https://www.googleapis.com/storage/v1/b/risemedialibrary-" +
+                $routeParams.companyId + "/o/" + item.file.name})
+    .then(function(resp) {
+      if (!resp.data || !verifySize(resp.data.size)) {
+        $scope.statusMessage = "Upload did not complete";
+        return;
+      }
+      $scope.statusMessage = "Upload complete";
+      $scope.uploadActive = false;
+      $rootScope.$broadcast("file.uploaded");
+    }, function(err) {
+      console.log(err);
+      $scope.statusMessage = "Could not verify";
+    });
+  };
 }]);
 

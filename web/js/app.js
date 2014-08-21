@@ -4,7 +4,8 @@ angular.module("medialibrary", [
   "medialibraryFilters", 
   "medialibraryServices",
   "gapi-auth",
-  "gapi-file"
+  "gapi-file",
+  "angularFileUpload"
 ]);
 
 angular.module("medialibrary")
