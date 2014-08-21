@@ -134,7 +134,7 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
 
   $scope.$on("FileSelectAction", function(event, file) {
     var fileUrl = $rootScope.bucketUrl + file.name;
-    var data = { params: [fileUrl] };
+    var data = { params: fileUrl };
 
     if ($scope.fileIsCurrentFolder(file)) {
       $scope.$location.path("/files/" + $routeParams.companyId); 
