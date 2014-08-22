@@ -8,18 +8,24 @@ angular.module("medialibrary")
   };
 }])
 .controller("ButtonsController",
-            ["$scope", "$rootScope", "$routeParams",
-            function ($scope, $rootScope, $routeParams) {
+            ["$scope", "$rootScope", "$routeParams", "$window",
+            function ($scope, $rootScope, $routeParams, $window) {
   $scope.downloadDisabled = true;
   $scope.uploadDisabled = false;
   $scope.deleteDisabled = true;	
+  $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   $scope.newFolderDisabled = ($routeParams.folder ? true : false);
 
   $scope.$on("CheckedCountChange", function(event, count, folder) {
     $scope.downloadDisabled = count !== 1 || folder;
     $scope.deleteDisabled = !count;
+    $scope.selectDisabled = !count;
     $scope.uploadDisabled = count;
   });
+
+  $scope.cancelButtonClick = function() {
+    $rootScope.$broadcast("CancelSelectAction");
+  };
 
   $scope.uploadButtonClick = function() {
     $("#file").click();
@@ -31,6 +37,10 @@ angular.module("medialibrary")
 
   $scope.deleteButtonClick = function() {
     $rootScope.$broadcast("FileDeleteAction");
+  };
+
+  $scope.selectButtonClick = function() {
+    $rootScope.$broadcast("SelectorButtonAction");
   };
 
   $scope.newFolderButtonClick = function() {

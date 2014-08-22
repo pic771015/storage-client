@@ -58,8 +58,13 @@
       window.addEventListener("load", loadStorageModal);
 
       function handleStorageMessage(event) {
-        console.log(event.data);
-        console.log(event.origin);
+        if (Array.isArray(event.data) && event.data[0].indexOf("risemedialibrary") > -1) {
+          alert(event.data);
+        }
+        if (event.data === "close") {
+          storageModal.parentNode.removeChild(storageModal);
+          backDrop.parentNode.removeChild(backDrop);
+        }
       }
     </script>
   </body>
