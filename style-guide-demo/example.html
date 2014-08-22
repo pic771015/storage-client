@@ -32,6 +32,7 @@ The ID for the currently selected Company can be found in the URL where the ID i
   window.addEventListener("message", handleStorageMessage, false);
 
   function handleStorageMessage(event) {
+    if (event.origin !== "http://storage.risevision.com") { return; }
     console.log(event.data);
   }
 </script>
@@ -57,15 +58,15 @@ The ID for the currently selected Company can be found in the URL where the ID i
   window.addEventListener("message", handleStorageMessage, false);
 
   function handleStorageMessage(event) {
-    if (event.data.indexOf("risemedialibrary") > -1) {
-      document.getElementById("urlMessage").innerHTML = event.data;
-      storageModal.parentNode.removeChild(storageModal);
-      backDrop.parentNode.removeChild(backDrop);
-    }
+    if (event.origin !== "http://storage.risevision.com") { return; }
     if (event.data === "close") {
       storageModal.parentNode.removeChild(storageModal);
       backDrop.parentNode.removeChild(backDrop);
+      return;
     }
+    document.getElementById("urlMessage").innerHTML = event.data.join('<br />');
+    storageModal.parentNode.removeChild(storageModal);
+    backDrop.parentNode.removeChild(backDrop);
   }
 </script>
 
