@@ -39,9 +39,9 @@ function setupMocks(servicesPassFail) {
 }
 
 describe("Services: Upload URI Service", function () {
-  describe("With successful uri request", function() {
-    beforeEach(module("medialibrary"));
+  beforeEach(module("medialibrary"));
 
+  describe("With successful uri request", function() {
     beforeEach(module(setupMocks({uri: true, auth: true, storage: true})));
 
     it("should exist", function() {
@@ -60,8 +60,6 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed uri request", function() {
-    beforeEach(module("medialibrary"));
-
     beforeEach(module(setupMocks({uri: false, auth: true, storage: true})));
 
     it("should be rejected with false result", function() {
@@ -74,8 +72,6 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed auth request", function() {
-    beforeEach(module("medialibrary"));
-
     beforeEach(module(setupMocks({uri: true, auth: false, storage: true})));
 
     it("should be rejected", function() {
@@ -93,8 +89,6 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed storage api loader request", function() {
-    beforeEach(module("medialibrary"));
-
     beforeEach(module(setupMocks({uri: true, auth: true, storage: false})));
 
     it("should be rejected", function() {

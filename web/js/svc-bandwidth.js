@@ -7,7 +7,7 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
      ,bandwidthValuesPromiseCache = {};
 
   service.getBandwidth = function(companyId) {
-    if (!companyId) {return $q.when(undefined);}
+    if (!companyId) {return $q.reject("No companyId");}
 
     if (bandwidthValuesPromiseCache.hasOwnProperty(companyId)) {
       return bandwidthValuesPromiseCache[companyId];
@@ -16,7 +16,6 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
     bandwidthValuesPromiseCache[companyId] =
     $q.all([storageAPILoader.get(), OAuthService.getAuthStatus()])
     .then(function(results) {
-      if (results[1] === false) {return;}
       var request = results[0].getBucketBandwidth({
         "companyId": companyId
       });
@@ -31,7 +30,7 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
     var defer = $q.defer();
     request.execute(function(resp) {
       if (resp.result === false) {
-        defer.resolve("undetermined");
+        defer.reject(resp);
       } else {
         resp.message = parseInt(resp.message, 10);
         resp.message = isNaN(resp.message) ? 0 : resp.message / 1000000;
