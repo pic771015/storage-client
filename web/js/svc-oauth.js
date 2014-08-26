@@ -1,7 +1,6 @@
 "use strict";
-angular.module("medialibrary").factory("OAuthService", ["apiAuth", factory]);
-
-function factory(apiAuth) {
+angular.module("medialibrary").factory("OAuthService", ["apiAuth",
+function oAuthService(apiAuth) {
   var service = {}
      ,authPromise;
 
@@ -23,4 +22,4 @@ function factory(apiAuth) {
   };
 
   return service;
-}
+}]);
