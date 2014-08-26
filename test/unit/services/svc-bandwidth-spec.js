@@ -23,7 +23,7 @@ function setupMocks(servicesPassFail) {
       var service = {bandwidthCallCount: 0};
 
       service.get = function () {
-        return (servicesPassFail.storage ? new Q({getBucketBandwidth: function(params) {
+        return (servicesPassFail.storage ? new Q({getBucketBandwidth: function() {
           return {execute: function(cb) {
             service.bandwidthCallCount += 1;
             return cb({result:servicesPassFail.bandwidth,message:10});

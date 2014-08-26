@@ -77,13 +77,13 @@ describe("Services: Upload URI Service", function () {
     it("should be rejected", function() {
       var uploadService = getService("UploadURIService");
       return uploadService.getURI("anyCompanyId", "anyFileName")
-      .then(function(){assert(false);}, function (resp) {assert(true);});
+      .then(function(){assert(false);}, function () {assert(true);});
     });
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
       var storageAPIService = getService("storageAPILoader");
-      uploadService.getURI("anyCompanyId", "anyFileName")
+      uploadService.getURI("anyCompanyId", "anyFileName");
       expect(storageAPIService.uploadURICallCount).to.equal(0);
     });
   });
@@ -94,13 +94,13 @@ describe("Services: Upload URI Service", function () {
     it("should be rejected", function() {
       var uploadService = getService("UploadURIService");
       return uploadService.getURI("anyCompanyId", "anyFileName")
-      .then(function(){assert(false);}, function (resp) {assert(true);});
+      .then(function(){assert(false);}, function () {assert(true);});
     });
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
       var storageAPIService = getService("storageAPILoader");
-      uploadService.getURI("anyCompanyId", "anyFileName")
+      uploadService.getURI("anyCompanyId", "anyFileName");
       expect(storageAPIService.uploadURICallCount).to.equal(0);
     });
   });
