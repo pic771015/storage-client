@@ -156,6 +156,7 @@
     "bootstrap": false,
     "snake_case": false,
     "bindJQuery": false,
+    "assert": false,
     "assertArg": false,
     "assertArgFn": false,
     "assertNotHasOwnProperty": false,

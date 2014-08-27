@@ -11,7 +11,7 @@ function uploadURIService ($q, storageAPILoader, OAuthService) {
       var storageApi = results[0];
       var params = {"companyId": companyId, "fileName": fileName};
       return executeRequest(storageApi.getResumableUploadURI(params));
-    })
+    });
   };
 
   function executeRequest(request) {

@@ -1,5 +1,5 @@
 /*global gapi,handleClientJSLoad: false */
-
+"use strict";
 window.gapi = {};
 gapi.client = {
   load: function(path, version, cb) {
