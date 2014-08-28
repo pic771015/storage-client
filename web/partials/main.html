@@ -20,23 +20,23 @@
 <div>
   <div id="buttons-action" ng-controller="ButtonsController">
     <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
-        Select <i class="glyphicons white ok_2 icon-right"></i>
+        Select <i class="fa fa-check-square-o icon-right"></i>
     </button>
     <button type="button" ng-click="cancelButtonClick()" ng-if="storageModal" title="Cancel" class="btn btn-primary btn-fixed-width">
-        Cancel <i class="glyphicons white remove_2 icon-right"></i>
+        Cancel <i class="fa fa-times icon-right"></i>
     </button>  
     <i class="btn btn-fixed-width" ng-if="storageModal"></i>
     <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="actionsDisabled || uploadDisabled">
-      <i class="glyphicons cloud-upload"></i>
+      <i class="fa fa-cloud-upload fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="downloadDisabled || actionsDisabled">
-      <i class="glyphicons cloud-download"></i>
+      <i class="fa fa-cloud-download fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="actionsDisabled || newFolderDisabled">
-      <i class="glyphicons folder_new"></i>
+      <i class="fa fa-folder-o fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="deleteDisabled || actionsDisabled">
-      <i class="glyphicons bin"></i>
+      <i class="fa fa-trash-o fa-2x"></i>
     </button>
     <div class="storage-used-info">
       <div>Total file size: {{librarySize | fileSizeFilter}} </div>
