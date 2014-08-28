@@ -201,6 +201,7 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
   });
 
   $scope.$on("CancelSelectAction", function() {
+    console.log("Cancel selected: Posting close message");
     $window.parent.postMessage("close", "*");
   });
 

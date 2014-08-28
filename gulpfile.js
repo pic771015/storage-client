@@ -41,6 +41,7 @@ var env = process.env.NODE_ENV || "dev",
       "web/components/angular-bootstrap/ui-bootstrap-tpls.js",
       "web/components/angular-route/angular-route.js",
       "web/components/angular-resource/angular-resource.js",
+      "web/components/angular-file-upload/angular-file-upload.js",
       "web/components/angular-mocks/angular-mocks.js",
       "web/common/gapi/svc-gapi.js",
       "web/common/auth/svc-gapi-auth.js",
@@ -64,7 +65,7 @@ var env = process.env.NODE_ENV || "dev",
 
     cssFiles = [
       "web/css/**/*.css",
-      "web/components/rv-style-guide/dist/css/*.min.css"
+      "web/components/rv-common-style/dist/css/*.min.css"
     ],
 
     imgFiles = [
@@ -73,7 +74,7 @@ var env = process.env.NODE_ENV || "dev",
 
     htmlFiles = [
       "web/*.html",
-      "web/components/common-header/src/common-header.html"
+      "web/components/rv-common-header/src/common-header.html"
     ],
 
     viewFiles = [
@@ -82,6 +83,10 @@ var env = process.env.NODE_ENV || "dev",
 
     fileFiles = [
       "web/files/**/*"
+    ],
+
+    fontFiles = [
+      "web/components/rv-common-style/dist/fonts/*"
     ];
 
 gulp.task("clean", function() {
@@ -143,6 +148,10 @@ gulp.task("files", ["clean"], function() {
     .pipe(gulp.dest("dist/files"));
 });
 
+gulp.task("fonts", ["clean"], function() {
+  return gulp.src(fontFiles)
+    .pipe(gulp.dest("dist/fonts"));
+});
 
 gulp.task("img", ["clean"], function() {
   return gulp.src(imgFiles)
@@ -175,7 +184,7 @@ gulp.task("config", function() {
     .pipe(gulp.dest("./web/js/config"));
 });
 
-gulp.task("build", ["clean", "config", "html", "view", "files", "img", "css"]);
+gulp.task("build", ["clean", "config", "html", "view", "files", "img", "css", "fonts"]);
 
 
 gulp.task("test", function() {

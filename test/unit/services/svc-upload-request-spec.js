@@ -18,16 +18,18 @@ function setupMocks(servicesPassFail) {
       return service;
     });
 
-    $provide.service("storageAPILoader", function() {
+    $provide.service("gapiLoader", function() {
       var service = {uploadURICallCount: 0};
 
       service.get = function () {
-        return (servicesPassFail.storage ? new Q({getResumableUploadURI: function() {
+        return (servicesPassFail.storage ?
+        new Q({client:{storage: {getResumableUploadURI: 
+        function() {
           service.uploadURICallCount = 1;
           return {execute: function(cb) {
             return cb({result:servicesPassFail.uri,message:"theURI"});
           }};
-        }}): Q.reject("storage api load rejected"));
+        }}}}) : Q.reject("storage api load rejected"));
       };
       return service;
     });
@@ -82,9 +84,9 @@ describe("Services: Upload URI Service", function () {
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
-      var storageAPIService = getService("storageAPILoader");
+      var gapiService = getService("gapiLoader");
       uploadService.getURI("anyCompanyId", "anyFileName");
-      expect(storageAPIService.uploadURICallCount).to.equal(0);
+      expect(gapiService.uploadURICallCount).to.equal(0);
     });
   });
 
@@ -99,9 +101,9 @@ describe("Services: Upload URI Service", function () {
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
-      var storageAPIService = getService("storageAPILoader");
+      var gapiService = getService("gapiLoader");
       uploadService.getURI("anyCompanyId", "anyFileName");
-      expect(storageAPIService.uploadURICallCount).to.equal(0);
+      expect(gapiService.uploadURICallCount).to.equal(0);
     });
   });
 });

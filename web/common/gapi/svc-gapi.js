@@ -42,7 +42,8 @@ angular.module("gapi", ["common-config"])
       get: function () {
         var deferred = $q.defer();
         var errMsg;
-        var apiuri = $window.location.search.substr(1).split("&")[0].split("=");
+        var apiuri = $window.location.hostname === "localhost" ?
+                     $window.top.location.search.substr(1).split("&")[0].split("=") : [];
         apiuri = apiuri[0] === "apiuri" ? apiuri[1] : "";
 
         gapiLoader.get().then(function (gApi) {
