@@ -20,9 +20,8 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
         "companyId": companyId
       });
       return executeRequest(request);
-    }).then(function(resp) {
-      return resp;
     });
+
     return bandwidthValuesPromiseCache[companyId];
   };
 
@@ -32,10 +31,14 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
       if (resp.result === false) {
         defer.reject(resp);
       } else {
-        resp.message = parseInt(resp.message, 10);
-        resp.message = isNaN(resp.message) ? 0 : resp.message / 1000000;
-        resp.message = resp.message < 1 ?
-                       "less than one" : resp.message.toFixed(2);
+        if (resp.message) {
+          resp.message = parseInt(resp.message, 10);
+          resp.message = isNaN(resp.message) ? 0 : resp.message / 1000000;
+          resp.message = resp.message < 1 ?
+                         "less than one" : resp.message.toFixed(2);
+        } else {
+          resp.message = "-";
+        }
         console.log("Received bandwidth: " + resp.message);
         defer.resolve(resp.message);
       }
