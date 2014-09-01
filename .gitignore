@@ -2,3 +2,4 @@ node_modules
 *.log
 dist-e2e
 test_reports
+test/e2e/*.png
