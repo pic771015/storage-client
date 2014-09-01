@@ -2,28 +2,31 @@
 /* global gadgets: true */
 
 angular.module("medialibrary").controller("FileListCtrl",
-["$scope", "$rootScope", "$route", "$routeParams", "$location", "apiStorage",
-"FileListFactory", "apiAuth", "$interval", "oauthAPILoader", "OAuthService", "$window",
-
-function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileListFactory,
-          apiAuth, $interval, oauthAPILoader, OAuthService, $window) {
-
-  var MEDIA_LIBRARY_URL = "http://commondatastorage.googleapis.com/";
-
-  $rootScope.bucketName = "risemedialibrary-" + $routeParams.companyId;
-  $rootScope.bucketUrl = MEDIA_LIBRARY_URL + $rootScope.bucketName + "/";
+["$scope", "$route", "$routeParams", "$location", "FileListService",
+"OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
+"$window","MEDIA_LIBRARY_URL",
+function ($scope, $route, $routeParams, $location, listSvc,
+OAuthAuthorizationService, requestSvc, OAuthStatusService,
+$window, MEDIA_LIBRARY_URL) {
+  var bucketName = "risemedialibrary-" + $routeParams.companyId;
+  var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
   $scope.$location = $location;
-  $scope.fileListRequestInProgress = false;
+  $scope.isAuthed = true;
   $scope.orderByAttribute = "lastModified";
-  $rootScope.actionsDisabled = true;
-  
+  $scope.filesDetails = listSvc.filesDetails;
+  $scope.statusDetails = listSvc.statusDetails;
+
   $scope.dateModifiedOrderFunction = function(file) {
     return file.updated ? file.updated.value : "";
   };
 
   $scope.login = function() {
-    apiAuth.authorize().then(function() {
-      $window.location.reload();
+    OAuthAuthorizationService.authorize().then(function() {
+      $scope.isAuthed = true;
+      listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+    })
+    .then(null, function(errResult) {
+      console.log(errResult);
     });
   };
 
@@ -39,180 +42,59 @@ function ($scope, $rootScope, $route, $routeParams, $location, apiStorage, fileL
 
   $scope.reverseSort = true;
 
-  $scope.updateFileList = function() {
-    $scope.fileListRequestInProgress = true;
-    fileListFactory.listFiles($routeParams.companyId, $routeParams.folder)
-                   .then(onGetFiles);
+  OAuthStatusService.getAuthStatus().then(function() {
+    $scope.isAuthed = true;
+    listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder)
+    .then(function(resp) {
+      if (resp.code === 404) {$scope.createBucket();}
+    });
+  }, function() { $scope.isAuthed = false; });
+
+  $scope.createBucket = function() {
+    var gapiPath = "storage.createBucket";
+    requestSvc.executeRequest(gapiPath, {"companyId": $routeParams.companyId})
+    .then(function() {
+      listSvc.refreshFilesList($routeParams.companyId);
+    });
+  };
+	
+  $scope.fileCheckToggled = function(file) {
+    $scope.filesDetails.checkedCount += file.isChecked ? 1 : -1;
+
+    if (file.name.substr(-1) === "/") {
+      $scope.filesDetails.folderCheckedCount += file.isChecked ? 1 : -1;
+    }
   };
 
-  OAuthService.getAuthStatus().then(function(resp) {
-    $scope.isAuthed = resp;
-    if ($scope.isAuthed) {
-      $scope.updateFileList();
-    }
-  });
-
-  $scope.$on("file.uploaded", $scope.updateFileList);
-	
-  function onGetFiles(resp) {
-    $scope.fileListRequestInProgress = false;
-    $rootScope.actionsDisabled = false;
-    $rootScope.librarySize = 0;
-    $scope.selectAll = false;
-
-    $scope.mediaFiles = resp.files || [];
-
-    if (resp.noCompanyAccess) {
-      $scope.noCompanyAccess = true;
-    } else if (resp.oauthError) {
-      $scope.isAuthed = false;
-    } else if (resp.notFound) {
-      $rootScope.actionsDisabled = false;
-      apiStorage.createBucket($routeParams.companyId);
-    } else if (resp.local) {
-      $rootScope.actionsDisabled = true;
-    }
-  }
-	
-  function getLibrarySize(mediaFiles) {
-    var size = 0;
-    for ( var i = 0; i < mediaFiles.length; ++i ) {
-      size += parseInt(mediaFiles[ i ].size);
-    }
-    return size;
-  }
-
-  $scope.$watch("mediaFiles", function(items) {
-    if(items) {
-      var checkedCount = 0, folderChecked = false;
-      items.forEach(function(item) {
-        if (item.checked) {
-          checkedCount++;
-          if (item.name.substr(-1) === "/") { folderChecked = true;}
-        } else {
-          $scope.selectAll = false;
-        }
-        $rootScope.librarySize = getLibrarySize(items);
-      });
-      $rootScope.$broadcast("CheckedCountChange", checkedCount, folderChecked);    
-    }
-    else {
-      $rootScope.librarySize = 0;
-    }
-
-  }, true);
-/*
- *     Scope $watch won't work within a bootstrap modal unless it's an object
- *     property that is being changed.  See the following issue:
- *     https://github.com/angular-ui/bootstrap/issues/1680
- *     
-	$scope.$watch('selectAll', function(v) {
-
-	    for ( var i = 0; i < $scope.mediaFiles.length; ++i ) {
-	        $scope.mediaFiles[ i ].checked = v;
-	    }
-
-	});
-
-        */
-
   $scope.selectAllCheckboxes = function() {
-    for ( var i = 0; i < $scope.mediaFiles.length; ++i ) {
-      if (!$scope.fileIsCurrentFolder($scope.mediaFiles[i])) {
-        $scope.mediaFiles[ i ].checked = $scope.selectAll;
+    for ( var i = 0; i < $scope.filesDetails.files.length; ++i ) {
+      if (!$scope.fileIsCurrentFolder($scope.filesDetails.files[i])) {
+        $scope.filesDetails.files[ i ].checked = $scope.selectAll;
       }
     }
   };
 
   $scope.fileIsCurrentFolder = function(file) {
-      return file.name === $routeParams.folder + "/";
-    };
+    return file.name === $routeParams.folder + "/";
+  };
 
   $scope.fileIsFolder = function(file) {
-      return file.name.substr(-1) === "/";
-    };
+    return file.name.substr(-1) === "/";
+  };
 
   $scope.$on("FileSelectAction", function(event, file) {
-    var fileUrl = $rootScope.bucketUrl + file.name;
+    var fileUrl = bucketUrl + file.name;
     var data = { params: fileUrl };
 
     if ($scope.fileIsCurrentFolder(file)) {
       $scope.$location.path("/files/" + $routeParams.companyId); 
     } else if ($scope.fileIsFolder(file)) {
       $scope.$location
-            .path("/files/" + $routeParams.companyId + 
-                  "/folder/" + file.name);
+        .path("/files/" + $routeParams.companyId + 
+            "/folder/" + file.name);
     } else {
       $window.parent.postMessage([fileUrl], "*");
       gadgets.rpc.call("", "rscmd_saveSettings", null, data);
     }
   });
-	
-  $scope.$on("SelectorButtonAction", function() {
-    var fileUrls = [], data = {};
-    data.params = [];
-
-    getSelectedFiles().forEach(function(file) {
-      fileUrls.push($rootScope.bucketUrl + file.name);
-      data.params.push($rootScope.bucketUrl + file.name);
-    });
-
-    $window.parent.postMessage(fileUrls, "*");
-    gadgets.rpc.call("", "rscmd_saveSettings", null, data);
-  });
-
-  $scope.$on("FileDownloadAction", function(event, file) {
-    if (!file) {
-      file = getSelectedFiles()[0];
-    }
-    if (file) {
-      $window.location.assign("https://www.googleapis.com/storage/v1/b/" +
-                              $rootScope.bucketName + "/o/" +
-                              file.name + "?alt=media");
-    }
-  });
-
-  $scope.$on("FileDeleteAction", function() {
-    var selectedFileNames = getSelectedFiles().map(function(file) {
-      return file.name;
-    });
-    var confirmationMessage = "Please confirm PERMANENT deletion of:\n\n";
-
-    selectedFileNames.forEach(function(val) {
-      if (val.substr(-1) === "/") {
-        confirmationMessage += "folder: " + val + " and all its contents" + "\n";
-      } else {
-        confirmationMessage += "file: " + val + "\n";
-      }
-    });
-
-    if (confirm(confirmationMessage)) {
-      apiStorage.deleteFiles($routeParams.companyId, selectedFileNames)
-                .then(function() {$scope.updateFileList();});
-    }
-  });
-
-  $scope.$on("NewFolderAction", function() {
-    var folderName = prompt("Enter a folder name");
-    if (!folderName) {return;}
-    if (folderName.indexOf("/") > -1) {return;}
-    apiStorage.createFolder($routeParams.companyId, folderName)
-              .then(function() {$scope.updateFileList();});
-  });
-
-  $scope.$on("CancelSelectAction", function() {
-    console.log("Cancel selected: Posting close message");
-    $window.parent.postMessage("close", "*");
-  });
-
-  function getSelectedFiles() {
-    var selectedFiles = [];
-
-    for ( var i = 0; i < $scope.mediaFiles.length; ++i ) {
-      if ($scope.mediaFiles[ i ].checked) {
-        selectedFiles.push($scope.mediaFiles[i]);
-      }
-    }
-    return selectedFiles;
-  }
 }]);

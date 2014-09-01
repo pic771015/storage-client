@@ -1,29 +1,25 @@
 "use strict";
 angular.module("medialibrary")
-.factory("UploadURIService", ["$q", "gapiLoader", "OAuthService",
-function uploadURIService ($q, gapiLoader, OAuthService) {
+.factory("UploadURIService", ["$q", "GAPIRequestService", "OAuthStatusService",
+function uploadURIService ($q, gapiRequestor, OAuthService) {
   var svc = {};
   svc.getURI = function getURI(companyId, fileName) {
-    if (!companyId || !fileName) {return $q.when(new Error("Invalid Params"));}
+    if (!companyId || !fileName) {return $q.reject("Invalid Params");}
 
-    return $q.all([gapiLoader.get(), OAuthService.getAuthStatus()])
-    .then(function(results) {
-      var gapi = results[0];
+    return OAuthService.getAuthStatus()
+    .then(function() {
+      var gapiPath = "storage.getResumableUploadURI";
       var params = {"companyId": companyId, "fileName": fileName};
-      return executeRequest(gapi.client.storage.getResumableUploadURI(params));
+      return gapiRequestor.executeRequest(gapiPath,params);
+    })
+    .then(function(resp) {
+      if (resp.result === false) {
+        return $q.reject(resp);
+      } else {
+        return resp.message;
+      }
     });
   };
 
-  function executeRequest(request) {
-    var defer = $q.defer();
-    request.execute(function(resp) {
-      if (resp.result === false) {
-        defer.reject(resp);
-      } else {
-        defer.resolve(resp.message);
-      }
-    });
-    return defer.promise;
-  }
   return svc;
 }]);
