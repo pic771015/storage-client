@@ -35,7 +35,7 @@ function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploa
 
     $http({method: "GET",
            url: "https://www.googleapis.com/storage/v1/b/risemedialibrary-" +
-                $routeParams.companyId + "/o/" + item.file.name})
+                $routeParams.companyId + "/o/" + encodeURIComponent(item.file.name)})
     .then(function(resp) {
       if (!resp.data || !verifySize(resp.data.size)) {
         $scope.statusMessage = "Upload did not complete";
