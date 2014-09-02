@@ -44,7 +44,7 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
       }
       $scope.statusMessage = "Upload complete";
       $scope.uploadActive = false;
-      filesSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+      filesSvc.addFile(resp.data);
     }, function(err) {
       console.log(err);
       $scope.statusMessage = "Could not verify";
