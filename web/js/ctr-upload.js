@@ -3,12 +3,8 @@
 angular.module("medialibrary").controller("UploadController", ["$scope", "$route", "$routeParams", "$http", "FileUploader", "UploadURIService", "FileListService",
 function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
   var uploader = $scope.uploader = new FileUploader();
-  $scope.uploadComplete = false;
-  $scope.uploadError = false;
-  $scope.uploadActive = false;
 
   uploader.method = "PUT";
-  uploader.removeAfterUpload = true;
 
   uploader.onAfterAddingFile = function(fileItem) {
     console.info("onAfterAddingFile", fileItem);
@@ -17,18 +13,27 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
       fileItem.file.name = $routeParams.folder + "/" + fileItem.file.name;
     }
 
-    $scope.statusMessage = "Requesting permission";
+    $scope.uploadStatusMessage = "Requesting permission";
 
     uriSvc.getURI($routeParams.companyId, encodeURIComponent(fileItem.file.name))
     .then(function(resp) {
-      $scope.statusMessage = "Uploading data";
       fileItem.url = resp;
-      fileItem.upload();
+      uploader.uploadItem(fileItem);
     });
   };
 
+  uploader.onBeforeUploadItem = function(item) {
+    $scope.uploadStatusMessage = "Uploading " + item.file.name;
+  };
+
+  uploader.onCancelItem = function(item) {
+    uploader.removeFromQueue(item);
+    if (uploader.queue.length === 0) {$scope.uploadActive = false;}
+  };
+
   uploader.onCompleteItem = function(item) {
-    $scope.statusMessage = "Verifying";
+    if (item.isCancel) {return;}
+    $scope.uploadStatusMessage = "Verifying " + item.file.name;
 
     function verifySize(size) {
       return parseInt(size) === item.file.size;
@@ -39,15 +44,18 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
                 $routeParams.companyId + "/o/" + encodeURIComponent(item.file.name)})
     .then(function(resp) {
       if (!resp.data || !verifySize(resp.data.size)) {
-        $scope.statusMessage = "Upload did not complete";
+        $scope.uploadStatusMessage = "Upload did not complete";
+        item.isError = true;
         return;
       }
-      $scope.statusMessage = "Upload complete";
-      $scope.uploadActive = false;
+      resp.data.updated = {value: Date.parse(resp.data.updated).toString()};
       filesSvc.addFile(resp.data);
+      item.isSuccess = true;
+      uploader.removeFromQueue(item);
+      if (uploader.queue.length === 0) {$scope.uploadActive = false;}
     }, function(err) {
       console.log(err);
-      $scope.statusMessage = "Could not verify";
+      $scope.uploadStatusMessage = "Could not verify";
     });
   };
 }]);

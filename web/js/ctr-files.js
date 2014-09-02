@@ -12,7 +12,7 @@ $window, MEDIA_LIBRARY_URL) {
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
   $scope.$location = $location;
   $scope.isAuthed = true;
-  $scope.orderByAttribute = "lastModified";
+  $scope.orderByAttribute = "name";
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
 
@@ -39,8 +39,6 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.fileSizeOrderFunction = function(file) {
     return Number(file.size);
   };
-
-  $scope.reverseSort = true;
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
@@ -69,7 +67,7 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.selectAllCheckboxes = function() {
     for ( var i = 0; i < $scope.filesDetails.files.length; ++i ) {
       if (!$scope.fileIsCurrentFolder($scope.filesDetails.files[i])) {
-        $scope.filesDetails.files[ i ].checked = $scope.selectAll;
+        $scope.filesDetails.files[ i ].isChecked = $scope.selectAll;
       }
     }
   };

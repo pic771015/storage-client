@@ -33,7 +33,7 @@
       <i class="fa fa-cloud-download fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="inFolder === true">
-      <i class="fa fa-folder-o fa-2x"></i>
+      <i class="fa fa-folder-open fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.localFiles === false)">
       <i class="fa fa-trash-o fa-2x"></i>
@@ -47,18 +47,40 @@
   </div>
 </div>
 <div class="row" ng-controller="UploadController">
-  <div class="alert alert-info alert-dismissable" ng-show="uploadActive">
-    <button type="button" class="close" aria-hidden="true" ng-click="uploadActive = false">&times;</button>
-    <div class="progress" style="">
-      <div class="progress-bar" role="progressbar" 
-      ng-style="{ 'width': uploader.progress + '%' }"></div>
+  <div class="col-md-12">
+    <div class="panel panel-info" ng-show="uploadActive">
+      <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
+        <h3 class="panel-title">Upload Files <span class="pull-right"> <i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isCollapsed]"></i></span></h3>
+      </div>
+      <div class="panel-body" ng-show="!isCollapsed">
+        <table class="table">
+          <tbody>
+            <tr ng-repeat="item in uploader.queue">
+              <td>{{item.file.name}}</td>
+              <td nowrap>{{ item.file.size|fileSizeFilter }}</td>
+              <td>
+                <span style="float: right" class="inline-cancel" ng-show="item.isUploading" ng-click="item.remove()">
+                  <i class="text-danger fa fa-times-circle-o cancel"></i>
+                </span>
+                <span class="text-danger" ng-show="!item.isUploading" ng-click="item.remove()">
+                  <i class="fa fa-times-circle-o"></i> remove
+                </span>
+
+                <div class="progress inline-progress" ng-show="item.isUploading">
+                  <div class="progress-bar progress-bar-striped progress-bar-success active"
+                    role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <span>{{statusMessage}}</span>
   </div>
 
   <div class="modal fade" tabindex="-1">
     <form id="uploadform">
-      <input type="file" id="file" nv-file-select="" uploader="uploader" />
+      <input type="file" id="file" nv-file-select="" uploader="uploader" multiple />
     </form>
   </div>
 </div>
