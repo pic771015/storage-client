@@ -19,7 +19,7 @@ function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploa
 
     $scope.statusMessage = "Uploading " + fileItem.file.name;
 
-    uriSvc.getURI($routeParams.companyId, fileItem.file.name)
+    uriSvc.getURI($routeParams.companyId, encodeURIComponent(fileItem.file.name))
     .then(function(resp) {
       fileItem.url = resp;
       fileItem.upload();
