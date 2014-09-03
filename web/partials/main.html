@@ -19,29 +19,29 @@
 </div>
 <div>
   <div id="buttons-action" ng-controller="ButtonsController">
-    <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="selectDisabled || actionsDisabled">
+    <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount === 0 && filesDetails.localFiles != false">
         Select <i class="fa fa-check fa-white icon-right"></i>
     </button>
     <button type="button" ng-click="cancelButtonClick()" ng-if="storageModal" title="Cancel" class="btn btn-primary btn-fixed-width">
         Cancel <i class="fa fa-times fa-white icon-right"></i>
     </button>  
     <i class="btn btn-fixed-width" ng-if="storageModal"></i>
-    <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="actionsDisabled || uploadDisabled">
+    <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 0 && filesDetails.localFiles === false)">
       <i class="fa fa-cloud-upload fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="downloadDisabled || actionsDisabled">
+    <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 1 && filesDetails.localFiles === false && filesDetails.folderCheckedCount === 0)">
       <i class="fa fa-cloud-download fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="actionsDisabled || newFolderDisabled">
+    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="inFolder === true">
       <i class="fa fa-folder-o fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="deleteDisabled || actionsDisabled">
+    <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.localFiles === false)">
       <i class="fa fa-trash-o fa-2x"></i>
     </button>
     <div class="storage-used-info">
-      <div>Total file size: {{librarySize | fileSizeFilter}} </div>
+      <div>Total file size: {{filesDetails.totalBytes | fileSizeFilter}} </div>
       <div ng-controller="BandwidthController" ng-show="bandwidthUse">
-        This month's bandwidth use: {{bandwidthUse}} MB
+        This month's bandwidth use: {{bandwidthUse | bandwidthUseFilter}}
       </div>
     </div>
   </div>
@@ -54,8 +54,6 @@
       ng-style="{ 'width': uploader.progress + '%' }"></div>
     </div>
     <span>{{statusMessage}}</span>
-    <span ng-show="uploadComplete">Complete</span>
-    <span ng-show="uploadError">Error</span>
   </div>
 
   <div class="modal fade" tabindex="-1">

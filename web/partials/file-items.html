@@ -1,18 +1,21 @@
 <div ng-controller="FileListCtrl" id="list" class="table-responsive">
-        <div class="alert alert-info alert-dismissable" ng-show="fileListRequestInProgress">
+        <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
           Requesting file list...
         </div>
-        <div class="alert alert-danger" ng-show="isAuthed === false">
-          <span>Rise Vision needs access to your Google account to verify who you are. </span>
+        <div id="oauthNotice" class="alert alert-danger" ng-hide="statusDetails.code !== 401 && statusDetails.code !== 400 && isAuthed === true">
+          <span>Rise Vision needs access to your Google account to verify who you are </span>
                 <button class="btn btn-primary btn-sm" type="button" ng-click="login()">
                   <span title="Initiate Permission Request" 
                         class="fa fa-check"> Okay</span>
                 </button>
         </div>
-        <div class="alert alert-danger" ng-show="noCompanyAccess">
-                You are not authorized to view this Company's files...
+        <div class="alert alert-danger" ng-show="statusDetails.code===403">
+                You are not authorized to view this Company's files
         </div>
-	<table class="table table-hover">
+        <div id="gapiLoadNotice" class="alert alert-danger" ng-controller="gapiClientController as gapiController" ng-show="!gapiController.gapiClientFullyLoaded">
+          Loading storage functions
+        </div>
+	<table id="filesTable" class="table table-hover">
 		<thead>
 			<tr>
 				<th class="col-md-1 text-center">
@@ -69,9 +72,9 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr ng-repeat="file in mediaFiles | filter:query | orderBy:orderByAttribute:reverseSort" ng-class="{active: file.checked}">
+			<tr ng-repeat="file in filesDetails.files | filter:query | orderBy:orderByAttribute:reverseSort" ng-class="{active: file.checked}">
 				<td class="text-center">
-					<input type="checkbox" ng-model="file.checked" ng-show="!fileIsCurrentFolder(file)">
+					<input type="checkbox" ng-model="file.isChecked" ng-change="fileCheckToggled(file)" ng-show="!fileIsCurrentFolder(file)">
 				</td>
 				<td>
                                   <a href="" ng-click="$emit('FileSelectAction', file)">{{file.name | fileNameFilter}}</a>

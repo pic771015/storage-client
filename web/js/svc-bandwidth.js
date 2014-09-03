@@ -1,8 +1,8 @@
 "use strict";
 angular.module("medialibrary")
-.factory("BandwidthService", ["$q", "storageAPILoader", "OAuthService",
-
-function bandwidthFactory($q, storageAPILoader, OAuthService) {
+.factory("BandwidthService",
+["$q", "OAuthStatusService", "GAPIRequestService",
+function bandwidthFactory($q, OAuthStatusService, requestService) {
   var service = {}
      ,bandwidthValuesPromiseCache = {};
 
@@ -14,37 +14,22 @@ function bandwidthFactory($q, storageAPILoader, OAuthService) {
     }
 
     bandwidthValuesPromiseCache[companyId] =
-    $q.all([storageAPILoader.get(), OAuthService.getAuthStatus()])
-    .then(function(results) {
-      var request = results[0].getBucketBandwidth({
-        "companyId": companyId
-      });
-      return executeRequest(request);
+    OAuthStatusService.getAuthStatus()
+    .then(function() {
+      var params = {"companyId": companyId};
+      return requestService.executeRequest("storage.getBucketBandwidth", params)
+            .then(function(resp) {
+              if (resp.result === false || !resp.message) {
+                console.log("Bandwidth unavailable");
+                throw resp;
+              } else {
+                return resp.message;
+              }
+            });
     });
 
     return bandwidthValuesPromiseCache[companyId];
   };
-
-  function executeRequest(request) {
-    var defer = $q.defer();
-    request.execute(function(resp) {
-      if (resp.result === false) {
-        defer.reject(resp);
-      } else {
-        if (resp.message) {
-          resp.message = parseInt(resp.message, 10);
-          resp.message = isNaN(resp.message) ? 0 : resp.message / 1000000;
-          resp.message = resp.message < 1 ?
-                         "less than one" : resp.message.toFixed(2);
-        } else {
-          resp.message = "-";
-        }
-        console.log("Received bandwidth: " + resp.message);
-        defer.resolve(resp.message);
-      }
-    });
-    return defer.promise;
-  }
 
   return service;
 }]);

@@ -1,62 +1,53 @@
 /*jshint expr:true */
+"use strict";
+function getService(serviceName) {
+  var injectedService;
+  inject([serviceName, function(serviceInstance) {
+    injectedService = serviceInstance;
+  }]);
+  return injectedService;
+}
 
-describe("Services: FileListFactory", function() {
-  
-  "use strict";
-
+describe("Services: FileListService", function() {
   beforeEach(module("gapi-file"));
 
   beforeEach(module(function ($provide) {
-      $provide.service("$q", function() {return Q;});
-      $provide.value("$log", console.log);
-      $provide.value("storageAPILoader", {get: function() {
-         
-         var deffered = Q.defer();
-         var storageApi = {
-          files: {
-            get: function () {
-              return {
-                execute: function (callback) {
-                  setTimeout(function () {
-                    callback(rvFixtures.filesResp);
-                  }, 0);
-                }
-              };
-            }
-          }
-         };
-         deffered.resolve(storageApi);
-         return deffered.promise;
-      }});
-      $provide.value("LocalFiles", {query: function(cb) {
-        cb(rvFixtures.filesResp);
-      }});
-    }));
+    $provide.service("GAPIRequestService", function() {
+      var svc = {};
+      svc.executeRequest = function() {
+        var response = {code: 200
+                      ,files: [{"name":"test1", "size": 5}
+                              ,{"name":"test1", "size": 3}]};
+        return new Q(response);
+      };
 
-  it("should exist", function (done) {
-    inject(function (FileListFactory) {
-      expect(FileListFactory).be.defined;
-      done();
+      return svc;
+    });
+
+    $provide.value("LocalFiles", {query: function() {
+      return {"$promise": new Q([{size: 8},{size: 8}])};
+    }});
+  }));
+
+  it("should exist", function () {
+    var fileListSvc = getService("FileListService");
+    expect(fileListSvc).be.defined;
+  });
+
+  it("should get local files", function () {
+    var fileListSvc = getService("FileListService");
+    return fileListSvc.refreshFilesList()
+    .then(function() {
+      expect(fileListSvc.filesDetails.localFiles).to.equal(true);
+      expect(fileListSvc.filesDetails.files.length).to.equal(2);
     });
   });
 
-  it("should get local files", function (done) {
-    inject(function (FileListFactory) {
-      FileListFactory.listFiles().then(function (fileInfo) {
-        expect(fileInfo).to.be.defined;
-        expect(fileInfo.files.files.length).to.equal(3);
-        done();
-      });
-    });
-  });
-
-  it("should get company files", function (done) {
-    inject(function (FileListFactory) {
-      FileListFactory.listFiles("fj243g43g4-g43g43g43g-34g43").then(function (fileInfo) {
-        expect(fileInfo).to.be.defined;
-        expect(fileInfo.files.length).to.equal(3);
-        done();
-      });
+  it("should get company files", function () {
+    var fileListSvc = getService("FileListService");
+    return fileListSvc.refreshFilesList("fj243g43g4-g43g43g43g-34g43")
+    .then(function() {
+      expect(fileListSvc.filesDetails.files.length).to.equal(2);
     });
   });
 });

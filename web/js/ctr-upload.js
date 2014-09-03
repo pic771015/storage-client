@@ -1,7 +1,7 @@
 "use strict";
 
-angular.module("medialibrary").controller("UploadController", ["$scope", "$rootScope", "$route", "$routeParams", "$http", "apiStorage", "FileUploader", "UploadURIService",
-function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploader, uriSvc) {
+angular.module("medialibrary").controller("UploadController", ["$scope", "$route", "$routeParams", "$http", "FileUploader", "UploadURIService", "FileListService",
+function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
   var uploader = $scope.uploader = new FileUploader();
   $scope.uploadComplete = false;
   $scope.uploadError = false;
@@ -17,10 +17,11 @@ function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploa
       fileItem.file.name = $routeParams.folder + "/" + fileItem.file.name;
     }
 
-    $scope.statusMessage = "Uploading " + fileItem.file.name;
+    $scope.statusMessage = "Requesting permission";
 
     uriSvc.getURI($routeParams.companyId, encodeURIComponent(fileItem.file.name))
     .then(function(resp) {
+      $scope.statusMessage = "Uploading data";
       fileItem.url = resp;
       fileItem.upload();
     });
@@ -43,7 +44,7 @@ function ($scope, $rootScope, $route, $routeParams, $http, apiStorage, FileUploa
       }
       $scope.statusMessage = "Upload complete";
       $scope.uploadActive = false;
-      $rootScope.$broadcast("file.uploaded");
+      filesSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
     }, function(err) {
       console.log(err);
       $scope.statusMessage = "Could not verify";

@@ -9,7 +9,7 @@ function getService(serviceName) {
 
 function setupMocks(servicesPassFail) {
   return function($provide) {
-    $provide.service("OAuthService", function() {
+    $provide.service("OAuthStatusService", function() {
       var service = {};
 
       service.getAuthStatus = function () {
@@ -18,18 +18,13 @@ function setupMocks(servicesPassFail) {
       return service;
     });
 
-    $provide.service("gapiLoader", function() {
-      var service = {uploadURICallCount: 0};
+    $provide.service("GAPIRequestService", function() {
+      var service = {gapiRequestCallCount: 0};
 
-      service.get = function () {
-        return (servicesPassFail.storage ?
-        new Q({client:{storage: {getResumableUploadURI: 
-        function() {
-          service.uploadURICallCount = 1;
-          return {execute: function(cb) {
-            return cb({result:servicesPassFail.uri,message:"theURI"});
-          }};
-        }}}}) : Q.reject("storage api load rejected"));
+      service.executeRequest = function () {
+        service.gapiRequestCallCount += 1;
+        return servicesPassFail.uri ?
+        {message: "theURI"} : {result: false}; 
       };
       return service;
     });
@@ -44,7 +39,7 @@ describe("Services: Upload URI Service", function () {
   beforeEach(module("medialibrary"));
 
   describe("With successful uri request", function() {
-    beforeEach(module(setupMocks({uri: true, auth: true, storage: true})));
+    beforeEach(module(setupMocks({uri: true, auth: true})));
 
     it("should exist", function() {
       var uploadService = getService("UploadURIService");
@@ -62,19 +57,19 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed uri request", function() {
-    beforeEach(module(setupMocks({uri: false, auth: true, storage: true})));
+    beforeEach(module(setupMocks({uri: false, auth: true})));
 
-    it("should be rejected with false result", function() {
+    it("should return a false result", function() {
       var uploadService = getService("UploadURIService");
       return uploadService.getURI("anyCompanyId", "anyFileName")
-      .then(null, function (resp) {
+      .then(assert("false"), function (resp) {
         expect(resp.result).to.equal(false);
       });
     });
   });
 
   describe("With failed auth request", function() {
-    beforeEach(module(setupMocks({uri: true, auth: false, storage: true})));
+    beforeEach(module(setupMocks({uri: true, auth: false})));
 
     it("should be rejected", function() {
       var uploadService = getService("UploadURIService");
@@ -84,26 +79,9 @@ describe("Services: Upload URI Service", function () {
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
-      var gapiService = getService("gapiLoader");
+      var gapiService = getService("GAPIRequestService");
       uploadService.getURI("anyCompanyId", "anyFileName");
-      expect(gapiService.uploadURICallCount).to.equal(0);
-    });
-  });
-
-  describe("With failed storage api loader request", function() {
-    beforeEach(module(setupMocks({uri: true, auth: true, storage: false})));
-
-    it("should be rejected", function() {
-      var uploadService = getService("UploadURIService");
-      return uploadService.getURI("anyCompanyId", "anyFileName")
-      .then(function(){assert(false);}, function () {assert(true);});
-    });
-
-    it("should not have called getResumableUploadURI", function() {
-      var uploadService = getService("UploadURIService");
-      var gapiService = getService("gapiLoader");
-      uploadService.getURI("anyCompanyId", "anyFileName");
-      expect(gapiService.uploadURICallCount).to.equal(0);
+      expect(gapiService.gapiRequestCallCount).to.equal(0);
     });
   });
 });

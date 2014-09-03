@@ -9,7 +9,7 @@ function getService(serviceName) {
 
 function setupMocks(servicesPassFail) {
   return function($provide) {
-    $provide.service("OAuthService", function() {
+    $provide.service("OAuthStatusService", function() {
       var service = {authCheckCount: 0};
 
       service.getAuthStatus = function () {
@@ -19,17 +19,17 @@ function setupMocks(servicesPassFail) {
       return service;
     });
 
-    $provide.service("storageAPILoader", function() {
+    $provide.service("GAPIRequestService", function() {
       var service = {bandwidthCallCount: 0};
 
-      service.get = function () {
-        return (servicesPassFail.storage ? new Q({getBucketBandwidth: function() {
-          return {execute: function(cb) {
-            service.bandwidthCallCount += 1;
-            return cb({result:servicesPassFail.bandwidth,message:10});
-          }};
-        }}) : Q.reject("storage api load rejected"));
+      service.executeRequest = function (apiPath) {
+        if (apiPath === "storage.getBucketBandwidth") {
+          service.bandwidthCallCount += 1;
+        }
+
+        return  new Q({message: servicesPassFail.bandwidth ? true : null});
       };
+
       return service;
     });
 
@@ -43,7 +43,7 @@ describe("Services: Bandwidth", function() {
   beforeEach(module("medialibrary"));
 
   describe("With successful bandwith result", function() {
-    beforeEach(module(setupMocks({bandwidth: true, auth: true, storage: true})));
+    beforeEach(module(setupMocks({bandwidth: true, auth: true})));
 
     it("should reject if no companyId", function() {
       var bandwidthService = getService("BandwidthService");
@@ -57,46 +57,42 @@ describe("Services: Bandwidth", function() {
       var bandwidthService = getService("BandwidthService");
       return bandwidthService.getBandwidth("Some companyId")
       .then(function(resp) {
-        expect(resp).to.equal("less than one");
+        expect(resp).to.equal(true);
       }, function() {assert(false);});
     });
 
     it("should execute a request only on first call", function() {
       var bandwidthService = getService("BandwidthService");
-      var storageAPILoader = getService("storageAPILoader");
-      expect(storageAPILoader.bandwidthCallCount).to.equal(0);
+      var gapiRequestService = getService("GAPIRequestService");
+      expect(gapiRequestService.bandwidthCallCount).to.equal(0);
       return bandwidthService.getBandwidth("Some companyId")
       .then(function() {
-        expect(storageAPILoader.bandwidthCallCount).to.equal(1);
+        expect(gapiRequestService.bandwidthCallCount).to.equal(1);
       }).then(function() {
         return bandwidthService.getBandwidth("Some companyId");
       }).then(function() {
-        expect(storageAPILoader.bandwidthCallCount).to.equal(1);
+        expect(gapiRequestService.bandwidthCallCount).to.equal(1);
       });
     });
   });
 
   describe("With failed bandwith result", function() {
-    beforeEach(module(setupMocks({bandwidth: false, auth: true, storage: true})));
+    beforeEach(module(setupMocks({bandwidth: false, auth: true})));
 
-    it("should reject with false result", function() {
+    it("should reject", function() {
       var bandwidthService = getService("BandwidthService");
       return bandwidthService.getBandwidth("Some companyId")
-      .then(function() {assert(false);}, function(resp) {
-        expect(resp.result).to.equal(false);
-      }); 
+      .then(function() {assert(false);}, function() {assert(true);});
     });
   });
 
   describe("With failed auth result", function() {
-    beforeEach(module(setupMocks({bandwidth: true, auth: false, storage: true})));
+    beforeEach(module(setupMocks({bandwidth: true, auth: false})));
 
-    it("should reject with no auth message", function() {
+    it("should reject", function() {
       var bandwidthService = getService("BandwidthService");
       return bandwidthService.getBandwidth("Some companyId")
-      .then(function() {assert(false);}, function(resp) {
-        expect(resp).to.equal("no auth");
-      }); 
+      .then(function() {assert(false);}, function() {assert(true);}); 
     });
   });
 });

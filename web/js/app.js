@@ -1,5 +1,6 @@
 "use strict";
 angular.module("medialibrary", [
+  "common-config",
   "ngRoute",
   "medialibraryFilters", 
   "medialibraryServices",
