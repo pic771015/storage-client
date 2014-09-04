@@ -32,7 +32,7 @@
     <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 1 && filesDetails.localFiles === false && filesDetails.folderCheckedCount === 0)">
       <i class="fa fa-cloud-download fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="inFolder === true">
+    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="inFolder">
       <i class="fa fa-folder-open fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.localFiles === false)">
