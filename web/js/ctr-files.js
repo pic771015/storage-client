@@ -65,9 +65,11 @@ $window, MEDIA_LIBRARY_URL) {
   };
 
   $scope.selectAllCheckboxes = function() {
+    $scope.filesDetails.checkedCount = 0;
     for ( var i = 0; i < $scope.filesDetails.files.length; ++i ) {
       if (!$scope.fileIsCurrentFolder($scope.filesDetails.files[i])) {
         $scope.filesDetails.files[ i ].isChecked = $scope.selectAll;
+        $scope.filesDetails.checkedCount += $scope.selectAll ? 1 : 0;
       }
     }
   };
