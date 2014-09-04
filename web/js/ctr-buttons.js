@@ -18,6 +18,7 @@ MEDIA_LIBRARY_URL) {
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
 
   $scope.filesDetails = listSvc.filesDetails;
+  $scope.inFolder = $routeParams.folder ? true : false;
 
   $scope.cancelButtonClick = function() {
     console.log("Cancel selected: Posting close message");
