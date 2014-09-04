@@ -10,9 +10,9 @@ angular.module("medialibrary")
 
 .controller("ButtonsController",
 ["$scope", "$routeParams", "$window", "FileListService",
-"GAPIRequestService", "MEDIA_LIBRARY_URL",
+"GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService",
 function ($scope, $routeParams, $window, listSvc, requestSvc,
-MEDIA_LIBRARY_URL) {
+MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $routeParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
@@ -29,15 +29,11 @@ MEDIA_LIBRARY_URL) {
     $("#file").click();
   };
 
-  $scope.downloadButtonClick = function(event, file) {
-    if (!file) {
-      file = getSelectedFiles()[0];
-    }
-    if (file) {
-      $window.location.assign("https://www.googleapis.com/storage/v1/b/" +
-          bucketName + "/o/" +
-          file.name + "?alt=media");
-    }
+  $scope.downloadButtonClick = function() {
+    listSvc.filesDetails.files.forEach(function(file) {
+      if (file.name.substr(-1) === "/") {file.isChecked = false;}
+    });
+    downloadSvc.downloadFiles(getSelectedFiles(), bucketName, 100);
   };
 
   $scope.deleteButtonClick = function() {
