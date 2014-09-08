@@ -19,6 +19,11 @@ MEDIA_LIBRARY_URL, downloadSvc) {
 
   $scope.filesDetails = listSvc.filesDetails;
   $scope.inFolder = $routeParams.folder ? true : false;
+  $scope.statusDetails = {code: 200, message: ""}
+
+  $scope.resetStatus = function() {
+    $scope.statusDetails.code = 200;
+  };
 
   $scope.cancelButtonClick = function() {
     console.log("Cancel selected: Posting close message");
@@ -54,7 +59,11 @@ MEDIA_LIBRARY_URL, downloadSvc) {
       var requestParams = {"companyId": $routeParams.companyId
                           ,"files": selectedFileNames};
       requestSvc.executeRequest("storage.files.delete", requestParams)
-      .then(function() {
+      .then(function(resp) {
+        if (resp.code === 403) {
+          $scope.statusDetails.code = resp.code;
+          $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
+        }
         listSvc.resetSelections();
         listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
       });

@@ -44,6 +44,9 @@
         This month's bandwidth use: {{bandwidthUse | bandwidthUseFilter}}
       </div>
     </div>
+    <div class="alert alert-danger" style="cursor:pointer" ng-show="statusDetails.code!==200" ng-click="resetStatus()">
+      {{statusDetails.message}}
+    </div>
   </div>
 </div>
 <div class="row" ng-controller="UploadController">
