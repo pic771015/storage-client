@@ -57,19 +57,23 @@ $window, MEDIA_LIBRARY_URL) {
   };
 	
   $scope.fileCheckToggled = function(file) {
-    $scope.filesDetails.checkedCount += file.isChecked ? 1 : -1;
-
-    if (file.name.substr(-1) === "/") {
+    if (file.name.substr(-1) !== "/") {
+      $scope.filesDetails.checkedCount += file.isChecked ? 1 : -1;
+    } else {
       $scope.filesDetails.folderCheckedCount += file.isChecked ? 1 : -1;
     }
   };
 
   $scope.selectAllCheckboxes = function() {
     $scope.filesDetails.checkedCount = 0;
+    $scope.filesDetails.folderCheckedCount = 0;
     for ( var i = 0; i < $scope.filesDetails.files.length; ++i ) {
-      if (!$scope.fileIsCurrentFolder($scope.filesDetails.files[i])) {
-        $scope.filesDetails.files[ i ].isChecked = $scope.selectAll;
+      if ($scope.fileIsCurrentFolder($scope.filesDetails.files[i])) {continue;}
+      $scope.filesDetails.files[i].isChecked = $scope.selectAll;
+      if ($scope.filesDetails.files[i].name.substr(-1) !== "/") {
         $scope.filesDetails.checkedCount += $scope.selectAll ? 1 : 0;
+      } else {
+        $scope.filesDetails.folderCheckedCount += $scope.selectAll ? 1 : 0;
       }
     }
   };
