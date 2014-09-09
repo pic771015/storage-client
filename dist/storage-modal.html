@@ -15,14 +15,17 @@
   <script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
 </head>
 <body class="storage-modal">
-  <div ng-controller="ModalWindowController">
+  <div ng-controller="ButtonsController">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" 
-            ng-click="closeButtonClick()" ng-show="showClose">
+            ng-click="cancelButtonClick()">
       <i class="fa fa-times"></i>
     </button>
   </div>
   <h2>
     Storage
+    <a type="button" class="btn btn-rv-help btn-fixed-width" href="https://github.com/Rise-Vision/storage-client" target="_blank">
+      Contribute <i class="fa fa-github fa-lg "></i>
+    </a>
   </h2>
   <div class="row">
   </div>

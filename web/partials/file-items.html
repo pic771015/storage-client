@@ -15,13 +15,13 @@
 <div id="gapiLoadNotice" class="alert alert-danger" ng-controller="gapiClientController as gapiController" ng-show="!gapiController.gapiClientFullyLoaded">
   Loading storage functions
 </div>
-<table id="filesTable" class="table table-hover" ng-show="statusDetails.code!==202">
+<table id="filesTable" class="table filetable table-hover" ng-show="statusDetails.code!==202">
   <thead>
     <tr>
-      <th class="col-md-1 text-center">
+      <th class="text-left check-col">
         <input type="checkbox" ng-model="selectAll" ng-change="selectAllCheckboxes()">
       </th>
-      <th class="col-md-5" ng-click="orderByAttribute = 'name'; reverseSort = !reverseSort">
+      <th class="" ng-click="orderByAttribute = 'name'; reverseSort = !reverseSort">
         <a href="">File Name
           <span ng-show="orderByAttribute=='name'">
             <span ng-show="reverseSort">
@@ -33,7 +33,7 @@
           </span>
         </a>
       </th>
-      <th class="col-md-1" ng-click="orderByAttribute = fileExtOrderFunction; reverseSort = !reverseSort">
+      <th class="type-col text-right" ng-click="orderByAttribute = fileExtOrderFunction; reverseSort = !reverseSort">
         <a href="">Type
           <span ng-show="orderByAttribute==fileExtOrderFunction">
             <span ng-show="reverseSort">
@@ -45,7 +45,7 @@
           </span>
         </a>
       </th>
-      <th class="col-md-2" ng-click="orderByAttribute = fileSizeOrderFunction; reverseSort = !reverseSort">
+      <th class="filesize-col text-right" ng-click="orderByAttribute = fileSizeOrderFunction; reverseSort = !reverseSort">
         <a href="">File Size
           <span ng-show="orderByAttribute==fileSizeOrderFunction">
             <span ng-show="reverseSort">
@@ -57,7 +57,7 @@
           </span>
         </a>
       </th>
-      <th class="col-md-3" ng-click="orderByAttribute = dateModifiedOrderFunction; reverseSort = !reverseSort">
+      <th class="datemod-col text-right" ng-click="orderByAttribute = dateModifiedOrderFunction; reverseSort = !reverseSort">
         <a href="">Date Modified
           <span ng-show="orderByAttribute==dateModifiedOrderFunction">
             <span ng-show="reverseSort">
@@ -73,19 +73,19 @@
   </thead>
   <tbody>
     <tr ng-repeat="file in filesDetails.files | filter:query | orderBy:orderByAttribute:reverseSort" ng-class="{active: file.isChecked}">
-      <td class="text-center">
+      <td class="text-left">
         <input type="checkbox" ng-model="file.isChecked" ng-change="fileCheckToggled(file)" ng-show="!fileIsCurrentFolder(file)">
       </td>
       <td>
-        <a href="" ng-click="$emit('FileSelectAction', file)">{{file.name | fileNameFilter}}</a>
+        <a href="" data-toggle="tooltip" title="{{file.name | fileNameFilter}}" ng-click="$emit('FileSelectAction', file)">{{file.name | fileNameFilter}}</a>
       </td>
-      <td>
+      <td class="text-right">
         <span>{{file.name | fileTypeFilter}}</span>
       </td>
-      <td>
+      <td class="text-right">
         <span> {{file.size | fileSizeFilter}}</span>
       </td>
-      <td>
+      <td class="text-right">
         <span> {{file.updated | lastModifiedFilter}}</span>
       </td>
     </tr>
