@@ -1,5 +1,5 @@
 "use strict";
-angular.module("medialibrary")
+angular.module("multi-download",[])
 .factory("DownloadService", ["$timeout", "$window", function($timeout, $window) {
   var svc = {};
   svc.downloadFiles = function(files, bucketName, delay) {

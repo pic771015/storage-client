@@ -19,7 +19,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
 
   $scope.filesDetails = listSvc.filesDetails;
   $scope.inFolder = $routeParams.folder ? true : false;
-  $scope.statusDetails = {code: 200, message: ""}
+  $scope.statusDetails = {code: 200, message: ""};
 
   $scope.resetStatus = function() {
     $scope.statusDetails.code = 200;

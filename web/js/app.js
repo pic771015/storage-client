@@ -6,7 +6,9 @@ angular.module("medialibrary", [
   "medialibraryServices",
   "gapi-auth",
   "gapi-file",
-  "angularFileUpload"
+  "angularFileUpload",
+  "multi-download",
+  "risevision.widget.common.subscription-status"
 ]);
 
 angular.module("medialibrary")

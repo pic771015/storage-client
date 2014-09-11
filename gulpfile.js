@@ -43,6 +43,11 @@ var env = process.env.NODE_ENV || "dev",
       "web/components/angular-resource/angular-resource.js",
       "web/components/angular-file-upload/angular-file-upload.js",
       "web/components/angular-mocks/angular-mocks.js",
+      "web/components/angular-translate/angular-translate.js",
+      "web/components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+      "web/components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js",
+      "js/i18n.js",
+      "web/components/rv-subscription-status/dist/js/subscription-status.js",
       "web/js/gapi-initial-onload.js",
       "web/js/*.js",
       "web/js/*/*.js",
@@ -64,7 +69,8 @@ var env = process.env.NODE_ENV || "dev",
 
     cssFiles = [
       "web/css/**/*.css",
-      "web/components/rv-common-style/dist/css/*.min.css"
+      "web/components/rv-common-style/dist/css/*.min.css",
+      "web/components/rv-subscription-status/dist/css/subscription-status.min.css"
     ],
 
     imgFiles = [
@@ -77,6 +83,10 @@ var env = process.env.NODE_ENV || "dev",
 
     viewFiles = [
       "web/partials/**/*",
+    ],
+
+    languageFiles = [
+      "web/locales/**",
     ],
 
     fileFiles = [
@@ -141,6 +151,11 @@ gulp.task("view", ["clean"], function() {
 });
 
 
+gulp.task("i18n", ["clean"], function() {
+  return gulp.src(languageFiles)
+    .pipe(gulp.dest("dist/locales"));
+});
+
 gulp.task("files", ["clean"], function() {
   return gulp.src(fileFiles)
     .pipe(gulp.dest("dist/files"));
@@ -182,7 +197,7 @@ gulp.task("config", function() {
     .pipe(gulp.dest("./web/js/config"));
 });
 
-gulp.task("build", ["clean", "config", "html", "view", "files", "img", "css", "fonts"]);
+gulp.task("build", ["clean", "config", "html", "view", "i18n", "files", "img", "css", "fonts"]);
 
 
 gulp.task("test", function() {

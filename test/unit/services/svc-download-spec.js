@@ -8,7 +8,7 @@ function getService(serviceName) {
 }
 
 describe("Services: Download", function() {
-  beforeEach(module("medialibrary"));
+  beforeEach(module("multi-download"));
   beforeEach(module(function($provide) {
     $provide.service("$window", function() {
       var svc = {};

@@ -5,4 +5,10 @@ angular.module("common-config", [])
     .value("CORE_URL", "https://store-dot-rvacore-test.appspot.com/_ah/api")
     .value("STORAGE_URL", "http://localhost:8888/_ah/api")
     .value("MEDIA_LIBRARY_URL", "http://commondatastorage.googleapis.com/")
+    .value("STORE_PRODUCT_CODE", "b0cba08a4baa0c62b8cdc621b6f6a124f89a03db")
+    .value("STORE_PRODUCT_ID", "24")
+;
+
+angular.module("risevision.widget.common.subscription-status.config")
+.value("STORE_SERVER_URL", "https://store-dot-rvacore-test.appspot.com/")
 ;
