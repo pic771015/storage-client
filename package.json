@@ -42,9 +42,10 @@
     "jshint-stylish": "^0.2.0"
   },
   "scripts": {
+    "test":"gulp test-ci",
     "dev-install": "npm install && bower install && gulp config",
     "dev": "gulp server",
-    "dist": "gulp server-dist", 
+    "dist": "gulp server-dist",
     "ci-build": "npm install && bower install --force-latest && gulp config && gulp test-ci && gulp build",
     "setenv": "NODE_ENV=$(select env in dev local prod;do echo $env;break;done) gulp config"
   },

@@ -22,9 +22,9 @@ module.exports = function(config){
             ],
 
     // web server port
-    port: 9876,
+    port: process.env.E2E_PORT||9876,
     logLevel: config.LOG_INFO,
-    
+
     // enable / disable colors in the output (reporters and logs)
     colors: true
 

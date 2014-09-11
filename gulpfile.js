@@ -12,7 +12,7 @@
 
 var env = process.env.NODE_ENV || "dev",
     E2E_PORT = { "dev" : 8001, "prod" : 8002, "stage" : 8003 },
-    e2ePort = E2E_PORT[env] || 8001,
+    e2ePort = process.env.E2E_PORT || E2E_PORT[env] || 8001,
     gulp = require("gulp"),
     // Include Our Plugins
     uglify = require("gulp-uglify"),
@@ -51,7 +51,7 @@ var env = process.env.NODE_ENV || "dev",
       "test/fixtures/*.js",
       "test/**/*spec.js"
     ],
-    // uglify also take care of removing unnecessary "use strict" statements 
+    // uglify also take care of removing unnecessary "use strict" statements
 
     appJSFiles = [
       "web/js/**/*.js",
@@ -117,7 +117,7 @@ gulp.task("html", ["clean", "lint"], function () {
 gulp.task("build-e2e", function () {
   gulp.src("test/gapi-mock.js")
   .pipe(gulp.dest("dist-e2e/"));
-  
+
   gulp.src(viewFiles).pipe(gulp.dest("dist-e2e/partials"));
   gulp.src(fileFiles).pipe(gulp.dest("dist-e2e/files"));
   gulp.src(imgFiles).pipe(gulp.dest("dist-e2e/img"));
@@ -217,7 +217,7 @@ gulp.task("watch-dist", function() {
   gulp.watch(imgFiles, ["img"]);
   gulp.watch(sassFiles, ["css"]);
 });
- 
+
 gulp.task("server", ["sass", "watch-dev"], function() {
   httpServer = connect.server({
     root: "web",
