@@ -6,7 +6,8 @@
 //[--password=XXXXXX] test test/e2e/tests-casper.js
 //Cookie file will be saved so that password option is only required once.
 "use strict";
-var url = "http://localhost:8000/storage-modal.html#/files/";
+var port = require('system').env.E2E_PORT || 8000
+var url = "http://localhost:"+port+"/storage-modal.html#/files/";
 
 casper.options.waitTimeout = 15000;
 
