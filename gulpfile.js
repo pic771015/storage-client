@@ -72,8 +72,7 @@ var env = process.env.NODE_ENV || "dev",
     ],
 
     htmlFiles = [
-      "web/*.html",
-      "web/components/rv-common-header/src/common-header.html"
+      "web/*.html"
     ],
 
     viewFiles = [
