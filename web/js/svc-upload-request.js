@@ -14,6 +14,8 @@ function uploadURIService ($q, gapiRequestor, OAuthService) {
     })
     .then(function(resp) {
       if (resp.result === false) {
+        resp.message = resp.userEmail ? resp.message + " for " + resp.userEmail
+                                      : resp.message;
         return $q.reject(resp);
       } else {
         return resp.message;
