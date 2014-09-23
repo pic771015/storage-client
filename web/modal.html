@@ -11,6 +11,7 @@
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css">
           <!-- build:css css/all.min.css -->
 	<link href="components/rv-common-style/dist/css/rise.min.css" rel="stylesheet" type="text/css">
+	<link href="components/rv-subscription-status/dist/css/subscription-status.css" rel="stylesheet" type="text/css">
           <!-- endbuild -->
 	<!-- build:js script/main.min.js -->
 	<!-- Copied form Store project (needed for the Header) -->
@@ -19,6 +20,14 @@
   <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
   <script type="text/javascript" src="components/angular-route/angular-route.js"></script>
   <script src="components/angular-file-upload/angular-file-upload.js"></script>
+  <script src="components/angular-translate/angular-translate.js"></script>
+  <script src="components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+  <script src="components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js"><
+/script>
+   <script src="js/i18n.js"></script>
+   <script src="components/rv-subscription-status/dist/js/subscription-status.js"></scri
+pt>
+
 
   <script type="text/javascript" src="js/config/config.js"></script>
 
@@ -36,6 +45,7 @@
   <script type="text/javascript" src="js/ctr-bandwidth.js"></script>
   <script type="text/javascript" src="js/ctr-upload.js"></script>
   <script type="text/javascript" src="js/ctr-gapi-client.js"></script>
+  <script type="text/javascript" src="js/ctr-subscription.js"></script>
   <script type="text/javascript" src="js/filters.js"></script>
   <script type="text/javascript" src="js/files/svc-file-list.js"></script>
   <script type="text/javascript" src="js/svc-gapi-requestor.js"></script>
@@ -46,10 +56,10 @@
 
 	<script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
 </head>
-<body>
+<body class="storage-modal">
 	<div class="widget-overlay" ng-controller="ModalWindowController"
                                     ng-click="closeButtonClick()"></div>
-		<div class="widget-wrapper container modal-content storage-modal">
+		<div class="widget-wrapper container modal-content">
 			<div ng-controller="ModalWindowController" class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
 					<i class="fa fa-times"></i>
