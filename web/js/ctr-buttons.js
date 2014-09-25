@@ -18,6 +18,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
 
   $scope.filesDetails = listSvc.filesDetails;
+  $scope.fileListStatus = listSvc.statusDetails;
   $scope.inFolder = $routeParams.folder ? true : false;
   $scope.statusDetails = {code: 200, message: ""};
 

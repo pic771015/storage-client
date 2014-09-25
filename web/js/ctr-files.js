@@ -15,6 +15,7 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.orderByAttribute = "name";
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
+  $scope.bucketCreationStatus = {code: 202};
 
   $scope.dateModifiedOrderFunction = function(file) {
     return file.updated ? file.updated.value : "";
@@ -42,16 +43,14 @@ $window, MEDIA_LIBRARY_URL) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder)
-    .then(function(resp) {
-      if (resp.code === 404) {$scope.createBucket();}
-    });
+    listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
     var gapiPath = "storage.createBucket";
     requestSvc.executeRequest(gapiPath, {"companyId": $routeParams.companyId})
-    .then(function() {
+    .then(function(resp) {
+      $scope.bucketCreationStatus = resp;
       listSvc.refreshFilesList($routeParams.companyId);
     });
   };

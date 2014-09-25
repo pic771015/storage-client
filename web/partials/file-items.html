@@ -2,6 +2,16 @@
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
   Requesting file list...
 </div>
+<div ng-class="{alert:true, 'alert-info':(bucketCreationStatus.code < 300), 'alert-danger':(bucketCreationStatus.code > 299), 'alert-dismissable':true}" ng-show="statusDetails.code===404">
+  <button class="btn btn-success btn-fixed-width" type="button" ng-click="createBucket()">
+    <span title="Create initial storage folder">
+      Create initial storage folder <i class="fa fa-white fa-check icon-right"></i>
+    </span>
+  </button>
+  <span ng-show="bucketCreationStatus.code > 299">
+    Could not create initial folder for {{bucketCreationStatus.userEmail}}
+  </span>
+</div>
 <div id="oauthNotice" class="alert alert-danger" ng-hide="statusDetails.code !== 401 && statusDetails.code !== 400 && isAuthed === true">
   <span>Rise Vision needs access to your Google account to verify who you are </span>
   <button class="btn btn-primary btn-sm" type="button" ng-click="login()">
