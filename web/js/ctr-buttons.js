@@ -19,7 +19,6 @@ MEDIA_LIBRARY_URL, downloadSvc) {
 
   $scope.filesDetails = listSvc.filesDetails;
   $scope.fileListStatus = listSvc.statusDetails;
-  $scope.inFolder = $routeParams.folder ? true : false;
   $scope.statusDetails = {code: 200, message: ""};
 
   $scope.resetStatus = function() {
@@ -66,7 +65,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
           $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
         }
         listSvc.resetSelections();
-        listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+        listSvc.refreshFilesList($routeParams.companyId, listSvc.folder);
       });
     }
   };
@@ -88,7 +87,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     var requestParams, folderName = prompt("Enter a folder name");
     if (!folderName || folderName.indexOf("/") > -1) {return;}
     requestParams = {"companyId":$routeParams.companyId
-                    ,"folder": folderName};
+                    ,"folder": listSvc.filesDetails.folder + folderName};
 
     requestSvc.executeRequest("storage.createFolder", requestParams)
     .then(function() {listSvc.refreshFilesList($routeParams.companyId);});

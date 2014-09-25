@@ -16,6 +16,7 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
   $scope.bucketCreationStatus = {code: 202};
+  $scope.currentFolder = "";
 
   $scope.dateModifiedOrderFunction = function(file) {
     return file.updated ? file.updated.value : "";
@@ -24,7 +25,7 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.login = function() {
     OAuthAuthorizationService.authorize().then(function() {
       $scope.isAuthed = true;
-      listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+      listSvc.refreshFilesList($routeParams.companyId, $scope.currentFolder);
     })
     .then(null, function(errResult) {
       console.log(errResult);
@@ -43,7 +44,7 @@ $window, MEDIA_LIBRARY_URL) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+    listSvc.refreshFilesList($routeParams.companyId, $scope.currentFolder);
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
@@ -78,7 +79,7 @@ $window, MEDIA_LIBRARY_URL) {
   };
 
   $scope.fileIsCurrentFolder = function(file) {
-    return file.name === $routeParams.folder + "/";
+    return file.name === $scope.currentFolder;
   };
 
   $scope.fileIsFolder = function(file) {
@@ -89,12 +90,15 @@ $window, MEDIA_LIBRARY_URL) {
     var fileUrl = bucketUrl + file.name;
     var data = { params: fileUrl };
 
-    if ($scope.fileIsCurrentFolder(file)) {
-      $scope.$location.path("/files/" + $routeParams.companyId); 
-    } else if ($scope.fileIsFolder(file)) {
-      $scope.$location
-        .path("/files/" + $routeParams.companyId + 
-            "/folder/" + file.name);
+    if ($scope.fileIsFolder(file)) {
+      if ($scope.currentFolder === file.name) {
+        var folderPath = $scope.currentFolder.split('/');
+        $scope.currentFolder = folderPath.length > 2 ?
+                               folderPath.slice(0, -2).join('/') + "/" : "";
+      } else {
+        $scope.currentFolder = file.name;
+      }
+      listSvc.refreshFilesList($routeParams.companyId, $scope.currentFolder)
     } else {
       $window.parent.postMessage([fileUrl], "*");
       gadgets.rpc.call("", "rscmd_saveSettings", null, data);

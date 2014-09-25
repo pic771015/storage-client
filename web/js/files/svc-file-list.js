@@ -4,6 +4,7 @@ angular.module("gapi-file", ["gapi", "medialibraryServices"])
 function (LocalFiles, requestor) {
   var svc = {};
   svc.filesDetails = {files: []
+                     ,folder: ""
                      ,localFiles: false
                      ,totalBytes: 0
                      ,checkedCount: 0
@@ -35,7 +36,9 @@ function (LocalFiles, requestor) {
   };
 
   svc.refreshFilesList = function (companyId, folder) {
-    var params = {companyId: companyId, "folder": folder};
+    var params, folder;
+    folder = folder === undefined ?  svc.filesDetails.folder : folder;
+    params = {companyId: companyId, "folder": folder};
     svc.statusDetails.code = 202;
 
     if (!companyId) {
@@ -59,6 +62,7 @@ function (LocalFiles, requestor) {
 
         console.log(svc.filesDetails.totalBytes + " bytes in " +
         resp.files.length + " files");
+        svc.filesDetails.folder = folder;
       }
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;

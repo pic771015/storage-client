@@ -9,9 +9,7 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
 
   uploader.onAfterAddingFile = function(fileItem) {
     console.info("onAfterAddingFile", fileItem);
-    if ($routeParams.folder) {
-      fileItem.file.name = $routeParams.folder + "/" + fileItem.file.name;
-    }
+    fileItem.file.name = filesSvc.filesDetails.folder + fileItem.file.name;
 
     $scope.status.message = "Requesting permission";
 
