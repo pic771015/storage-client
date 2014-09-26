@@ -14,18 +14,22 @@ angular.module("medialibrary", [
 angular.module("medialibrary")
 .config(["$urlRouterProvider", "$stateProvider",
 function($urlRouterProvider, $stateProvider) {
-  $urlRouterProvider.otherwise("/files");
+  $urlRouterProvider.otherwise("/files/local");
   $stateProvider
-  .state("rootFilesList", {
-       url: "/files/:companyId",
-       templateUrl: "partials/main.html",
-  })
-  .state("folderFilesList", {
-       url: "/files/:companyId/*folderPath",
-       templateUrl: "partials/main.html",
-  })
-  .state("localFilesList", {
+  .state("main", {
        url: "/files",
        templateUrl: "partials/main.html",
+  })
+  .state("main.local", {
+       url: "/local",
+       templateUrl: "partials/file-items.html",
+  })
+  .state("main.company-root", {
+       url: "/:companyId",
+       templateUrl: "partials/file-items.html",
+  })
+  .state("main.company-folders", {
+       url: "/:companyId/*folderPath",
+       templateUrl: "partials/file-items.html",
   });
 }]);

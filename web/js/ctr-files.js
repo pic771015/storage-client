@@ -96,10 +96,10 @@ $window, MEDIA_LIBRARY_URL, $state) {
         var folderPath = $scope.currentDecodedFolder.split("/");
         folderPath = folderPath.length > 2 ?
                      folderPath.slice(0, -2).join("/") + "/" : "";
-        $state.go(folderPath ? "folderFilesList" : "rootFilesList",
+        $state.go(folderPath ? "main.company-folders" : "main.company-root",
                   {folderPath: folderPath, companyId: $stateParams.companyId});
       } else {
-        $state.go("folderFilesList",
+        $state.go("main.company-folders",
                   {folderPath: file.name, companyId: $stateParams.companyId});
       }
     } else {

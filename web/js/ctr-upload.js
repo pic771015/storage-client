@@ -9,7 +9,7 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
 
   uploader.onAfterAddingFile = function(fileItem) {
     console.info("onAfterAddingFile", fileItem);
-    fileItem.file.name = decodeURIComponent($stateParams.folderPath) +
+    fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
                          fileItem.file.name;
 
     $scope.status.message = "Requesting permission";
