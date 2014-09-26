@@ -86,9 +86,10 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.newFolderButtonClick = function() {
     var requestParams, folderName = prompt("Enter a folder name");
     if (!folderName || folderName.indexOf("/") > -1) {return;}
-    requestParams = {"companyId":$stateParams.companyId
-                    ,"folder": decodeURIComponent($stateParams.folderPath) +
-                               folderName};
+    requestParams =
+      {"companyId":$stateParams.companyId
+      ,"folder": decodeURIComponent($stateParams.folderPath || "") +
+                 folderName};
 
     requestSvc.executeRequest("storage.createFolder", requestParams)
     .then(function() {listSvc.refreshFilesList();});
