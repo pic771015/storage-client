@@ -1,7 +1,7 @@
 "use strict";
 angular.module("medialibrary", [
   "common-config",
-  "ngRoute",
+  "ui.router",
   "medialibraryFilters", 
   "medialibraryServices",
   "gapi-auth",
@@ -12,13 +12,20 @@ angular.module("medialibrary", [
 ]);
 
 angular.module("medialibrary")
-.config(["$routeProvider", function($routeProvider) {
-  $routeProvider
-    .when("/files/", {
+.config(["$urlRouterProvider", "$stateProvider",
+function($urlRouterProvider, $stateProvider) {
+  $urlRouterProvider.otherwise("/files");
+  $stateProvider
+  .state("rootFilesList", {
+       url: "/files/:companyId",
        templateUrl: "partials/main.html",
-    })
-    .when("/files/:companyId", {
-      templateUrl: "partials/main.html",
-    })
-    .otherwise({redirectTo: "/files/"});
+  })
+  .state("folderFilesList", {
+       url: "/files/:companyId/*folderPath",
+       templateUrl: "partials/main.html",
+  })
+  .state("localFilesList", {
+       url: "/files",
+       templateUrl: "partials/main.html",
+  });
 }]);

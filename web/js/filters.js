@@ -63,7 +63,7 @@ angular.module("medialibraryFilters", [])
 	};
 })
 
-.filter("fileNameFilter", ["$routeParams", function($routeParams) {
+.filter("fileNameFilter", [function() {
 	return function(filename, currentFolder) {
 		if (currentFolder && currentFolder.length > 0) {
                   if (filename === currentFolder) {

@@ -1,10 +1,9 @@
 "use strict";
 angular.module("gapi-file", ["gapi", "medialibraryServices"])
-.factory("FileListService", ["LocalFiles", "GAPIRequestService",
-function (LocalFiles, requestor) {
+.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams",
+function (LocalFiles, requestor, $stateParams) {
   var svc = {};
   svc.filesDetails = {files: []
-                     ,folder: ""
                      ,localFiles: false
                      ,totalBytes: 0
                      ,checkedCount: 0
@@ -35,13 +34,15 @@ function (LocalFiles, requestor) {
     svc.filesDetails.folderCheckedCount = svc.filesDetails.checkedCount = 0;
   };
 
-  svc.refreshFilesList = function (companyId, folder) {
-    var params, folder;
-    folder = folder === undefined ?  svc.filesDetails.folder : folder;
-    params = {companyId: companyId, "folder": folder};
+  svc.refreshFilesList = function () {
+    var params = {companyId: $stateParams.companyId};
+    if ($stateParams.folderPath) {
+      params.folder = decodeURIComponent($stateParams.folderPath);
+    }
+
     svc.statusDetails.code = 202;
 
-    if (!companyId) {
+    if (!$stateParams.companyId) {
       svc.filesDetails.localFiles = true;
       return LocalFiles.query().$promise.then(function(resp) {
         return processFilesResponse({"files": resp, "code": 200});
@@ -62,7 +63,6 @@ function (LocalFiles, requestor) {
 
         console.log(svc.filesDetails.totalBytes + " bytes in " +
         resp.files.length + " files");
-        svc.filesDetails.folder = folder;
       }
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
