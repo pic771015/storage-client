@@ -65,7 +65,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
           $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
         }
         listSvc.resetSelections();
-        listSvc.refreshFilesList($stateParams.companyId);
+        listSvc.refreshFilesList();
       });
     }
   };
@@ -91,7 +91,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
                                folderName};
 
     requestSvc.executeRequest("storage.createFolder", requestParams)
-    .then(function() {listSvc.refreshFilesList($stateParams.companyId);});
+    .then(function() {listSvc.refreshFilesList();});
   };
 
   function getSelectedFiles() {
