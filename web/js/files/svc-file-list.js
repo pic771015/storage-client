@@ -1,5 +1,5 @@
 "use strict";
-angular.module("gapi-file", ["gapi", "medialibraryServices"])
+angular.module("gapi-file", ["gapi", "medialibraryServices","ui.router"])
 .factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams",
 function (LocalFiles, requestor, $stateParams) {
   var svc = {};

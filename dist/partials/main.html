@@ -1,34 +1,36 @@
-<div class="row">
-  <div class="col-md-12">
-    <div ng-controller="SubscriptionStatusController">
-      <div id="subscription-status" subscription-status
-          ng-show="subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available'"
-           product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-           ng-model="subscriptionStatus.result"></div>
-      <div class="row" ng-if="!(subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available')">
-      <div class="col-md-12">
-        There is currently no charge for the use of Storage, however at an as of yet to be 
-        determined date in the future, there will be a cost and at that time you will have 90 days 
-        to decide if you wish to continue using Storage or not.
-      </div>
+<div>
+  <div class="row">
+    <div class="col-md-12">
+      <div ng-controller="SubscriptionStatusController">
+        <div id="subscription-status" subscription-status
+            ng-show="subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available'"
+             product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+             ng-model="subscriptionStatus.result"></div>
+        <div class="row" ng-show="!(subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available')">
+          <div class="col-md-12" ng-include="'partials/cost-disclaimer.html'"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div class="row filter">
-  <div class="col-lg-12 search">
-    <div class="input-group">
-      <input type="text" class="form-control" placeholder="Search" ng-model="query">
-      <span class="input-group-btn">
-        <button class="btn btn-primary" type="button">
-          <i class="fa fa-search"></i>
-        </button>
-      </span>
+  <div class="row filter">
+    <div class="col-lg-12 search">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search" ng-model="query">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button">
+            <i class="fa fa-search"></i>
+          </button>
+        </span>
+      </div>
     </div>
   </div>
+<<<<<<< HEAD
 </div>
 <div>
   <div id="buttons-action" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
+=======
+  <div id="buttons-action" ng-controller="ButtonsController">
+>>>>>>> Update build and tests
     <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
         Select <i class="fa fa-check fa-white icon-right"></i>
     </button>
@@ -42,7 +44,7 @@
     <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.localFiles === false)">
       <i class="fa fa-cloud-download fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()" ng-disabled="inFolder">
+    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()">
       <i class="fa fa-folder-open fa-2x"></i>
     </button>
     <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
@@ -97,4 +99,4 @@
     </form>
   </div>
 </div>
-<div ng-include="'partials/file-items.html'"></div>
+<div ui-view></div>
