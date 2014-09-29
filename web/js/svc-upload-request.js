@@ -1,15 +1,19 @@
 "use strict";
 angular.module("medialibrary")
-.factory("UploadURIService", ["$q", "GAPIRequestService", "OAuthStatusService",
-function uploadURIService ($q, gapiRequestor, OAuthService) {
+.factory("UploadURIService", ["$q", "GAPIRequestService", "OAuthStatusService", "$stateParams",
+function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams) {
   var svc = {};
-  svc.getURI = function getURI(companyId, fileName) {
-    if (!companyId || !fileName) {return $q.reject("Invalid Params");}
+  svc.getURI = function getURI(file) {
+    if (!$stateParams.companyId || !file.name) {
+      return $q.reject("Invalid Params");
+    }
 
     return OAuthService.getAuthStatus()
     .then(function() {
       var gapiPath = "storage.getResumableUploadURI";
-      var params = {"companyId": companyId, "fileName": fileName};
+      var params = {"companyId": $stateParams.companyId,
+                    "fileName": encodeURIComponent(file.name),
+                    "fileType": file.type};
       return gapiRequestor.executeRequest(gapiPath,params);
     })
     .then(function(resp) {

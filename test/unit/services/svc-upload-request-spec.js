@@ -32,6 +32,10 @@ function setupMocks(servicesPassFail) {
     $provide.service("$q", function() {
       return Q;
     });
+
+    $provide.service("$stateParams", function() {
+      return servicesPassFail.state ? {companyId: "13245"} : {};
+    });
   };
 }
 
@@ -39,7 +43,7 @@ describe("Services: Upload URI Service", function () {
   beforeEach(module("medialibrary"));
 
   describe("With successful uri request", function() {
-    beforeEach(module(setupMocks({uri: true, auth: true})));
+    beforeEach(module(setupMocks({uri: true, auth: true, state: true})));
 
     it("should exist", function() {
       var uploadService = getService("UploadURIService");
@@ -49,7 +53,7 @@ describe("Services: Upload URI Service", function () {
 
     it("should get an upload url", function() {
       var uploadService = getService("UploadURIService");
-      return uploadService.getURI("anyCompanyId", "anyFileName")
+      return uploadService.getURI({name: "filename", type: ""})
       .then(function (receivedURI) {
         expect(receivedURI).to.equal("theURI");
       });
@@ -57,11 +61,11 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed uri request", function() {
-    beforeEach(module(setupMocks({uri: false, auth: true})));
+    beforeEach(module(setupMocks({uri: false, auth: true, state: true})));
 
     it("should return a false result", function() {
       var uploadService = getService("UploadURIService");
-      return uploadService.getURI("anyCompanyId", "anyFileName")
+      return uploadService.getURI({name: "filename", type: ""})
       .then(assert("false"), function (resp) {
         expect(resp.result).to.equal(false);
       });
@@ -69,19 +73,39 @@ describe("Services: Upload URI Service", function () {
   });
 
   describe("With failed auth request", function() {
-    beforeEach(module(setupMocks({uri: true, auth: false})));
+    beforeEach(module(setupMocks({uri: true, auth: false, state: true})));
 
     it("should be rejected", function() {
       var uploadService = getService("UploadURIService");
-      return uploadService.getURI("anyCompanyId", "anyFileName")
+      return uploadService.getURI({name: "filename", type: ""})
       .then(function(){assert(false);}, function () {assert(true);});
     });
 
     it("should not have called getResumableUploadURI", function() {
       var uploadService = getService("UploadURIService");
       var gapiService = getService("GAPIRequestService");
-      uploadService.getURI("anyCompanyId", "anyFileName");
+      uploadService.getURI({name: "filename", type: ""});
       expect(gapiService.gapiRequestCallCount).to.equal(0);
+    });
+  });
+
+  describe("With invalid state", function() {
+    beforeEach(module(setupMocks({uri: true, auth: true, state: false})));
+
+    it("should reject on no company id", function() {
+      var uploadService = getService("UploadURIService");
+      return uploadService.getURI({name: "filename", type: ""})
+        .then(function(){assert(false);}, function() {assert(true);});
+    });
+  });
+
+  describe("With invalid parameter", function() {
+    beforeEach(module(setupMocks({uri: true, auth: true, state: true})));
+
+    it("should reject on no file name", function() {
+      var uploadService = getService("UploadURIService");
+      return uploadService.getURI({})
+        .then(function(){assert(false);}, function() {assert(true);});
     });
   });
 });

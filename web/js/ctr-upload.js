@@ -14,7 +14,7 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
 
     $scope.status.message = "Requesting permission";
 
-    uriSvc.getURI($stateParams.companyId, encodeURIComponent(fileItem.file.name))
+    uriSvc.getURI(fileItem.file)
     .then(function(resp) {
       fileItem.url = resp;
       uploader.uploadItem(fileItem);
