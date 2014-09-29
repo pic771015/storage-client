@@ -1,7 +1,7 @@
 "use strict";
 
-angular.module("medialibrary").controller("UploadController", ["$scope", "$route", "$routeParams", "$http", "FileUploader", "UploadURIService", "FileListService",
-function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
+angular.module("medialibrary").controller("UploadController", ["$scope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService",
+function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
   var uploader = $scope.uploader = new FileUploader();
 
   uploader.method = "PUT";
@@ -9,13 +9,12 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
 
   uploader.onAfterAddingFile = function(fileItem) {
     console.info("onAfterAddingFile", fileItem);
-    if ($routeParams.folder) {
-      fileItem.file.name = $routeParams.folder + "/" + fileItem.file.name;
-    }
+    fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
+                         fileItem.file.name;
 
     $scope.status.message = "Requesting permission";
 
-    uriSvc.getURI($routeParams.companyId, encodeURIComponent(fileItem.file.name))
+    uriSvc.getURI($stateParams.companyId, encodeURIComponent(fileItem.file.name))
     .then(function(resp) {
       fileItem.url = resp;
       uploader.uploadItem(fileItem);
@@ -43,7 +42,7 @@ function ($scope, $route, $routeParams, $http, FileUploader, uriSvc, filesSvc) {
 
     $http({method: "GET",
            url: "https://www.googleapis.com/storage/v1/b/risemedialibrary-" +
-                $routeParams.companyId + "/o/" + encodeURIComponent(item.file.name)})
+                $stateParams.companyId + "/o/" + encodeURIComponent(item.file.name)})
     .then(function(resp) {
       if (!resp.data || !verifySize(resp.data.size)) {
         $scope.status.message = "Upload did not complete";

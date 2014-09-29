@@ -9,16 +9,16 @@ angular.module("medialibrary")
 }])
 
 .controller("ButtonsController",
-["$scope", "$routeParams", "$window", "FileListService",
+["$scope", "$stateParams", "$window", "FileListService",
 "GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService",
-function ($scope, $routeParams, $window, listSvc, requestSvc,
+function ($scope, $stateParams, $window, listSvc, requestSvc,
 MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
-  var bucketName = "risemedialibrary-" + $routeParams.companyId;
+  var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
 
   $scope.filesDetails = listSvc.filesDetails;
-  $scope.inFolder = $routeParams.folder ? true : false;
+  $scope.fileListStatus = listSvc.statusDetails;
   $scope.statusDetails = {code: 200, message: ""};
 
   $scope.resetStatus = function() {
@@ -56,7 +56,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     });
 
     if (confirm(confirmationMessage)) {
-      var requestParams = {"companyId": $routeParams.companyId
+      var requestParams = {"companyId": $stateParams.companyId
                           ,"files": selectedFileNames};
       requestSvc.executeRequest("storage.files.delete", requestParams)
       .then(function(resp) {
@@ -65,7 +65,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
           $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
         }
         listSvc.resetSelections();
-        listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+        listSvc.refreshFilesList();
       });
     }
   };
@@ -86,11 +86,13 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.newFolderButtonClick = function() {
     var requestParams, folderName = prompt("Enter a folder name");
     if (!folderName || folderName.indexOf("/") > -1) {return;}
-    requestParams = {"companyId":$routeParams.companyId
-                    ,"folder": folderName};
+    requestParams =
+      {"companyId":$stateParams.companyId
+      ,"folder": decodeURIComponent($stateParams.folderPath || "") +
+                 folderName};
 
     requestSvc.executeRequest("storage.createFolder", requestParams)
-    .then(function() {listSvc.refreshFilesList($routeParams.companyId);});
+    .then(function() {listSvc.refreshFilesList();});
   };
 
   function getSelectedFiles() {

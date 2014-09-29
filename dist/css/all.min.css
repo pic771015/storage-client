@@ -2233,6 +2233,8 @@ a[data-wysihtml5-command=bold].active,a[data-wysihtml5-command=italic].active,a[
 .widget .section>h5:first-of-type{margin-top:-17px;color:#2d60ad}
 .storage-modal ul{padding:0;list-style:none}
 .storage-modal .filter{padding:10px 0}
+.storage-modal .search{padding:0 0 0 15px}
+.storage-modal div.row{margin-right:0}
 .storage-modal .commands{position:relative}
 .storage-modal .storage-used-info{font-size:10px;text-align:right;float:right}
 .storage-modal #store-modal .overlay{z-index:2;background-color:#fff}
@@ -2255,6 +2257,7 @@ a[data-wysihtml5-command=bold].active,a[data-wysihtml5-command=italic].active,a[
 .storage-modal .thumbnail:nth-child(6n+1){clear:left;padding-left:0}}
 .storage-selector-backdrop{position:absolute;top:0;left:0;width:100%;height:100%;background-color:#e7e7e7;opacity:.9}
 .storage-selector-iframe{width:90%;height:500px;position:absolute;top:20%;left:5%;box-shadow:0 5px 15px rgba(0,0,0,.5);border-radius:6px;border:1px solid rgba(0,0,0,.2);padding:5px;background-color:#f4f4f4}
+iframe.modal-dialog{border:0;width:100%;height:500px;background-color:#f4f4f4;margin:0;padding:5px}
 .table.filetable td{max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .table.filetable .check-col{width:30px}
 .table.filetable .type-col{width:65px}

@@ -2,19 +2,22 @@
 /* global gadgets: true */
 
 angular.module("medialibrary").controller("FileListCtrl",
-["$scope", "$route", "$routeParams", "$location", "FileListService",
+["$scope", "$stateParams", "$location", "FileListService",
 "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
-"$window","MEDIA_LIBRARY_URL",
-function ($scope, $route, $routeParams, $location, listSvc,
+"$window","MEDIA_LIBRARY_URL", "$state",
+function ($scope, $stateParams, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
-$window, MEDIA_LIBRARY_URL) {
-  var bucketName = "risemedialibrary-" + $routeParams.companyId;
+$window, MEDIA_LIBRARY_URL, $state) {
+  var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
   $scope.$location = $location;
   $scope.isAuthed = true;
   $scope.orderByAttribute = "name";
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
+  $scope.bucketCreationStatus = {code: 202};
+  $scope.currentDecodedFolder = $stateParams.folderPath ? 
+                                decodeURIComponent($stateParams.folderPath) : undefined;
 
   $scope.dateModifiedOrderFunction = function(file) {
     return file.updated ? file.updated.value : "";
@@ -23,7 +26,7 @@ $window, MEDIA_LIBRARY_URL) {
   $scope.login = function() {
     OAuthAuthorizationService.authorize().then(function() {
       $scope.isAuthed = true;
-      listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder);
+      listSvc.refreshFilesList();
     })
     .then(null, function(errResult) {
       console.log(errResult);
@@ -42,17 +45,15 @@ $window, MEDIA_LIBRARY_URL) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList($routeParams.companyId, $routeParams.folder)
-    .then(function(resp) {
-      if (resp.code === 404) {$scope.createBucket();}
-    });
+    listSvc.refreshFilesList();
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
     var gapiPath = "storage.createBucket";
-    requestSvc.executeRequest(gapiPath, {"companyId": $routeParams.companyId})
-    .then(function() {
-      listSvc.refreshFilesList($routeParams.companyId);
+    requestSvc.executeRequest(gapiPath, {"companyId": $stateParams.companyId})
+    .then(function(resp) {
+      $scope.bucketCreationStatus = resp;
+      listSvc.refreshFilesList();
     });
   };
 	
@@ -79,7 +80,7 @@ $window, MEDIA_LIBRARY_URL) {
   };
 
   $scope.fileIsCurrentFolder = function(file) {
-    return file.name === $routeParams.folder + "/";
+    return file.name === $scope.currentDecodedFolder;
   };
 
   $scope.fileIsFolder = function(file) {
@@ -90,12 +91,17 @@ $window, MEDIA_LIBRARY_URL) {
     var fileUrl = bucketUrl + file.name;
     var data = { params: fileUrl };
 
-    if ($scope.fileIsCurrentFolder(file)) {
-      $scope.$location.path("/files/" + $routeParams.companyId); 
-    } else if ($scope.fileIsFolder(file)) {
-      $scope.$location
-        .path("/files/" + $routeParams.companyId + 
-            "/folder/" + file.name);
+    if ($scope.fileIsFolder(file)) {
+      if ($scope.fileIsCurrentFolder(file)) {
+        var folderPath = $scope.currentDecodedFolder.split("/");
+        folderPath = folderPath.length > 2 ?
+                     folderPath.slice(0, -2).join("/") + "/" : "";
+        $state.go(folderPath ? "main.company-folders" : "main.company-root",
+                  {folderPath: folderPath, companyId: $stateParams.companyId});
+      } else {
+        $state.go("main.company-folders",
+                  {folderPath: file.name, companyId: $stateParams.companyId});
+      }
     } else {
       $window.parent.postMessage([fileUrl], "*");
       gadgets.rpc.call("", "rscmd_saveSettings", null, data);

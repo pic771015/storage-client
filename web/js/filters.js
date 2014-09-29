@@ -63,14 +63,13 @@ angular.module("medialibraryFilters", [])
 	};
 })
 
-.filter("fileNameFilter", ["$routeParams", function($routeParams) {
-	return function(filename) {
-		if ($routeParams.folder) {
-                  if (filename === $routeParams.folder ||
-                      filename === $routeParams.folder + "/") {
+.filter("fileNameFilter", [function() {
+	return function(filename, currentFolder) {
+		if (currentFolder && currentFolder.length > 0) {
+                  if (filename === currentFolder) {
                     return "/Previous Folder";
                   } else {
-                    return filename.substr($routeParams.folder.length + 1);
+                    return filename.substr(currentFolder.length);
                   }
 		}
 

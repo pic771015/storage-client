@@ -1,7 +1,7 @@
 "use strict";
-angular.module("gapi-file", ["gapi", "medialibraryServices"])
-.factory("FileListService", ["LocalFiles", "GAPIRequestService",
-function (LocalFiles, requestor) {
+angular.module("gapi-file", ["gapi", "medialibraryServices","ui.router"])
+.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams",
+function (LocalFiles, requestor, $stateParams) {
   var svc = {};
   svc.filesDetails = {files: []
                      ,localFiles: false
@@ -34,11 +34,15 @@ function (LocalFiles, requestor) {
     svc.filesDetails.folderCheckedCount = svc.filesDetails.checkedCount = 0;
   };
 
-  svc.refreshFilesList = function (companyId, folder) {
-    var params = {companyId: companyId, "folder": folder};
+  svc.refreshFilesList = function () {
+    var params = {companyId: $stateParams.companyId};
+    if ($stateParams.folderPath) {
+      params.folder = decodeURIComponent($stateParams.folderPath);
+    }
+
     svc.statusDetails.code = 202;
 
-    if (!companyId) {
+    if (!$stateParams.companyId) {
       svc.filesDetails.localFiles = true;
       return LocalFiles.query().$promise.then(function(resp) {
         return processFilesResponse({"files": resp, "code": 200});
