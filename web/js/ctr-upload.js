@@ -33,24 +33,36 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
   };
 
   uploader.onCompleteItem = function(item) {
+    var listItem;
     if (item.isCancel) {return;}
     $scope.status.message = "Verifying " + item.file.name;
 
-    function verifySize(size) {
-      return parseInt(size) === item.file.size;
+    function getListItem(data) {
+      if (!data || !data.items) {return undefined;}
+
+      for (var i = 0, j = data.items.length; i < j; i += 1) {
+        if (data.items[i].name === item.file.name) {
+          listItem = data.items[i];
+          break;
+        }
+      }
+
+      return listItem;
     }
 
     $http({method: "GET",
            url: "https://www.googleapis.com/storage/v1/b/risemedialibrary-" +
-                $stateParams.companyId + "/o/" + encodeURIComponent(item.file.name)})
+                $stateParams.companyId + "/o"})
     .then(function(resp) {
-      if (!resp.data || !verifySize(resp.data.size)) {
+      listItem = getListItem(resp.data);
+      if (!listItem || parseInt(listItem.size) !== item.file.size) {
         $scope.status.message = "Upload did not complete";
         item.isError = true;
         return;
       }
-      resp.data.updated = {value: Date.parse(resp.data.updated).toString()};
-      filesSvc.addFile(resp.data);
+
+      listItem.updated = {value: Date.parse(listItem.updated).toString()};
+      filesSvc.addFile(listItem);
       item.isSuccess = true;
       uploader.removeFromQueue(item);
     }, function(err) {
