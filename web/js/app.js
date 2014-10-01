@@ -2,6 +2,7 @@
 angular.module("medialibrary", [
   "common-config",
   "ui.router",
+  "ui.bootstrap",
   "medialibraryFilters", 
   "medialibraryServices",
   "gapi-auth",
@@ -18,18 +19,18 @@ function($urlRouterProvider, $stateProvider) {
   $stateProvider
   .state("main", {
        url: "/files",
-       templateUrl: "partials/main.html",
+       templateUrl: "partials/main.html"
   })
   .state("main.local", {
        url: "/local",
-       templateUrl: "partials/file-items.html",
+       templateUrl: "partials/file-items.html"
   })
   .state("main.company-root", {
        url: "/:companyId",
-       templateUrl: "partials/file-items.html",
+       templateUrl: "partials/file-items.html"
   })
   .state("main.company-folders", {
        url: "/:companyId/*folderPath",
-       templateUrl: "partials/file-items.html",
+       templateUrl: "partials/file-items.html"
   });
 }]);

@@ -40,10 +40,10 @@
     <button class="btn btn-link" type="button" title="Download" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.localFiles === false)">
       <i class="fa fa-cloud-download fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick()">
+    <button class="btn btn-link" type="button" title="New Folder" ng-click="newFolderButtonClick('md')">
       <i class="fa fa-folder-open fa-2x"></i>
     </button>
-    <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+    <button class="btn btn-link" type="button" title="Delete" ng-click="deleteButtonClick('md')" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
       <i class="fa fa-trash-o fa-2x"></i>
     </button>
     <div class="storage-used-info">
@@ -96,3 +96,27 @@
   </div>
 </div>
 <div ui-view></div>
+<script type="text/ng-template" id="deleteModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Please confirm PERMANENT deletion of:</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{confirmMessage}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-fixed-width" ng-click="ok()">Delete<i class="fa fa-white fa-check icon-right"></i></button>
+        <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+    </div>
+</script>
+<script type="text/ng-template" id="newFolderModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Enter a folder name:</h3>
+    </div>
+    <div class="modal-body">
+        <input type="text" class="form-control" ng-model="folderName">
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success btn-fixed-width" ng-click="ok()">Create<i class="fa fa-white fa-check icon-right"></i></button>
+        <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+    </div>
+</script>

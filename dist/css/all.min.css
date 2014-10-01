@@ -148,12 +148,12 @@ html[dir=rtl] .select2-search-choice-close{right:auto;left:3px}
 .sp-palette{max-width:220px}
 .sp-palette .sp-thumb-el{width:16px;height:16px;margin:2px 1px;border:1px solid #d0d0d0}
 .sp-container{padding-bottom:0}
-.sp-container button{display:inline-block;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}
+.sp-container button{display:inline-block;padding:4px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;white-space:nowrap;vertical-align:middle;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-image:none;border:1px solid transparent;border-radius:0}
 .sp-container button:active:focus,.sp-container button:focus{outline:dotted thin;outline:-webkit-focus-ring-color auto;outline-offset:-2px}
 .sp-container button:focus,.sp-container button:hover{color:#333;text-decoration:none}
 .sp-container button:active{background-image:none;outline:0;-webkit-box-shadow:inset 0 3px 5px rgba(0,0,0,.125);box-shadow:inset 0 3px 5px rgba(0,0,0,.125)}
 .sp-container button.sp-cancel{color:#fff;background-color:#2d60ad;border-color:#2d60ad}
-.sp-container button.sp-choose{margin-right:3px;color:#fff;background-color:#45b864;border-color:#45b864}
+.sp-container button.sp-choose{color:#fff;background-color:#45b864;border-color:#45b864}
 .sp-palette span.sp-thumb-active,.sp-palette span:hover{border-color:#000}
 .sp-alpha,.sp-preview,.sp-thumb-el{position:relative;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==)}
 .sp-alpha-inner,.sp-preview-inner,.sp-thumb-inner{display:block;position:absolute;top:0;left:0;bottom:0;right:0}
@@ -1964,6 +1964,7 @@ pre{overflow:auto}
 @media (max-width:1200px){.navbar-brand i{font-size:24px}}
 @media (max-width:1200px){.navbar-collapse.navbar-left{margin-left:20px}}
 .navbar-toggle{border-radius:4px}
+.navbar-default{padding-top:0!important;padding-bottom:0!important}
 .navbar-default .navbar-nav>li>a{color:#777}
 .navbar-default .navbar-nav>li>a:focus,.navbar-default .navbar-nav>li>a:hover{color:#2d60ad;border:1px solid #e5e5e5}
 .navbar-default .navbar-nav>.open>a,.navbar-default .navbar-nav>.open>a:focus,.navbar-default .navbar-nav>.open>a:hover{background-color:#f4f4f4;color:#2d60ad;border-color:#e5e5e5}
@@ -2057,9 +2058,9 @@ a:hover .fa-danger::before,a:hover .glyphicon-danger::before{color:#d9534f}
 .navbar-default .navbar-collapse{margin-left:40px}
 .navbar-default .navbar-collapse .navbar-nav>li{margin-left:5px}
 .navbar-default .navbar-collapse .navbar-nav>li>a{font-weight:700;line-height:32px}
-.navbar-default .navbar-nav{margin-top:3px}
+.navbar-default .navbar-nav{margin-top:5px}
 .navbar-header{padding:0}
-.navbar-left .navbar-nav>li>a{padding:3px 10px}
+.navbar-left .navbar-nav>li>a{padding:0 10px;height:40px;line-height:40px!important}
 .navbar-default .actions-nav{padding:0;border-top:none}
 .navbar-default .actions-nav>li{float:none;margin-left:5px}
 .navbar-default .actions-nav .dropdown .system-messages{min-width:425px}
@@ -2295,6 +2296,10 @@ iframe.modal-dialog{border:0;width:100%;height:500px;background-color:#f4f4f4;ma
 .support-app .comment-box label.file-picker{color:#888}
 .support-app .comment-box .file-picker .file-picker-icon{width:32px;height:32px;background-color:#ddd;border-radius:16px;line-height:32px;text-align:center}
 .support-app .comment-box .ticket-button .dropdown-toggle{color:#FFF;background-color:#45B864;border-color:#3c9f57;border-radius:0}
+.alerts-app h2{margin-top:0!important}
+.alerts-app .alerts-list{color:#333}
+.alerts-app .alerts-list h5{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:40px}
+.alerts-app .alerts-list .media-body{padding:15px 0;border-bottom:1px solid #ccc}
 .product-trial{color:#45b864}
 .product-expired{color:red}
 .full-screen-modal{position:absolute;top:0;left:0;width:100%;height:100%}
