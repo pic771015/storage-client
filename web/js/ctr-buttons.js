@@ -7,11 +7,30 @@ angular.module("medialibrary")
     gadgets.rpc.call("", "rscmd_closeSettings", null);
   };
 }])
+.controller("DeleteInstanceCtrl", ['$scope','$modalInstance', 'confirmMessage', function($scope, $modalInstance, confirmMessage) {
+    $scope.confirmMessage = confirmMessage.msg;
 
+    $scope.ok = function() {
+        $modalInstance.close();
+    };
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+}
+])
+.controller("NewFolderCtrl", ['$scope','$modalInstance', function($scope, $modalInstance) {
+    $scope.ok = function() {
+        $modalInstance.close($scope.folderName);
+    };
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
+}
+])
 .controller("ButtonsController",
-["$scope", "$stateParams", "$window", "FileListService",
+["$scope", "$stateParams", "$window","$modal", "$log", "FileListService",
 "GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService",
-function ($scope, $stateParams, $window, listSvc, requestSvc,
+function ($scope, $stateParams, $window, $modal, $log, listSvc, requestSvc,
 MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
@@ -41,33 +60,48 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     downloadSvc.downloadFiles(getSelectedFiles(), bucketName, 100);
   };
 
-  $scope.deleteButtonClick = function() {
-    var selectedFileNames = getSelectedFiles().map(function(file) {
-      return file.name;
-    });
-    var confirmationMessage = "Please confirm PERMANENT deletion of:\n\n";
-
-    selectedFileNames.forEach(function(val) {
-      if (val.substr(-1) === "/") {
-        confirmationMessage += "folder: " + val + " and all its contents" + "\n";
-      } else {
-        confirmationMessage += "file: " + val + "\n";
-      }
-    });
-
-    if (confirm(confirmationMessage)) {
-      var requestParams = {"companyId": $stateParams.companyId
-                          ,"files": selectedFileNames};
-      requestSvc.executeRequest("storage.files.delete", requestParams)
-      .then(function(resp) {
-        if (resp.code === 403) {
-          $scope.statusDetails.code = resp.code;
-          $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
-        }
-        listSvc.resetSelections();
-        listSvc.refreshFilesList();
+  $scope.deleteButtonClick = function(size) {
+      var selectedFileNames = getSelectedFiles().map(function(file) {
+          return file.name;
       });
-    }
+
+      selectedFileNames.forEach(function(val) {
+          if (val.substr(-1) === "/") {
+              $scope.confirm = "folder: " + val + " and all its contents" + "\n";
+          } else {
+              $scope.confirm = "file: " + val + "\n";
+          }
+      });
+      console.log($scope.confirm);
+      var modalInstance = $modal.open({
+          templateUrl: 'deleteModal.html',
+          controller: 'DeleteInstanceCtrl',
+          size: size,
+          resolve: {
+              confirmMessage: function(){
+                  return {msg: $scope.confirm};
+              }
+
+          }
+
+      });
+      modalInstance.result.then(function(){
+          //do what you need if user presses ok
+          var requestParams = {"companyId": $stateParams.companyId
+              ,"files": selectedFileNames};
+          requestSvc.executeRequest("storage.files.delete", requestParams)
+              .then(function(resp) {
+                  if (resp.code === 403) {
+                      $scope.statusDetails.code = resp.code;
+                      $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
+                  }
+                  listSvc.resetSelections();
+                  listSvc.refreshFilesList();
+              });
+      }, function (){
+          // do what you need to do if user cancels
+          $log.info('Modal dismissed at: ' + new Date());
+      });
   };
 
   $scope.selectButtonClick = function() {
@@ -83,16 +117,26 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     gadgets.rpc.call("", "rscmd_saveSettings", null, data);
   };
 
-  $scope.newFolderButtonClick = function() {
-    var requestParams, folderName = prompt("Enter a folder name");
-    if (!folderName || folderName.indexOf("/") > -1) {return;}
-    requestParams =
-      {"companyId":$stateParams.companyId
-      ,"folder": decodeURIComponent($stateParams.folderPath || "") +
-                 folderName};
+  $scope.newFolderButtonClick = function(size) {
+      var modalInstance = $modal.open({
+          templateUrl: 'newFolderModal.html',
+          controller: 'NewFolderCtrl',
+          size: size
+      });
+      modalInstance.result.then(function(newFolderName){
+          //do what you need if user presses ok
+          if (!newFolderName || newFolderName.indexOf("/") > -1) {return;}
+          var requestParams =
+          {"companyId":$stateParams.companyId
+              ,"folder": decodeURIComponent($stateParams.folderPath || "") +
+              newFolderName};
 
-    requestSvc.executeRequest("storage.createFolder", requestParams)
-    .then(function() {listSvc.refreshFilesList();});
+          requestSvc.executeRequest("storage.createFolder", requestParams)
+              .then(function() {listSvc.refreshFilesList();});
+      }, function (){
+          // do what you need to do if user cancels
+          $log.info('Modal dismissed at: ' + new Date());
+      });
   };
 
   function getSelectedFiles() {
