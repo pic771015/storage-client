@@ -7,8 +7,8 @@ angular.module("medialibrary")
     gadgets.rpc.call("", "rscmd_closeSettings", null);
   };
 }])
-.controller("DeleteInstanceCtrl", ['$scope','$modalInstance', 'confirmMessage', function($scope, $modalInstance, confirmMessage) {
-    $scope.confirmMessage = confirmMessage.msg;
+.controller("DeleteInstanceCtrl", ['$scope','$modalInstance', 'confirmationMessages', function($scope, $modalInstance, confirmationMessages) {
+    $scope.confirmationMessages = confirmationMessages;
 
     $scope.ok = function() {
         $modalInstance.close();
@@ -28,9 +28,9 @@ angular.module("medialibrary")
 }
 ])
 .controller("ButtonsController",
-["$scope", "$stateParams", "$window","$modal", "$log", "FileListService",
+["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "FileListService",
 "GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService",
-function ($scope, $stateParams, $window, $modal, $log, listSvc, requestSvc,
+function ($scope, $stateParams, $window, $modal, $log, $timeout, listSvc, requestSvc,
 MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
@@ -43,6 +43,12 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.resetStatus = function() {
     $scope.statusDetails.code = 200;
   };
+
+  $('#deleteForm').submit(function(event){
+    // prevent default browser behaviour
+    event.preventDefault();
+    $scope.deleteButtonClick();
+  });
 
   $scope.cancelButtonClick = function() {
     console.log("Cancel selected: Posting close message");
@@ -61,15 +67,19 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   };
 
   $scope.deleteButtonClick = function(size) {
+      $scope.shouldBeOpen = true;
       var selectedFileNames = getSelectedFiles().map(function(file) {
           return file.name;
       });
-
+      var confirmationMessages = [];
+      var message = {};
       selectedFileNames.forEach(function(val) {
           if (val.substr(-1) === "/") {
-              $scope.confirm = "folder: " + val + " and all its contents" + "\n";
+              message = { msg: "folder: " + val + " and all its contents"};
+              confirmationMessages.push(message);
           } else {
-              $scope.confirm = "file: " + val + "\n";
+              message = { msg: "file: " + val};
+              confirmationMessages.push(message);
           }
       });
       console.log($scope.confirm);
@@ -78,8 +88,8 @@ MEDIA_LIBRARY_URL, downloadSvc) {
           controller: 'DeleteInstanceCtrl',
           size: size,
           resolve: {
-              confirmMessage: function(){
-                  return {msg: $scope.confirm};
+              confirmationMessages: function(){
+                  return confirmationMessages;
               }
 
           }
@@ -97,10 +107,12 @@ MEDIA_LIBRARY_URL, downloadSvc) {
                   }
                   listSvc.resetSelections();
                   listSvc.refreshFilesList();
+                  $scope.shouldBeOpen = false;
               });
       }, function (){
           // do what you need to do if user cancels
           $log.info('Modal dismissed at: ' + new Date());
+          $scope.shouldBeOpen = false;
       });
   };
 
@@ -118,6 +130,8 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   };
 
   $scope.newFolderButtonClick = function(size) {
+      $scope.shouldBeOpen = true;
+
       var modalInstance = $modal.open({
           templateUrl: 'newFolderModal.html',
           controller: 'NewFolderCtrl',
@@ -149,4 +163,16 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     }
     return selectedFiles;
   }
-}]);
+}])
+.directive('focusMe', function($timeout) {
+    return {
+        scope: { trigger: '@focusMe' },
+        link: function(scope, element) {
+            scope.$watch('trigger', function(value) {
+                    $timeout(function() {
+                        element[0].focus();
+                    });
+            });
+        }
+    };
+});

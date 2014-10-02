@@ -97,26 +97,33 @@
 </div>
 <div ui-view></div>
 <script type="text/ng-template" id="deleteModal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Please confirm PERMANENT deletion of:</h3>
-    </div>
-    <div class="modal-body">
-        <p>{{confirmMessage}}</p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-success btn-fixed-width" ng-click="ok()">Delete<i class="fa fa-white fa-check icon-right"></i></button>
-        <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
-    </div>
+    <form id="deleteForm">
+        <div class="modal-header">
+            <h3 class="modal-title">Please confirm PERMANENT deletion of:</h3>
+        </div>
+        <div class="modal-body">
+            <ul data-ng-repeat="message in confirmationMessages">
+                <li>{{ message.msg }}</li>
+            </ul>
+
+        </div>
+        <div class="modal-footer">
+            <input id="deleteButton" type="submit" value="Delete" class="btn btn-success btn-fixed-width" ng-click="ok()" focus-me="{{shouldBeOpen}}">
+            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+        </div>
+    </form>
 </script>
 <script type="text/ng-template" id="newFolderModal.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Enter a folder name:</h3>
-    </div>
-    <div class="modal-body">
-        <input type="text" class="form-control" ng-model="folderName">
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-success btn-fixed-width" ng-click="ok()">Create<i class="fa fa-white fa-check icon-right"></i></button>
-        <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
-    </div>
+    <form>
+        <div class="modal-header">
+            <h3 class="modal-title">Enter a folder name:</h3>
+        </div>
+        <div class="modal-body">
+            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success btn-fixed-width" ng-click="ok()">Create<i class="fa fa-white fa-check icon-right"></i></button>
+            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+        </div>
+    </form>
 </script>
