@@ -12,18 +12,25 @@
     Could not create initial folder for {{bucketCreationStatus.userEmail}}
   </span>
 </div>
-<div id="oauthNotice" class="alert alert-danger" ng-hide="statusDetails.code !== 401 && statusDetails.code !== 400 && isAuthed === true">
-  <span>Rise Vision needs access to your Google account to verify who you are </span>
-  <button class="btn btn-primary btn-sm" type="button" ng-click="login()">
-    <span title="Initiate Permission Request" 
-          class="fa fa-check"> Okay</span>
-  </button>
-</div>
 <div class="alert alert-danger" ng-show="statusDetails.code===403">
   You are not authorized to view this Company's files
 </div>
-<div id="gapiLoadNotice" class="alert alert-danger" ng-controller="gapiClientController as gapiController" ng-show="!gapiController.gapiClientFullyLoaded">
-  Loading storage functions
+<div id="cookieTester" class="alert alert-danger" ng-controller="cookieTesterController as cookieController" ng-show="!cookieController.status.passed">
+  {{cookieController.status.message}}
+
+  <div ng-hide="!cookieController.status.passed">
+    <div id="gapiLoadNotice" class="alert alert-danger" ng-controller="gapiClientController as gapiController" ng-show="!gapiController.gapiClientFullyLoaded">
+    Loading storage functions
+    </div>
+
+    <div id="oauthNotice" class="alert alert-danger" ng-hide="statusDetails.code !== 401 && statusDetails.code !== 400 && isAuthed === true">
+      <span>Rise Vision needs access to your Google account to verify who you are </span>
+      <button class="btn btn-primary btn-sm" type="button" ng-click="login()">
+        <span title="Initiate Permission Request" 
+              class="fa fa-check"> Okay</span>
+      </button>
+    </div>
+  </div>
 </div>
 <table id="filesTable" class="table filetable table-hover" ng-show="statusDetails.code!==202">
   <thead>
