@@ -84,7 +84,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
               confirmationMessages.push(message);
           }
       });
-      console.log($scope.confirm);
+
       var modalInstance = $modal.open({
           templateUrl: 'deleteModal.html',
           controller: 'DeleteInstanceCtrl',
