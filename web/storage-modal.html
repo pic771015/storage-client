@@ -15,6 +15,7 @@
           <!-- endbuild -->
 	<!-- build:js script/main.min.js -->
 	<!-- Copied form Store project (needed for the Header) -->
+  <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
 
   <script type="text/javascript" src="components/angular/angular.js"></script>
   <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
@@ -47,8 +48,6 @@
   <script type="text/javascript" src="js/filters.js"></script>
   <script type="text/javascript" src="js/files/svc-file-list.js"></script>
   <script type="text/javascript" src="js/svc-gapi-requestor.js"></script>
-
-  <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
 		<!-- endbuild -->
   <script type="text/javascript" src="//s3.amazonaws.com/rise-common-test/scripts/bootstrap/bootstrap.min.js"></script>
   <script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
@@ -56,7 +55,7 @@
 <body class="storage-modal">
   <div ng-controller="ButtonsController">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" 
-            ng-click="cancelButtonClick()">
+            ng-click="cancelButtonClick()" ng-show="showCloseButton">
       <i class="fa fa-times"></i>
     </button>
   </div>

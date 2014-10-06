@@ -17,7 +17,7 @@
 <body class="storage-modal">
   <div ng-controller="ButtonsController">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true" 
-            ng-click="cancelButtonClick()">
+            ng-click="cancelButtonClick()" ng-show="showCloseButton">
       <i class="fa fa-times"></i>
     </button>
   </div>

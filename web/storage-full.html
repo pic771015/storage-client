@@ -9,58 +9,51 @@
     <!-- endbuild -->
   </head>
 
-  <body>
-    <div ng-app="commonHeader">
-      <common-header
-        nav-options="navOptions"
-        auth-status="1"
-        is-admin="false"
-        sub-company-selected="false"
-        company-loaded="true"
-        selected-company-name="'Rise Vision'"
-        user-profile-picture="'http://api.randomuser.me/portraits/med/men/33.jpg'"
-        user-profile-name="'Demo User'"
-        user-profile-email="'demo.user@example.com'"
-        messages="">
-      </common-header>
+  <body class="storage-full">
+    <div ng-app="storageFull">
+      <div ng-controller="FullScreenController">
+        <common-header nav-options="navOptions">
+        </common-header>
+
+        <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
+            <span ng-show="!userState.isLoggedIn()">Rise Vision needs access to your Google account to verify who you are </span>
+            <span ng-show="currentState == 'loggingIn'">Logging in...</span>
+            <span ng-show="currentState == 'loadingFiles'">Requesting file list for {{userState.getUsername()}}</span>
+        </div>
+
+        <div>
+          <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
+        </div>
+      </div>
     </div>
 
+    <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
+    <script type="text/javascript" src="components/angular/angular.js"></script>
+    <script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+    <!--
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.20/angular.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap.min.js"></script>
+    -->
 
-    <!-- build:js script/common-header.min.js -->
+    <!-- Added for rv-common-header -->
+    <script src="components/spin.js/spin.js"></script>
+
+    <script src="components/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="components/angular-spinner/angular-spinner.js"></script>
+    <script src="components/angular-touch/angular-touch.min.js"></script>
+
+    <script src="components/ngstorage/ngStorage.min.js"></script>
+    <script src="components/ng-biscuit/dist/ng-biscuit.min.js"></script>
+
+    <script src="components/ng-csv/src/ng-csv/ng-csv.js"></script>
+
     <script src="components/rv-common-header/dist/js/common-header.js"></script>
-    <!-- endbuild -->
+    <script src="components/rv-loading/loading.js"></script>
+    <script src="components/checklist-model/checklist-model.js"></script>
 
-    <script>
-      function loadStorageModal() {
-        backDrop = document.createElement("div");
-        backDrop.className = "storage-selector-backdrop";
-        document.body.appendChild(backDrop);
-        storageModal = document.createElement("iframe");
-        storageModal.src = "storage-modal.html#/files/b428b4e8-c8b9-41d5-8a10-b4193c789443";
-        storageModal.className = "storage-selector-iframe";
-        storageModal = document.body.appendChild(storageModal);
-        backDrop.onclick=function(event){
-          if (event.target === backDrop) {
-            storageModal.parentNode.removeChild(storageModal);
-            backDrop.parentNode.removeChild(backDrop);
-          }
-        };
-      }
-
-      window.addEventListener("message", handleStorageMessage, false);
-      window.addEventListener("load", loadStorageModal);
-
-      function handleStorageMessage(event) {
-        if (Array.isArray(event.data) && event.data[0].indexOf("risemedialibrary") > -1) {
-          alert(event.data);
-        }
-        if (event.data === "close") {
-          storageModal.parentNode.removeChild(storageModal);
-          backDrop.parentNode.removeChild(backDrop);
-        }
-      }
-    </script>
+    <script src="js/app-full.js"></script>
+    <script src="js/ctr-fullscreen.js"></script>
+    <!-- End of additions -->
   </body>
 </html>
