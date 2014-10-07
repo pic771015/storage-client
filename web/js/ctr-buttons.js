@@ -40,6 +40,8 @@ MEDIA_LIBRARY_URL, downloadSvc) {
   $scope.fileListStatus = listSvc.statusDetails;
   $scope.statusDetails = {code: 200, message: ""};
 
+  $scope.showCloseButton = ($window.location.href.indexOf("storageFullscreen=true") === -1);
+
   $scope.resetStatus = function() {
     $scope.statusDetails.code = 200;
   };
