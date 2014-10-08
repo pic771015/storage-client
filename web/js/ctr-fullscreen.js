@@ -1,5 +1,4 @@
 "use strict";
-/* global gadgets: true */
 
 angular.module("storageFull")
 .controller("FullScreenController", ["$scope", "userState", "usSpinnerService", function($scope, userState, usSpinnerService) {
@@ -60,17 +59,5 @@ angular.module("storageFull")
   $scope.findStorageListScope = function() {
   	return document.getElementById("storage-modal-embedded").contentWindow.angular.element("#list").scope();
   };
-
-//  $scope.handleStorageMessage = function(event) {
-//    if (Array.isArray(event.data) && event.data[0].indexOf("risemedialibrary") > -1) {
-//      alert(event.data);
-//    }
-//    if (event.data === "close") {
-//      $scope.storageModal.parentNode.removeChild($scope.storageModal);
-//      $scope.backDrop.parentNode.removeChild($scope.backDrop);
-//    }
-//  };
-//
-//  window.addEventListener("message", $scope.handleStorageMessage, false);
 }])
 ;

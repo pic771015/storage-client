@@ -16,9 +16,9 @@
         </common-header>
 
         <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
-            <span ng-show="!userState.isLoggedIn()">Rise Vision needs access to your Google account to verify who you are </span>
-            <span ng-show="currentState == 'loggingIn'">Logging in...</span>
-            <span ng-show="currentState == 'loadingFiles'">Requesting file list for {{userState.getUsername()}}</span>
+            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">Rise Vision needs access to your Google account to verify who you are </span>
+            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">Logging in...</span>
+            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">Requesting file list for {{userState.getUsername()}}</span>
         </div>
 
         <div>
