@@ -11,10 +11,14 @@ var url = "http://localhost:" + port + "/storage-full.html";
 var popupClosed = false;
 var imgdir = "test/e2e/storage-full/";
 
-casper.options.waitTimeout = 60000;
+casper.options.waitTimeout = 15000;
 
 casper.on("popup.closed", function(page) {
 	popupClosed = true;
+});
+
+casper.on("remote.message", function(msg) {
+  casper.echo("DOM console: " + msg);
 });
 
 casper.test.begin("Connecting to " + url, function suite(test) {
@@ -39,9 +43,13 @@ casper.test.begin("Connecting to " + url, function suite(test) {
       }
 
       if (document.title === "Sign in - Google Accounts") {
-      	document.querySelector("#Email").value = user || "jenkins@risevision.com";
-        document.querySelector("#Passwd").value = pass;
-        document.querySelector("#signIn").click();
+        if (document.querySelector("#choose-account-0") !== null) {
+          document.querySelector("#choose-account-0").click();
+        } else {
+          document.querySelector("#Email").value = user || "jenkins@risevision.com";
+          document.querySelector("#Passwd").value = pass;
+          document.querySelector("#signIn").click();
+        }
       }
 
       return document.title;

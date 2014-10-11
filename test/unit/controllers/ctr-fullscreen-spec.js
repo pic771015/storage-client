@@ -5,11 +5,11 @@ describe("FullScreenController", function() {
 
     var FullScreenController, scope; //, userState, usSpinnerService;
 
-    beforeEach(inject(function($rootScope, $controller, userState, usSpinnerService) {
+    beforeEach(inject(function($rootScope, $controller, usSpinnerService) {
         scope = $rootScope.$new();
 
         FullScreenController = $controller("FullScreenController"
-            ,{ $scope: scope, userState: userState, usSpinnerService: usSpinnerService });
+            ,{ $scope: scope, userState: {}, usSpinnerService: usSpinnerService });
     }));
 
     it("should be defined", function() {

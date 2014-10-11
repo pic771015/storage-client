@@ -3,12 +3,8 @@
     <div class="col-md-12">
       <div ng-controller="SubscriptionStatusController">
         <div id="subscription-status" subscription-status
-            ng-show="subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available'"
              product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
              ng-model="subscriptionStatus.result"></div>
-        <div class="row" ng-show="!(subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available')">
-          <div class="col-md-12" ng-include="'partials/cost-disclaimer.html'"></div>
-        </div>
       </div>
     </div>
   </div>
@@ -28,10 +24,10 @@
 <div>
   <div id="buttons-action" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
     <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-fixed-width" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-        Select <i class="fa fa-check fa-white icon-right"></i>
+        <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
     </button>
     <button type="button" ng-click="cancelButtonClick()" ng-if="storageModal" title="Cancel" class="btn btn-primary btn-fixed-width">
-        Cancel <i class="fa fa-times fa-white icon-right"></i>
+        <span translate="common.cancel"></span> <i class="fa fa-times fa-white icon-right"></i>
     </button>
     <i class="btn btn-fixed-width" ng-if="storageModal"></i>
     <button class="btn btn-link" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)">
@@ -47,9 +43,9 @@
       <i class="fa fa-trash-o fa-2x"></i>
     </button>
     <div class="storage-used-info">
-      <div>Total file size: {{filesDetails.totalBytes | fileSizeFilter}} </div>
+      <div><span translate="storage-client.total-file-size"></span>: {{filesDetails.totalBytes | fileSizeFilter}} </div>
       <div ng-controller="BandwidthController" ng-show="bandwidthUse">
-        This month's bandwidth use: {{bandwidthUse | bandwidthUseFilter}}
+        <span translate="storage-client.month-bandwidth"></span>: {{bandwidthUse | bandwidthUseFilter}}
       </div>
     </div>
     <div class="alert alert-danger" style="cursor:pointer" ng-show="statusDetails.code!==200" ng-click="resetStatus()">
@@ -61,7 +57,7 @@
   <div class="col-md-12">
     <div class="panel panel-info" ng-show="uploader.queue.length > 0">
       <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
-        <h3 class="panel-title">Upload Status: {{status.message}} <span class="pull-right"> <i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isCollapsed]"></i></span></h3>
+        <h3 class="panel-title"><span translate="storage-client.upload-status"></span>: {{status.message}} <span class="pull-right"> <i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isCollapsed]"></i></span></h3>
       </div>
       <div class="panel-body" ng-show="!isCollapsed">
         <table class="table">
@@ -74,7 +70,7 @@
                   <i class="text-danger fa fa-times-circle-o cancel"></i>
                 </span>
                 <span class="text-danger" ng-show="!item.isUploading" ng-click="item.remove()">
-                  <i class="fa fa-times-circle-o"></i> remove
+                  <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
                 </span>
 
                 <div class="progress inline-progress" ng-show="item.isUploading">
@@ -95,35 +91,36 @@
     </form>
   </div>
 </div>
+
 <div ui-view></div>
 <script type="text/ng-template" id="deleteModal.html">
     <form id="deleteForm">
         <div class="modal-header">
-            <h3 class="modal-title">Please confirm PERMANENT deletion of:</h3>
+            <h3 class="modal-title"><span translate="storage-client.confirm-deletion"></span>: </h3>
         </div>
         <div class="modal-body">
             <ul data-ng-repeat="message in confirmationMessages">
-                <li>{{ message.msg }}</li>
+                <li>{{ message }}</li>
             </ul>
 
         </div>
         <div class="modal-footer">
-            <input id="deleteButton" type="submit" value="Delete" class="btn btn-success btn-fixed-width" ng-click="ok()" focus-me="{{shouldBeOpen}}">
-            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+            <input id="deleteButton" type="submit" value="{{'common.delete' | translate}}" class="btn btn-success btn-fixed-width" ng-click="ok()" focus-me="{{shouldBeOpen}}">
+            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()"><span translate="common.cancel"></span><i class="fa fa-white fa-times icon-right"></i></button>
         </div>
     </form>
 </script>
 <script type="text/ng-template" id="newFolderModal.html">
     <form>
         <div class="modal-header">
-            <h3 class="modal-title">Enter a folder name:</h3>
+            <h3 class="modal-title"><span translate="storage-client.enter-folder-name"></span>:</h3>
         </div>
         <div class="modal-body">
             <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}">
         </div>
         <div class="modal-footer">
-            <button class="btn btn-success btn-fixed-width" ng-click="ok()">Create<i class="fa fa-white fa-check icon-right"></i></button>
-            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()">Cancel<i class="fa fa-white fa-times icon-right"></i></button>
+            <button class="btn btn-success btn-fixed-width" ng-click="ok()"><span translate="common.create"></span><i class="fa fa-white fa-check icon-right"></i></button>
+            <button class="btn btn-primary btn-fixed-width" ng-click="cancel()"><span translate="common.cancel"></span><i class="fa fa-white fa-times icon-right"></i></button>
         </div>
     </form>
 </script>

@@ -36,6 +36,40 @@ function setupMocks(servicesPassFail) {
     $provide.service("$stateParams", function() {
       return servicesPassFail.state ? {companyId: "13245"} : {};
     });
+
+    $provide.provider("$translate", function() {
+      var service = {};
+
+      service.$get = function() {
+      	var fun = function(key) {
+          return {
+            then: function() {
+              return key;
+            }
+          };
+      	};
+
+        fun.storage = function() {
+        	return null;
+        };
+
+        fun.storageKey = function(key) {
+        	return key;
+        };
+
+        fun.preferredLanguage = function() {
+        	return "en";
+        };
+
+        fun.use = function() {
+
+        };
+
+      	return fun;
+      };
+
+      return service;
+    });
   };
 }
 

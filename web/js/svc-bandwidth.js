@@ -1,8 +1,8 @@
 "use strict";
 angular.module("medialibrary")
 .factory("BandwidthService",
-["$q", "OAuthStatusService", "GAPIRequestService",
-function bandwidthFactory($q, OAuthStatusService, requestService) {
+["$q", "OAuthStatusService", "GAPIRequestService", "$translate",
+function bandwidthFactory($q, OAuthStatusService, requestService, $translate) {
   var service = {}
      ,bandwidthValuesPromiseCache = {};
 
@@ -19,10 +19,14 @@ function bandwidthFactory($q, OAuthStatusService, requestService) {
       var params = {"companyId": companyId};
       return requestService.executeRequest("storage.getBucketBandwidth", params)
             .then(function(resp) {
-              if (resp.result === false || !resp.message) {
+              if (resp.result === false && resp.message) {
+                return $translate("storage-client." + resp.message);
+              }
+              else if (resp.result === false || !resp.message) {
                 console.log("Bandwidth unavailable");
                 throw resp;
-              } else {
+              }
+              else {
                 return resp.message;
               }
             });

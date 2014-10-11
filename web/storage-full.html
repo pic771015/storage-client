@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Rise Vision Storage</title>
+    <title translate="storage-client.title"></title>
 
     <!-- build:css css/all.min.css -->
     <link rel="stylesheet" type="text/css"
@@ -16,9 +16,15 @@
         </common-header>
 
         <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
-            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">Rise Vision needs access to your Google account to verify who you are </span>
-            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">Logging in...</span>
-            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">Requesting file list for {{userState.getUsername()}}</span>
+            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
+              <span translate="common.required-credentials"></span>
+            </span>
+            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">
+              <span translate="common.logging-in"></span>
+            </span>
+            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
+              <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
+            </span>
         </div>
 
         <div>
@@ -30,8 +36,15 @@
     <!-- build:js script/full-main.min.js -->
     <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
     <script type="text/javascript" src="components/angular/angular.js"></script>
+    
     <script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-      <!-- required for common header -->
+    
+    <script src="components/angular-translate/angular-translate.js"></script>
+    <script src="components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+
+    <script src="js/config/locales_config.js"></script>
+    <script src="components/rv-common-i18n/dist/i18n.js"></script>
+
     <script src="components/spin.js/spin.js"></script>
 
     <script src="components/angular-sanitize/angular-sanitize.min.js"></script>
@@ -44,8 +57,11 @@
     <script src="components/ng-csv/src/ng-csv/ng-csv.js"></script>
 
     <script src="components/rv-common-header/dist/js/common-header.js"></script>
+    
     <script src="components/rv-loading/loading.js"></script>
     <script src="components/checklist-model/checklist-model.js"></script>
+
+    <script src="js/config/config.js"></script>
 
     <script src="js/app-full.js"></script>
     <script src="js/ctr-fullscreen.js"></script>
