@@ -40,14 +40,14 @@
   <div ng-controller="ButtonsController">
   	<div class="bar-wrapper" id="files-toolbar" ng-hide="fileListStatus.code === 404">
   		<div class="bar">
-  			<div class="col-sm-6">
+  			<div class="col-sm-4">
           <span ng-class="filesDetails.checkedItemsCount > 0 ? 'hidden-xs' : ''">
       			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
       			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
           </span>
   			</div>
 
-  			<div class="col-sm-6 text-right">
+  			<div class="col-sm-8 text-right">
           <span ng-show="filesDetails.checkedItemsCount > 0">
             <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
           </span>
@@ -55,6 +55,7 @@
             <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
           </button>
   				<button type="button" class="btn btn-lg" ng-click="downloadButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
+                <button type="button" class="btn btn-lg" ng-hide="isTrashFolder() || (filesDetails.checkedCount + filesDetails.folderCheckedCount === 0 || filesDetails.checkedCount + filesDetails.folderCheckedCount > 1 && filesDetails.localFiles === false)" ng-click="copyUrlButtonClick('lg')"><i class="fa fa-link fa-lg"></i></button>
   				<button type="button" class="btn btn-lg" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
           <button type="button" class="btn btn-lg" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i><i class="fa fa-share"></i></button>
   				<button type="button" class="btn btn-lg" ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
@@ -177,6 +178,19 @@
             <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
               <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
             </button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="copyUrl.html">
+    <form>
+
+        <div class="modal-body">
+            <input id="okCopyButton" type="submit" value="x" class="close" ng-click="ok()" ng-hide="true"/>
+            <button type="button" class="close" ng-click="cancel()" aria-hidden="true"><i class="fa fa-times"></i></button>
+            <h5 class="ellipsed span12 text-left">Link To "{{copyFile.name}}"</h5>
+            <input type="text" class="ellipsed form-control" id="copyUrlInput" autofocus="autofocus">
+        </div>
+        <div class="modal-footer">
         </div>
     </form>
 </script>

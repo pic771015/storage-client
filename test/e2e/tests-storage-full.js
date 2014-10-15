@@ -79,7 +79,7 @@ casper.test.begin("Connecting to " + url, function suite(test) {
   });
 
   // Waits for the redirect page to load
-  casper.waitForUrl(/index\.html/, function() {
+  casper.waitForUrl(/storage-full\.html/, function() {
     
   });
 
@@ -162,7 +162,7 @@ casper.test.begin("Connecting to " + url, function suite(test) {
       this.click("a[title='Trash']");
       // When using PhantomJS, setting the locale is ignored (it does not happen with SlimeJS)
       //this.click("a[title='Papelera']");
-
+      
       casper.test.assert(true, "trash button clicked");
     });
 
