@@ -38,6 +38,10 @@ function (LocalFiles, requestor, $stateParams) {
     var params = {companyId: $stateParams.companyId};
     if ($stateParams.folderPath) {
       params.folder = decodeURIComponent($stateParams.folderPath);
+      svc.statusDetails.folder = params.folder;
+    }
+    else {
+      svc.statusDetails.folder = "/";
     }
 
     svc.statusDetails.code = 202;
@@ -57,8 +61,26 @@ function (LocalFiles, requestor, $stateParams) {
 
     function processFilesResponse(resp) {
       if (resp.files) {
+        var parentFolder = decodeURIComponent($stateParams.folderPath);
+        var parentFolderFound = false;
+
+        if(parentFolder.indexOf("--TRASH--/") === 0) {
+          for(var i = 0; i < resp.files.length; i++) {
+            var file = resp.files[i];
+
+            if(file.name === parentFolder) {
+              parentFolderFound = true;
+              break;
+            }
+          }
+
+          if(!parentFolderFound) {
+            resp.files.unshift({ name: parentFolder, size: 0, updated: null });
+          }          
+        }
+
         svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
-        return prev + parseInt(next.size);
+          return prev + parseInt(next.size);
         }, 0);
 
         console.log(svc.filesDetails.totalBytes + " bytes in " +

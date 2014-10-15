@@ -9,7 +9,7 @@
 	<link rel="shortcut icon" href="favicon.ico" />
 
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css">
-          <!-- build:css css/all.min.css -->
+          <!-- build:css css/all-modal.min.css -->
 	<link href="components/rv-common-style/dist/css/rise.min.css" rel="stylesheet" type="text/css">
 	<link href="components/rv-subscription-status/dist/css/subscription-status.css" rel="stylesheet" type="text/css">
           <!-- endbuild -->
@@ -56,8 +56,8 @@
 
     <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
 		<!-- endbuild -->
-	<script type="text/javascript" src="//rvaviewer-test.appspot.com/gadgets/gadgets.min.js"></script>
 
+	<script type="text/javascript" src="//rvaviewer-test.appspot.com/gadgets/gadgets.min.js"></script>
 	<script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
 </head>
 <body class="storage-modal">
@@ -68,9 +68,21 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
 					<i class="fa fa-times"></i>
 				</button>
-				<h2 class="modal-title">
-					<span translate="storage-client.header"></span>
-				</h2>
+            </div>
+            <div ng-controller="ButtonsController">
+                <div class="app-header">
+                  <div class="title-block">
+                    <h1 translate="storage-client.header"></h1>
+                  </div>    
+                  <div class="global-actions">
+                    <button class="btn btn-lg btn-default" type="button" title="New Folder" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+                      <i class="fa fa-plus fa-lg"></i> New folder
+                    </button>
+                        <button class="btn btn-lg btn-primary" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false && !isTrashFolder())">
+                        <i class="fa fa-cloud-upload fa-lg"></i> Upload a file
+                    </button>
+                  </div>
+                </div>
 			</div>
 
 			<!--Body content-->

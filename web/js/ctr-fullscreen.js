@@ -5,6 +5,12 @@ angular.module("storageFull")
   $scope.userState = userState;
   $scope.currentState = null;
 
+  $scope.navOptions = [{
+    title: "Platform",
+    link: "http://rva.risevision.com/",
+    target: "_blank"
+  }];
+
   $scope.$watch(function () {
       return userState.isLoggedIn();
     }, function(loggedIn) {

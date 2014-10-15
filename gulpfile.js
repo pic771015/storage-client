@@ -45,6 +45,7 @@ var env = process.env.NODE_ENV || "dev",
       "web/components/angular-mocks/angular-mocks.js",
       "web/components/angular-translate/angular-translate.js",
       "web/components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+      "web/components/angular-local-storage/dist/angular-local-storage.js",
       "web/components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js",
       "web/components/spin.js/spin.js",
       "web/components/angular-sanitize/angular-sanitize.min.js",
@@ -113,6 +114,10 @@ var env = process.env.NODE_ENV || "dev",
 
     localeFiles = [
       "web/components/rv-common-i18n/dist/locales/**/*"
+    ],
+
+    iconFiles = [
+      "web/*.ico"
     ];
 
 gulp.task("clean", function() {
@@ -128,7 +133,7 @@ gulp.task("lint", function() {
 });
 
 gulp.task("watch", function() {
-    return gulp.watch(appJSFiles, ["lint"]);
+    return gulp.watch([appJSFiles, sassFiles], ["lint", "sass"]);
 });
 
 gulp.task("html", ["clean", "lint"], function () {
@@ -194,9 +199,16 @@ gulp.task("img", ["clean"], function() {
     .pipe(gulp.dest("dist/img"));
 });
 
+gulp.task("icons", ["clean"], function() {
+  return gulp.src(iconFiles)
+    .pipe(gulp.dest("dist"));
+});
+
 gulp.task("sass", function () {
     return gulp.src(sassFiles)
-      .pipe(sass())
+      .pipe(sass({
+        errLogToConsole: true
+      }))
       .pipe(env === "prod" ? replace("rise-common-test", "rise-common") : gutil.noop())
       .pipe(gulp.dest("web/css"));
 });
@@ -224,7 +236,7 @@ gulp.task("config", function() {
     .pipe(gulp.dest("./web/js/config"));
 });
 
-gulp.task("build", ["clean", "config", "html", "view", "i18n", "files", "img", "css", "fonts", "locales"]);
+gulp.task("build", ["clean", "config", "html", "view", "i18n", "files", "img", "css", "fonts", "locales", "icons"]);
 
 
 gulp.task("test", function() {

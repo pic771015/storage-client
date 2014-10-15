@@ -15,7 +15,7 @@ function handleClientJSLoad() {
              .then(function() {
                 return gapiClient.fulfill($window.gapi.client);
               })
-             .then(null, function() {console.log("Cookie check error");});;
+             .then(null, function() {console.log("Cookie check error");});
 
       function loadStorageClient() {
         var defer = $q.defer();

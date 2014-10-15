@@ -25,7 +25,9 @@
     <meta property="og:image" content="https://s3.amazonaws.com/Store-Products/Rise-Vision/storage_image.png" />
     <meta property="og:description" content="Rise Vision Storage is a media library for all of your digital signage content assets" />
 
-    <link rel="stylesheet" href="css/all.min.css"/>
+    <link rel="icon" href="storage.ico" />
+    
+    <link rel="stylesheet" href="css/all-stg-full.min.css"/>
   </head>
 
   <body class="storage-full">
@@ -33,10 +35,11 @@
       <analytics analytics-account-id="'UA-82239-1'"></analytics>
       
       <div ng-controller="FullScreenController">
-        <common-header nav-options="navOptions">
+        <common-header nav-options="navOptions" hide-shopping-cart="true">
         </common-header>
-
-        <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
+      
+        <div class="container">
+          <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
             <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
               <span translate="common.required-credentials"></span>
             </span>
@@ -46,10 +49,11 @@
             <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
               <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
             </span>
-        </div>
+          </div>
 
-        <div>
-          <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
+          <div>
+            <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
+          </div>
         </div>
       </div>
     </div>

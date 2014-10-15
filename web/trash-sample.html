@@ -1,0 +1,231 @@
+ <!DOCTYPE html>
+<html lang="en" ng-app="medialibrary">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title translate="storage-client.title"></title>
+
+    <link rel="shortcut icon" href="favicon.ico" />
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css">
+          <!-- build:css css/all.min.css -->
+    <link href="components/rv-common-style/dist/css/rise.min.css" rel="stylesheet" type="text/css">
+    <link href="components/rv-subscription-status/dist/css/subscription-status.css" rel="stylesheet" type="text/css">
+          <!-- endbuild -->
+    <!-- build:js script/main.min.js -->
+    <!-- Copied form Store project (needed for the Header) -->
+  <script type="text/javascript" src="components/jQuery/dist/jquery.js"></script>
+
+  <script type="text/javascript" src="components/angular/angular.js"></script>
+  <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
+  <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js"></script>
+
+  <script src="components/angular-file-upload/angular-file-upload.js"></script>
+  <script src="components/angular-translate/angular-translate.js"></script>
+  <script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+
+  <script type="text/javascript" src="js/config/locales_config.js"></script>
+  <script src="components/rv-common-i18n/dist/i18n.js"></script>
+
+  <script src="components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js"></script>
+  <script src="components/rv-subscription-status/dist/js/subscription-status.js"></script>
+
+  <script type="text/javascript" src="js/config/config.js"></script>
+
+  <script type="text/javascript" src="js/gapi-initial-onload.js"></script>
+  <script type="text/javascript" src="js/svc-cookie-tester.js"></script>
+  <script type="text/javascript" src="js/ctr-cookie-tester.js"></script>
+  <script type="text/javascript" src="js/svc-gapi-auth.js"></script>
+  <script type="text/javascript" src="js/services.js"></script>
+
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/svc-download.js"></script>
+  <script type="text/javascript" src="js/ctr-buttons.js"></script>
+  <script type="text/javascript" src="js/svc-oauth-status.js"></script>
+  <script type="text/javascript" src="js/svc-upload-request.js"></script>
+  <script type="text/javascript" src="js/ctr-files.js"></script>
+  <script type="text/javascript" src="js/svc-bandwidth.js"></script>
+  <script type="text/javascript" src="js/ctr-bandwidth.js"></script>
+  <script type="text/javascript" src="js/ctr-upload.js"></script>
+  <script type="text/javascript" src="js/ctr-gapi-client.js"></script>
+  <script type="text/javascript" src="js/ctr-subscription.js"></script>
+  <script type="text/javascript" src="js/filters.js"></script>
+  <script type="text/javascript" src="js/files/svc-file-list.js"></script>
+  <script type="text/javascript" src="js/svc-gapi-requestor.js"></script>
+        <!-- endbuild -->
+  <script type="text/javascript" src="//s3.amazonaws.com/rise-common-test/scripts/bootstrap/bootstrap.min.js"></script>
+  <script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
+</head>
+        <body class="storage-modal" style="padding:40px">
+            <div class="app-header">
+                <div class="title-block">
+                    <h1>Storage</h1> 
+                </div>
+                <div class="global-actions">
+                    <button class="btn btn-default btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus"></i> New Folder</button>
+                    <button class="btn btn-primary btn-lg"><i class="fa fa-cloud-upload"></i> Upload a File</button>
+                </div>
+                <form class="form-group">
+                    <input type="text" class="form-control" placeholder="Search files or folders">
+                </form>
+            </div>
+            <div class="bar">
+                <div class="col-sm-6">
+
+                    <button class="btn btn-default btn-lg"><i class="fa fa-arrow-left"></i> Go Back</button>
+                    <h2>Trash</h2>
+                    
+                </div>
+                <div class="col-sm-6 text-right hidden-xs">
+                    <button class="btn btn-default btn-lg" disabled="disabled">
+                        <i class="fa fa-cloud-download"></i>
+                    </button>
+                    <button class="btn btn-default btn-lg" disabled="disabled">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                    <button class="btn btn-default btn-lg" disabled="disabled">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+            <table class="table table-hover filetable">
+                <thead>
+                    <tr>
+                        <th class="check-col"><input type="checkbox"></th>
+                        <th class="copy-url"></th>
+                        <th>Name</th>
+                        <th class="text-right">File Type</th>
+                        <th class="text-right">Size</th>
+                        <th class="text-right">Modified</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="check-col"><input type="checkbox"></td>
+                        <td class="copy-url"><button class="btn btn-link"><i class="fa fa-link"></i></button></td>
+                        <td class="file-name folder-type">
+                            <a href="#"><i class="fa fa-folder"></i> Backgrounds</a>
+                        </td>
+                        <td class="type-col text-right">Folder</td>
+                        <td class="filesize-col text-right">100 MB</td>
+                        <td class="datemod-col text-right">31/10/14 6:20 PM</td>
+                    </tr>
+                    <tr>
+                        <td class="check-col"><input type="checkbox"></td>
+                        <td class="copy-url"><button class="btn btn-link"><i class="fa fa-link"></i></button></td>
+                        <td class="file-name">
+                            <a href="#"><i class="fa fa-file"></i> document.doc</a>
+                        </td>
+                        <td class="type-col text-right">Document</td>
+                        <td class="filesize-col text-right">100 MB</td>
+                        <td class="datemod-col text-right">31/10/14 6:20 PM</td>
+                    </tr>
+                     <tr>
+                        <td class="check-col"><input type="checkbox"></td>
+                        <td class="copy-url"><button class="btn btn-link"><i class="fa fa-link"></i></button></td>
+                        <td class="file-name">
+                            <a href="#"><i class="fa fa-file"></i> document.doc</a>
+                        </td>
+                        <td class="type-col text-right">Document</td>
+                        <td class="filesize-col text-right">100 MB</td>
+                        <td class="datemod-col text-right">31/10/14 6:20 PM</td>
+                    </tr>
+                     <tr>
+                        <td class="check-col"><input type="checkbox"></td>
+                        <td class="copy-url"><button class="btn btn-link"><i class="fa fa-link"></i></button></td>
+                        <td class="file-name">
+                            <a href="#"><i class="fa fa-file"></i> document.doc</a>
+                        </td>
+                        <td class="type-col text-right">Document</td>
+                        <td class="filesize-col text-right">100 MB</td>
+                        <td class="datemod-col text-right">31/10/14 6:20 PM</td>
+                    </tr>
+                     <tr>
+                        <td class="check-col"><input type="checkbox"></td>
+                        <td class="copy-url"><button class="btn btn-link"><i class="fa fa-link"></i></button></td>
+                        <td class="file-name">
+                            <a href="#"><i class="fa fa-file"></i> document.doc</a>
+                        </td>
+                        <td class="type-col text-right">Document</td>
+                        <td class="filesize-col text-right">100 MB</td>
+                        <td class="datemod-col text-right">31/10/14 6:20 PM</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+
+            <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h2 class="modal-title" id="myModalLabel">New Folder</h2>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label>Folder Name</label>
+            <input class="form-control" placeholder="Enter folder name">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Create Folder</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+            <!-- Modal -->
+<div class="modal fade" id="foldersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h2 class="modal-title" id="myModalLabel">Folders</h2>
+      </div>
+      <div class="modal-body">
+
+        <!-- Nav tabs -->
+        <ul class="nav folder-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">All</a></li>
+            <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">Shared</a></li>
+            <li role="presentation"><a href="#messages" role="tab" data-toggle="tab">Shared with me</a></li>
+        </ul>
+
+        <div class="form-group">
+            <input class="form-control" placeholder="Search Folders">
+        </div>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                <div class="content-box">
+                    <ul class="tree">
+                        <li><a href="#"><i class="fa fa-folder"></i> /</a>
+                            <ul>
+                                <li><a href="folder-view.html"><i class="fa fa-folder"></i> Backgrounds</a></li>
+                                <li><a href="#"><i class="fa fa-folder"></i> Another Folder</a></li>
+                                <li><a href="#"><i class="fa fa-folder"></i> Backgrounds</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="profile">...</div>
+            <div role="tabpanel" class="tab-pane" id="messages">...</div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+            
+        </body>
+        </html>

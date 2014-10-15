@@ -162,4 +162,20 @@ angular.module("medialibraryFilters", ["risevision.common.i18n"])
       return finalItems;
     }
   };
-});
+})
+
+
+.filter("trashItemFilter", [function() {
+	return function(itemName) {
+		var trash = "--TRASH--/";
+
+		if(itemName && itemName.indexOf(trash) === 0) {
+			return itemName.substr(trash.length);
+		}
+		else {
+			return itemName;
+		}
+	};
+}])
+
+;

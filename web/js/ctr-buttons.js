@@ -7,8 +7,10 @@ angular.module("medialibrary")
     gadgets.rpc.call("", "rscmd_closeSettings", null);
   };
 }])
-.controller("DeleteInstanceCtrl", ["$scope","$modalInstance", "confirmationMessages", function($scope, $modalInstance, confirmationMessages) {
+.controller("DeleteInstanceCtrl", ["$scope", "$modalInstance", "confirmationMessages", "action",
+  function($scope, $modalInstance, confirmationMessages, action) {
     $scope.confirmationMessages = confirmationMessages;
+    $scope.action = action;
 
     $scope.ok = function() {
         $modalInstance.close();
@@ -28,10 +30,10 @@ angular.module("medialibrary")
 }
 ])
 .controller("ButtonsController",
-["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "FileListService",
-"GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService", "$q", "$translate",
-function ($scope, $stateParams, $window, $modal, $log, $timeout, listSvc, requestSvc,
-MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
+["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
+"GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService", "$q", "$translate", "$state",
+function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
+MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
@@ -41,6 +43,20 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
   $scope.statusDetails = {code: 200, message: ""};
 
   $scope.showCloseButton = ($window.location.href.indexOf("storageFullscreen=true") === -1);
+
+  $scope.isTrashFolder = function() {
+    return $scope.fileListStatus.folder && $scope.fileListStatus.folder.indexOf("--TRASH--/") === 0;
+  };
+
+  $scope.showYourFiles = function() {
+    $state.go("main.company-folders",
+      { folderPath: "", companyId: $stateParams.companyId });
+  };
+
+  $scope.showTrash = function() {
+    $state.go("main.company-folders",
+      { folderPath: "--TRASH--/", companyId: $stateParams.companyId });
+  };
 
   $scope.resetStatus = function() {
     $scope.statusDetails.code = 200;
@@ -69,17 +85,67 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
   };
 
   $scope.deleteButtonClick = function(size) {
+    confirmFilesAction("delete", size);
+  };
+
+  $scope.trashButtonClick = function(size) {
+    confirmFilesAction("trash", size);
+  };
+
+  $scope.restoreButtonClick = function(size) {
+    confirmFilesAction("restore", size);
+  };
+
+  $scope.selectButtonClick = function() {
+    var fileUrls = [], data = {};
+    data.params = [];
+
+    getSelectedFiles().forEach(function(file) {
+      fileUrls.push(bucketUrl + file.name);
+      data.params.push(bucketUrl + file.name);
+    });
+
+    $window.parent.postMessage(fileUrls, "*");
+    gadgets.rpc.call("", "rscmd_saveSettings", null, data);
+  };
+
+  $scope.newFolderButtonClick = function(size) {
+      $scope.shouldBeOpen = true;
+
+      var modalInstance = $modal.open({
+          templateUrl: "newFolderModal.html",
+          controller: "NewFolderCtrl",
+          size: size
+      });
+      modalInstance.result.then(function(newFolderName){
+          //do what you need if user presses ok
+          if (!newFolderName || newFolderName.indexOf("/") > -1) {return;}
+          var requestParams =
+          {"companyId":$stateParams.companyId
+              ,"folder": decodeURIComponent($stateParams.folderPath || "") +
+              newFolderName};
+
+          requestSvc.executeRequest("storage.createFolder", requestParams)
+              .then(function() {listSvc.refreshFilesList();});
+      }, function (){
+          // do what you need to do if user cancels
+          $log.info("Modal dismissed at: " + new Date());
+      });
+  };
+
+  function confirmFilesAction(action, size) {
       $scope.shouldBeOpen = true;
       var selectedFileNames = getSelectedFiles().map(function(file) {
           return file.name;
       });
       var msgPromises = [];
+      var trashItemFilter = $filter("trashItemFilter");
 
       selectedFileNames.forEach(function(val) {
           if (val.substr(-1) === "/") {
-              msgPromises.push($translate("storage-client.delete-folder", { folder: val }));
+              msgPromises.push($translate("storage-client.delete-folder", { folder: trashItemFilter(val) }));
           } else {
-              msgPromises.push($translate("storage-client.delete-file", { file: val }));
+              msgPromises.push($translate("storage-client.delete-file", { file: trashItemFilter(val) }));
           }
       });
 
@@ -89,17 +155,28 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
             controller: "DeleteInstanceCtrl",
             size: size,
             resolve: {
+                action: function() {
+                  return action;
+                },
                 confirmationMessages: function(){
-                    return confirmationMessages;
+                  return confirmationMessages;
                 }
             }
         });
 
+        var apiMethod = "storage.files.delete";
+
+        if(action === "trash") {
+          apiMethod = "storage.trash.move";
+        }
+        else if(action === "restore") {
+          apiMethod = "storage.trash.restore";
+        }
+
         modalInstance.result.then(function() {
             //do what you need if user presses ok
-            var requestParams = {"companyId": $stateParams.companyId
-                ,"files": selectedFileNames};
-            requestSvc.executeRequest("storage.files.delete", requestParams)
+            var requestParams = {"companyId": $stateParams.companyId, "files": selectedFileNames};
+            requestSvc.executeRequest(apiMethod, requestParams)
                 .then(function(resp) {
                     if (resp.code === 403) {
                         $scope.statusDetails.code = resp.code;
@@ -117,7 +194,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
             $scope.shouldBeOpen = false;
         });
       });
-  };
+  }
 
   $scope.selectButtonClick = function() {
     var fileUrls = [], data = {};

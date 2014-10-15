@@ -9,24 +9,37 @@
 	<link rel="shortcut icon" href="favicon.ico" />
 
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet" type="text/css">
-          <link rel="stylesheet" href="css/all.min.css"/>
+          <link rel="stylesheet" href="css/all-stg-modal.min.css"/>
 	<script src="script/main.min.js"></script>
   <script type="text/javascript" src="//s3.amazonaws.com/rise-common-test/scripts/bootstrap/bootstrap.min.js"></script>
   <script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
 </head>
 <body class="storage-modal">
+  <div class="container">
   <div ng-controller="ButtonsController">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" 
-            ng-click="cancelButtonClick()" ng-show="showCloseButton">
-      <i class="fa fa-times"></i>
-    </button>
+    <div>
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true" 
+              ng-click="cancelButtonClick()" ng-show="showCloseButton">
+        <i class="fa fa-times"></i>
+      </button>
+    </div>
+    <div class="clearfix"></div>
+    <div class="app-header">
+    	<div class="title-block">
+    		<h1 translate="storage-client.header"></h1>
+      </div>	
+      <div class="global-actions">
+        <button class="btn btn-lg btn-default" type="button" title="New Folder" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+          <i class="fa fa-plus fa-lg"></i> New folder
+        </button>
+    		<button class="btn btn-lg btn-primary" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false && !isTrashFolder())">
+        	<i class="fa fa-cloud-upload fa-lg"></i> Upload a file
+      	</button>
+      </div>
+    </div>
   </div>
-  <h2>
-    <span translate="storage-client.header"></span>
-    <a type="button" class="btn btn-rv-help btn-fixed-width" href="https://github.com/Rise-Vision/storage-client" target="_blank">
-      <span translate="common.contribute"></span> <i class="fa fa-github fa-lg "></i>
-    </a>
-  </h2>
+
   <div ui-view></div>
+  </div>
 </body>
 </html>

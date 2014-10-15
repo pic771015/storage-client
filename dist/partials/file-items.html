@@ -1,4 +1,4 @@
-<div ng-controller="FileListCtrl" id="list" class="table-responsive">
+<div ng-controller="FileListCtrl" id="list">
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
   <span translate="storage-client.requesting-file-list"></span>
 </div>
@@ -33,10 +33,11 @@
     </div>
   </div>
 </div>
-<table id="filesTable" class="table filetable table-hover" ng-show="statusDetails.code!==202">
+<div class="table-responsive">
+<table id="filesTable" class="table table-hover filetable" ng-show="statusDetails.code!==202">
   <thead>
     <tr>
-      <th class="text-left check-col">
+      <th class="check-col">
         <input type="checkbox" ng-model="selectAll" ng-change="selectAllCheckboxes()">
       </th>
       <th class="" ng-click="orderByAttribute = 'name'; reverseSort = !reverseSort">
@@ -91,22 +92,23 @@
   </thead>
   <tbody>
     <tr ng-repeat="file in filesDetails.files | filter:query | orderBy:orderByAttribute:reverseSort" ng-class="{active: file.isChecked}">
-      <td class="text-left">
+      <td class="check-col">
         <input type="checkbox" ng-model="file.isChecked" ng-change="fileCheckToggled(file)" ng-show="!fileIsCurrentFolder(file)">
       </td>
-      <td>
-        <a href="" data-toggle="tooltip" title="{{file.name | fileNameFilter:currentDecodedFolder}}" ng-click="$emit('FileSelectAction', file)">{{file.name | fileNameFilter:currentDecodedFolder}}</a>
+      <td class="file-name" ng-class="fileIsFolder(file) ? 'folder-type' : ''">
+        <a href="" data-toggle="tooltip" title="{{file.name | fileNameFilter:currentDecodedFolder}}" ng-click="$emit('FileSelectAction', file)"><i class="fa" ng-class="fileIsFolder(file) ? 'fa-folder' : 'fa-file'"></i> {{file.name | fileNameFilter:currentDecodedFolder}}</a>
       </td>
-      <td class="text-right">
+      <td class="type-col text-right">
         <span>{{file.name | fileTypeFilter}}</span>
       </td>
-      <td class="text-right">
+      <td class="filesize-col text-right">
         <span> {{file.size | fileSizeFilter}}</span>
       </td>
-      <td class="text-right">
+      <td class="datemod-col text-right">
         <span> {{file.updated | lastModifiedFilter}}</span>
       </td>
     </tr>
   </tbody>
 </table>
+</div>
 </div>
