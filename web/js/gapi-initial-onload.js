@@ -6,11 +6,16 @@ function handleClientJSLoad() {
   angular.element(document).ready(function() {
     angular.element(document).injector()
     .invoke(["gapiClientService", "$window", "STORAGE_URL", "$q", "$log",
-    function(gapiClient, $window, STORAGE_URL, $q, $log) {
-      return loadStorageClient()
+             "cookieTester",
+    function(gapiClient, $window, STORAGE_URL, $q, $log, cookieTester) {
+      return cookieTester.checkCookies()
+             .then(function() {
+               return loadStorageClient();
+             })
              .then(function() {
                 return gapiClient.fulfill($window.gapi.client);
-              });
+              })
+             .then(null, function() {console.log("Cookie check error");});;
 
       function loadStorageClient() {
         var defer = $q.defer();
