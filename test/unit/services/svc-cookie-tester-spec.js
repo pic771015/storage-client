@@ -17,6 +17,14 @@ function mockQ() {
   };
 }
 
+function mockURL() {
+	return function($provide) {
+		$provide.service("COOKIE_CHECK_URL", function() {
+			return "";
+		});
+	};
+}
+
 function mockHttp(resp) {
   return function($provide) {
     $provide.service("$http", function() {
@@ -28,7 +36,7 @@ function mockHttp(resp) {
 describe("Services: Cookies", function() {
   beforeEach(module("cookieTester"));
   beforeEach(module(mockQ()));
-
+	beforeEach(module(mockURL()));
   describe("With failed third party cookie", function() {
     beforeEach(module(mockHttp("false")));
 

@@ -1,5 +1,5 @@
 angular.module("cookieTester", [])
-.service("cookieTester", ["$q", "$document", "$http", function($q, $document, $http) {
+.service("cookieTester", ["$q", "$document", "$http", "COOKIE_CHECK_URL", function($q, $document, $http, COOKIE_CHECK_URL) {
   var svc = {}
 
   svc.status = {message: "Checking local and third party cookies",
@@ -31,9 +31,9 @@ angular.module("cookieTester", [])
   svc.checkThirdPartyCookiePermission = function() {
     var defer = $q.defer();
 
-    $http.get("http://cookie-dot-storage-dot-rvacore-test.appspot.com/createThirdPartyCookie", {withCredentials: true})
+    $http.get(COOKIE_CHECK_URL + "/createThirdPartyCookie", {withCredentials: true})
     .then(function() {
-      return $http.get("http://cookie-dot-storage-dot-rvacore-test.appspot.com/checkThirdPartyCookie", {withCredentials: true});
+      return $http.get(COOKIE_CHECK_URL + "/checkThirdPartyCookie", {withCredentials: true});
     })
     .then(function(resp) {
       if (resp.data.check === "true") {
