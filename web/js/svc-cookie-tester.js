@@ -1,5 +1,5 @@
 angular.module("cookieTester", [])
-.service("cookieTester", ["$q", "$document", "$http", "COOKIE_CHECK_URL", function($q, $document, $http, COOKIE_CHECK_URL) {
+.service("cookieTester", ["$q", "$document", "$http", function($q, $document, $http) {
   var svc = {}
 
   svc.status = {message: "Checking local and third party cookies",
@@ -34,15 +34,19 @@ angular.module("cookieTester", [])
     $http.get(COOKIE_CHECK_URL + "/createThirdPartyCookie", {withCredentials: true})
     .then(function() {
       return $http.get(COOKIE_CHECK_URL + "/checkThirdPartyCookie", {withCredentials: true});
-    })
+    }, function(){
+		    console.log("create third party Cookie get request failed.");
+	    })
     .then(function(resp) {
       if (resp.data.check === "true") {
         return defer.resolve(true);
       } else {
         return defer.reject(false);
       }
-    })
-    .then(null, function() {$q.reject("Cookie error");});
+    }, function(){
+		    console.log("check third party Cookie get request failed.");
+	    })
+    .then(null, function() {defer.reject(false);});
 
     return defer.promise;
   };
