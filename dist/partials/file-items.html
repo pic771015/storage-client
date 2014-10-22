@@ -15,8 +15,8 @@
 <div class="alert alert-danger" ng-show="statusDetails.code===403">
   You are not authorized to view this Company's files
 </div>
-<div id="cookieTester" class="alert alert-danger" ng-controller="cookieTesterController as cookieController">
-  <div ng-show="!cookieController.status.passed">
+<div id="cookieTester" ng-controller="cookieTesterController as cookieController">
+  <div class="alert alert-danger" ng-show="!cookieController.status.passed">
       {{cookieController.status.message}}
   </div>
   <div ng-hide="!cookieController.status.passed">
