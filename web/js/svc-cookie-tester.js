@@ -29,25 +29,21 @@ angular.module("cookieTester", [])
   };
 
   svc.checkThirdPartyCookiePermission = function() {
-    var defer = $q.defer();
-
-    $http.get(COOKIE_CHECK_URL + "/createThirdPartyCookie", {withCredentials: true})
+    return $http.get(COOKIE_CHECK_URL + "/createThirdPartyCookie", {withCredentials: true})
     .then(function() {
       return $http.get(COOKIE_CHECK_URL + "/checkThirdPartyCookie", {withCredentials: true});
     })
     .then(function(resp) {
       if (resp.data.check === "true") {
-        return defer.resolve(true);
+        return true;
       } else {
-        return defer.reject(false);
+        return $q.reject();
       }
     })
     .then(null, function() {
       console.log("check third party Cookie get request failed.");
-      defer.reject(false);
+      return $q.reject(false);
     });
-
-    return defer.promise;
   };
 
   return svc;
