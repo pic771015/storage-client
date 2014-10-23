@@ -28,6 +28,9 @@ function mockURL() {
 function mockHttp(resp) {
   return function($provide) {
     $provide.service("$http", function() {
+      if (resp === "failed") {
+        return {get: function() {return Q.reject();}};
+      }
       return {get: function() {return Q.when({data: {check: resp}})}};
     });
   };
@@ -36,7 +39,20 @@ function mockHttp(resp) {
 describe("Services: Cookies", function() {
   beforeEach(module("cookieTester"));
   beforeEach(module(mockQ()));
-	beforeEach(module(mockURL()));
+  beforeEach(module(mockURL()));
+
+  describe("With failed $http", function() {
+    beforeEach(module(mockHttp("failed")));
+
+    it("should reject", function() {
+      var cookieService = getService("cookieTester");
+      return cookieService.checkThirdPartyCookiePermission()
+      .then(function() {assert(false);}, function(resp) {
+        expect(resp).to.equal(false);
+      });
+    });
+  });
+
   describe("With failed third party cookie", function() {
     beforeEach(module(mockHttp("false")));
 
