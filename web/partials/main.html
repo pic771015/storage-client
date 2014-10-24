@@ -3,12 +3,8 @@
     <div class="col-md-12">
       <div ng-controller="SubscriptionStatusController">
         <div id="subscription-status" subscription-status
-            ng-show="subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available'"
              product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
              ng-model="subscriptionStatus.result"></div>
-        <div class="row" ng-show="!(subscriptionStatus.result.status !== 'N/A' && subscriptionStatus.result.status !== 'Trial Available')">
-          <div class="col-md-12" ng-include="'partials/cost-disclaimer.html'"></div>
-        </div>
       </div>
     </div>
   </div>

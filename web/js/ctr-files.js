@@ -55,7 +55,9 @@ $window, MEDIA_LIBRARY_URL, $state) {
     requestSvc.executeRequest(gapiPath, {"companyId": $stateParams.companyId})
     .then(function(resp) {
       $scope.bucketCreationStatus = resp;
-      listSvc.refreshFilesList();
+      if (resp.code === 200) {
+        $state.go($state.current, $stateParams, {reload: true});
+      }
     });
   };
 	
