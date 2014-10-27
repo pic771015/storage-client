@@ -98,7 +98,7 @@ bower install
 
 * install the right Gulp version globally with this cmd:
 ```bash
-sudo npm install gulp@3.6.0 -g
+npm install gulp@3.6.0 -g
 ```
 
 * configure Gulp using this cmd:
