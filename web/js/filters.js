@@ -2,16 +2,26 @@
 
 /* Filters */
 
-angular.module("medialibraryFilters", [])
+angular.module("medialibraryFilters", ["risevision.common.i18n"])
 
-.filter("lastModifiedFilter", function() {
+.filter("lastModifiedFilter", ["$translate", function($translate) {
+  var mtr = null;
+
+  $translate(["common.jan", "common.feb", "common.mar", "common.apr",
+  	          "common.may", "common.jun", "common.jul", "common.aug",
+  	          "common.sep", "common.oct", "common.nov", "common.dec"])
+  	.then(function(values) {
+      mtr = values;
+    });
+
   return function(timestamp) {
 		if (!timestamp) {
 			return "";
 		}
 
-		var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+		var monthNames = [ mtr["common.jan"], mtr["common.feb"], mtr["common.mar"], mtr["common.apr"],
+			               mtr["common.may"], mtr["common.jun"], mtr["common.jul"], mtr["common.aug"], 
+			               mtr["common.sep"], mtr["common.oct"], mtr["common.nov"], mtr["common.dec"]];
 
 		var oldDate = new Date();
                     oldDate.setTime(timestamp.value);
@@ -43,14 +53,20 @@ angular.module("medialibraryFilters", [])
 		
 		return difference;
 	};
-})
+}])
 
-.filter("fileTypeFilter", function() {
+.filter("fileTypeFilter", ["$translate", function($translate) {
+	var folderLabel = "";
+
+    $translate("common.folder").then(function(value) {
+      folderLabel = value;
+    });
+
 	return function(filename) {
 		var re = /(?:\.([^.]+))?$/
                    ,ext;
 
-                if (filename.substr(-1) === "/") {return "Folder";}
+                if (filename.substr(-1) === "/") {return folderLabel;}
 
 		ext = re.exec(filename)[1];
 
@@ -61,13 +77,19 @@ angular.module("medialibraryFilters", [])
 
 		return "";
 	};
-})
+}])
 
-.filter("fileNameFilter", [function() {
+.filter("fileNameFilter", ["$translate", function($translate) {
+	var previousFolderLabel = "";
+
+    $translate("common.previous-folder").then(function(value) {
+      previousFolderLabel = value;
+    });
+
 	return function(filename, currentFolder) {
 		if (currentFolder && currentFolder.length > 0) {
                   if (filename === currentFolder) {
-                    return "/Previous Folder";
+                    return "/" + previousFolderLabel;
                   } else {
                     return filename.substr(currentFolder.length);
                   }
@@ -102,11 +124,20 @@ angular.module("medialibraryFilters", [])
 })
 
 .filter("bandwidthUseFilter",
-["fileSizeFilterFilter", function(fileSizeFilter) {
-  return function bandwidthUseFilter(bytes) {
-    return parseInt(bytes, 10) / 1000000 < 1 ? "less than one MB" :
-                                                fileSizeFilter(bytes);
+["fileSizeFilterFilter", "$translate", function(fileSizeFilter, $translate) {
+	var lessThan1MB = "";
 
+    $translate("storage-client.lessThan1MB").then(function(value) {
+      lessThan1MB = value;
+    });
+
+  return function bandwidthUseFilter(bytes) {
+  	if(isNaN(bytes)) {
+  		return bytes;
+  	}
+
+    return parseInt(bytes, 10) / 1000000 < 1 ? lessThan1MB :
+                                               fileSizeFilter(bytes);
   };
 }])
 

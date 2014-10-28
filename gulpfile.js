@@ -54,11 +54,13 @@ var env = process.env.NODE_ENV || "dev",
       "web/components/ng-biscuit/dist/ng-biscuit.min.js",
       "web/components/ng-csv/src/ng-csv/ng-csv.js",
       "web/components/rv-common-header/dist/js/common-header.js",
+      "web/components/rv-common-i18n/dist/i18n.js",
       "web/components/rv-loading/loading.js",
       "web/components/checklist-model/checklist-model.js",
-      "js/i18n.js",
       "web/components/rv-subscription-status/dist/js/subscription-status.js",
       "web/js/svc-cookie-tester.js",
+      "web/js/config/config.js",
+      "web/js/config/locales_config.js",
       "web/js/gapi-initial-onload.js",
       "web/js/*.js",
       "web/js/*/*.js",
@@ -106,6 +108,10 @@ var env = process.env.NODE_ENV || "dev",
 
     fontFiles = [
       "web/components/rv-common-style/dist/fonts/*"
+    ],
+
+    localeFiles = [
+      "web/components/rv-common-i18n/dist/locales/**/*"
     ];
 
 gulp.task("clean", function() {
@@ -115,7 +121,7 @@ gulp.task("clean", function() {
 
 gulp.task("lint", function() {
   return gulp.src(appJSFiles)
-    .pipe(jshint('.jshintrc'))
+    .pipe(jshint(".jshintrc"))
     .pipe(jshint.reporter("jshint-stylish"));
     // .pipe(jshint.reporter("fail"));
 });
@@ -177,6 +183,11 @@ gulp.task("fonts", ["clean"], function() {
     .pipe(gulp.dest("dist/fonts"));
 });
 
+gulp.task("locales", ["clean"], function() {
+  return gulp.src(localeFiles)
+    .pipe(gulp.dest("dist/locales"));
+});
+
 gulp.task("img", ["clean"], function() {
   return gulp.src(imgFiles)
     .pipe(gulp.dest("dist/img"));
@@ -206,9 +217,13 @@ gulp.task("config", function() {
   gulp.src(["./web/js/config/" + env + ".js"])
     .pipe(rename("config.js"))
     .pipe(gulp.dest("./web/js/config"));
+
+  gulp.src(["./web/js/config/locales_" + env + ".js"])
+    .pipe(rename("locales_config.js"))
+    .pipe(gulp.dest("./web/js/config"));
 });
 
-gulp.task("build", ["clean", "config", "html", "view", "i18n", "files", "img", "css", "fonts"]);
+gulp.task("build", ["clean", "config", "html", "view", "i18n", "files", "img", "css", "fonts", "locales"]);
 
 
 gulp.task("test", function() {
@@ -241,6 +256,7 @@ gulp.task("watch-dist", function() {
   gulp.watch(fileFiles, ["files"]);
   gulp.watch(imgFiles, ["img"]);
   gulp.watch(sassFiles, ["css"]);
+  gulp.watch(localeFiles, ["locales"]);
 });
 
 gulp.task("server", ["sass", "watch-dev"], function() {

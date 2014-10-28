@@ -36,6 +36,36 @@ function setupMocks(servicesPassFail) {
     $provide.service("$q", function() {
       return Q;
     });
+
+    $provide.provider("$translate", function() {
+      var service = {};
+
+      service.$get = function() {
+      	var fun = function(key) {
+      		return key;
+      	};
+
+        fun.storage = function() {
+        	return null;
+        };
+
+        fun.storageKey = function(key) {
+        	return key;
+        };
+
+        fun.preferredLanguage = function() {
+        	return "en"
+        };
+
+        fun.use = function() {
+
+        };
+
+      	return fun;
+      };
+
+      return service;
+    });
   };
 }
 

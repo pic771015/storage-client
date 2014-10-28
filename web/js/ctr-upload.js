@@ -1,7 +1,7 @@
 "use strict";
 
-angular.module("medialibrary").controller("UploadController", ["$scope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService",
-function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
+angular.module("medialibrary").controller("UploadController", ["$scope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService", "$translate",
+function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc, $translate) {
   var uploader = $scope.uploader = new FileUploader();
 
   uploader.method = "PUT";
@@ -12,8 +12,10 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
     fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
                          fileItem.file.name;
 
-    $scope.status.message = "Requesting permission";
-
+    $translate("storage-client.requesting-permission").then(function(msg) {
+      $scope.status.message = msg;
+    });
+    
     uriSvc.getURI(fileItem.file)
     .then(function(resp) {
       fileItem.url = resp;
@@ -25,7 +27,9 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
   };
 
   uploader.onBeforeUploadItem = function(item) {
-    $scope.status.message = "Uploading " + item.file.name;
+    $translate("storage-client.uploading", { filename: item.file.name }).then(function(msg) {
+      $scope.status.message = msg;
+    });
   };
 
   uploader.onCancelItem = function(item) {
@@ -35,8 +39,11 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
   uploader.onCompleteItem = function(item) {
     var listItem;
     if (item.isCancel) {return;}
-    $scope.status.message = "Verifying " + item.file.name;
 
+    $translate("storage-client.verifying", { filename: item.file.name }).then(function(msg) {
+      $scope.status.message = msg;
+    });
+    
     function getListItem(data) {
       if (!data || !data.items) {return undefined;}
 
@@ -56,7 +63,11 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
     .then(function(resp) {
       listItem = getListItem(resp.data);
       if (!listItem || parseInt(listItem.size) !== item.file.size) {
-        $scope.status.message = "Upload did not complete";
+
+        $translate("storage-client.upload-failed").then(function(msg) {
+          $scope.status.message = msg;
+        });
+        
         item.isError = true;
         return;
       }
@@ -67,8 +78,9 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc) {
       uploader.removeFromQueue(item);
     }, function(err) {
       console.log(err);
-      $scope.status.message = "Could not verify";
+      $translate("storage-client.verify-failed").then(function(msg) {
+        $scope.status.message = msg;
+      });
     });
   };
 }]);
-

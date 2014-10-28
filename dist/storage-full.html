@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Rise Vision Storage</title>
+    <title translate="storage-client.title"></title>
 
     <link rel="stylesheet" href="css/all.min.css"/>
   </head>
@@ -13,9 +13,15 @@
         </common-header>
 
         <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
-            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">Rise Vision needs access to your Google account to verify who you are </span>
-            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">Logging in...</span>
-            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">Requesting file list for {{userState.getUsername()}}</span>
+            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
+              <span translate="common.required-credentials"></span>
+            </span>
+            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">
+              <span translate="common.logging-in"></span>
+            </span>
+            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
+              <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
+            </span>
         </div>
 
         <div>

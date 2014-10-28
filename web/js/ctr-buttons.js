@@ -7,31 +7,31 @@ angular.module("medialibrary")
     gadgets.rpc.call("", "rscmd_closeSettings", null);
   };
 }])
-.controller("DeleteInstanceCtrl", ['$scope','$modalInstance', 'confirmationMessages', function($scope, $modalInstance, confirmationMessages) {
+.controller("DeleteInstanceCtrl", ["$scope","$modalInstance", "confirmationMessages", function($scope, $modalInstance, confirmationMessages) {
     $scope.confirmationMessages = confirmationMessages;
 
     $scope.ok = function() {
         $modalInstance.close();
     };
     $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $modalInstance.dismiss("cancel");
     };
 }
 ])
-.controller("NewFolderCtrl", ['$scope','$modalInstance', function($scope, $modalInstance) {
+.controller("NewFolderCtrl", ["$scope","$modalInstance", function($scope, $modalInstance) {
     $scope.ok = function() {
         $modalInstance.close($scope.folderName);
     };
     $scope.cancel = function() {
-        $modalInstance.dismiss('cancel');
+        $modalInstance.dismiss("cancel");
     };
 }
 ])
 .controller("ButtonsController",
 ["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "FileListService",
-"GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService",
+"GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService", "$q", "$translate",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, listSvc, requestSvc,
-MEDIA_LIBRARY_URL, downloadSvc) {
+MEDIA_LIBRARY_URL, downloadSvc, $q, $translate) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
@@ -46,7 +46,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     $scope.statusDetails.code = 200;
   };
 
-  $('#deleteForm').submit(function(event){
+  $("#deleteForm").submit(function(event){
     // prevent default browser behaviour
     event.preventDefault();
     $scope.deleteButtonClick();
@@ -73,48 +73,49 @@ MEDIA_LIBRARY_URL, downloadSvc) {
       var selectedFileNames = getSelectedFiles().map(function(file) {
           return file.name;
       });
-      var confirmationMessages = [];
-      var message = {};
+      var msgPromises = [];
+
       selectedFileNames.forEach(function(val) {
           if (val.substr(-1) === "/") {
-              message = { msg: "folder: " + val + " and all its contents"};
-              confirmationMessages.push(message);
+              msgPromises.push($translate("storage-client.delete-folder", { folder: val }));
           } else {
-              message = { msg: "file: " + val};
-              confirmationMessages.push(message);
+              msgPromises.push($translate("storage-client.delete-file", { file: val }));
           }
       });
 
-      var modalInstance = $modal.open({
-          templateUrl: 'deleteModal.html',
-          controller: 'DeleteInstanceCtrl',
-          size: size,
-          resolve: {
-              confirmationMessages: function(){
-                  return confirmationMessages;
-              }
+      $q.all(msgPromises).then(function(confirmationMessages) {
+        var modalInstance = $modal.open({
+            templateUrl: "deleteModal.html",
+            controller: "DeleteInstanceCtrl",
+            size: size,
+            resolve: {
+                confirmationMessages: function(){
+                    return confirmationMessages;
+                }
+            }
+        });
 
-          }
-
-      });
-      modalInstance.result.then(function(){
-          //do what you need if user presses ok
-          var requestParams = {"companyId": $stateParams.companyId
-              ,"files": selectedFileNames};
-          requestSvc.executeRequest("storage.files.delete", requestParams)
-              .then(function(resp) {
-                  if (resp.code === 403) {
-                      $scope.statusDetails.code = resp.code;
-                      $scope.statusDetails.message = "Permission refused for " + resp.userEmail;
-                  }
-                  listSvc.resetSelections();
-                  listSvc.refreshFilesList();
-                  $scope.shouldBeOpen = false;
-              });
-      }, function (){
-          // do what you need to do if user cancels
-          $log.info('Modal dismissed at: ' + new Date());
-          $scope.shouldBeOpen = false;
+        modalInstance.result.then(function() {
+            //do what you need if user presses ok
+            var requestParams = {"companyId": $stateParams.companyId
+                ,"files": selectedFileNames};
+            requestSvc.executeRequest("storage.files.delete", requestParams)
+                .then(function(resp) {
+                    if (resp.code === 403) {
+                        $scope.statusDetails.code = resp.code;
+                        $translate("storage-client.permission-refused", { email: resp.userEmail }).then(function(msg) {
+                          $scope.statusDetails.message = msg;
+                        });
+                    }
+                    listSvc.resetSelections();
+                    listSvc.refreshFilesList();
+                    $scope.shouldBeOpen = false;
+                });
+        }, function (){
+            // do what you need to do if user cancels
+            $log.info("Modal dismissed at: " + new Date());
+            $scope.shouldBeOpen = false;
+        });
       });
   };
 
@@ -135,8 +136,8 @@ MEDIA_LIBRARY_URL, downloadSvc) {
       $scope.shouldBeOpen = true;
 
       var modalInstance = $modal.open({
-          templateUrl: 'newFolderModal.html',
-          controller: 'NewFolderCtrl',
+          templateUrl: "newFolderModal.html",
+          controller: "NewFolderCtrl",
           size: size
       });
       modalInstance.result.then(function(newFolderName){
@@ -151,7 +152,7 @@ MEDIA_LIBRARY_URL, downloadSvc) {
               .then(function() {listSvc.refreshFilesList();});
       }, function (){
           // do what you need to do if user cancels
-          $log.info('Modal dismissed at: ' + new Date());
+          $log.info("Modal dismissed at: " + new Date());
       });
   };
 
@@ -166,11 +167,11 @@ MEDIA_LIBRARY_URL, downloadSvc) {
     return selectedFiles;
   }
 }])
-.directive('focusMe', function($timeout) {
+.directive("focusMe", function($timeout) {
     return {
-        scope: { trigger: '@focusMe' },
+        scope: { trigger: "@focusMe" },
         link: function(scope, element) {
-            scope.$watch('trigger', function(value) {
+            scope.$watch("trigger", function(value) {
                     $timeout(function() {
                         element[0].focus();
                     });

@@ -1,6 +1,6 @@
 "use strict";
 angular.module("medialibrary", [
-  "common-config",
+  "risevision.common.config",
   "ui.router",
   "ui.bootstrap",
   "medialibraryFilters", 
@@ -10,7 +10,8 @@ angular.module("medialibrary", [
   "gapi-file",
   "angularFileUpload",
   "multi-download",
-  "risevision.widget.common.subscription-status"
+  "risevision.widget.common.subscription-status",
+  "risevision.common.i18n"
 ]);
 
 angular.module("medialibrary")

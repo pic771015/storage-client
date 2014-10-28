@@ -1,19 +1,19 @@
 <div ng-controller="FileListCtrl" id="list" class="table-responsive">
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
-  Requesting file list...
+  <span translate="storage-client.requesting-file-list"></span>
 </div>
 <div ng-class="{alert:true, 'alert-info':(bucketCreationStatus.code < 300), 'alert-danger':(bucketCreationStatus.code > 299), 'alert-dismissable':true}" ng-show="statusDetails.code===404">
   <button class="btn btn-success btn-fixed-width" type="button" ng-click="createBucket()">
-    <span title="Create initial storage folder">
-      Create initial storage folder <i class="fa fa-white fa-check icon-right"></i>
+    <span title="{{ 'storage-client.create-initial-folder' | translate }}">
+      <span translate="storage-client.create-initial-folder"></span> <i class="fa fa-white fa-check icon-right"></i>
     </span>
   </button>
   <span ng-show="bucketCreationStatus.code > 299">
-    Could not create initial folder for {{bucketCreationStatus.userEmail}}
+    <span translate="storage-client.create-initial-folder-failed" translate-values="{ email: bucketCreationStatus.userEmail }"></span>
   </span>
 </div>
 <div class="alert alert-danger" ng-show="statusDetails.code===403">
-  You are not authorized to view this Company's files
+  <span translate="storage-client.not-authorized"></span>
 </div>
 <div id="cookieTester" ng-controller="cookieTesterController as cookieController">
   <div class="alert alert-danger" ng-show="!cookieController.status.passed">
@@ -21,14 +21,14 @@
   </div>
   <div ng-hide="!cookieController.status.passed">
     <div id="gapiLoadNotice" class="alert alert-danger" ng-controller="gapiClientController as gapiController" ng-show="!gapiController.gapiClientFullyLoaded">
-    Loading storage functions
+      <span translate="storage-client.loading-functions"></span>
     </div>
 
     <div id="oauthNotice" class="alert alert-danger" ng-hide="statusDetails.code !== 401 && statusDetails.code !== 400 && isAuthed === true">
-      <span>Rise Vision needs access to your Google account to verify who you are </span>
+      <span translate="common.required-credentials"></span>
       <button class="btn btn-primary btn-sm" type="button" ng-click="login()">
-        <span title="Initiate Permission Request" 
-              class="fa fa-check"> Okay</span>
+        <span title="{{ 'storage-client.permission-request' | translate }}" 
+              class="fa fa-check"> <span translate="common.ok"></span></span>
       </button>
     </div>
   </div>
@@ -40,7 +40,7 @@
         <input type="checkbox" ng-model="selectAll" ng-change="selectAllCheckboxes()">
       </th>
       <th class="" ng-click="orderByAttribute = 'name'; reverseSort = !reverseSort">
-        <a href="">File Name
+        <a href=""><span translate="common.file-name"></span>
           <span ng-show="orderByAttribute=='name'">
             <span ng-show="reverseSort">
               <i class="fa fa-sort-alpha-desc"></i>
@@ -52,7 +52,7 @@
         </a>
       </th>
       <th class="type-col text-right" ng-click="orderByAttribute = fileExtOrderFunction; reverseSort = !reverseSort">
-        <a href="">Type
+        <a href=""><span translate="common.file-type"></span>
           <span ng-show="orderByAttribute==fileExtOrderFunction">
             <span ng-show="reverseSort">
               <i class="fa fa-sort-asc"></i>
@@ -64,7 +64,7 @@
         </a>
       </th>
       <th class="filesize-col text-right" ng-click="orderByAttribute = fileSizeOrderFunction; reverseSort = !reverseSort">
-        <a href="">File Size
+        <a href=""><span translate="common.file-size"></span>
           <span ng-show="orderByAttribute==fileSizeOrderFunction">
             <span ng-show="reverseSort">
               <i class="fa fa-sort-asc"></i>
@@ -76,7 +76,7 @@
         </a>
       </th>
       <th class="datemod-col text-right" ng-click="orderByAttribute = dateModifiedOrderFunction; reverseSort = !reverseSort">
-        <a href="">Date Modified
+        <a href=""><span translate="common.file-date-mod"></span>
           <span ng-show="orderByAttribute==dateModifiedOrderFunction">
             <span ng-show="reverseSort">
               <i class="fa fa-sort-desc"></i>

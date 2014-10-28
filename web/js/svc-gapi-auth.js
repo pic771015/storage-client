@@ -1,5 +1,5 @@
 "use strict";
-angular.module("gapi-auth", ["common-config", "gapi"])
+angular.module("gapi-auth", ["risevision.common.config", "gapi"])
 .service("OAuthAuthorizationService",
 ["$window", "$interval", "$q", "gapiClientService",
 "GAPI_CLIENT_ID", "GAPI_SCOPES",  

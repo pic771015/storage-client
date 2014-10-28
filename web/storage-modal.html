@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>Rise Storage</title>
+	<title translate="storage-client.title"></title>
 
 	<link rel="shortcut icon" href="favicon.ico" />
 
@@ -20,12 +20,15 @@
   <script type="text/javascript" src="components/angular/angular.js"></script>
   <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
   <script type="text/javascript" src="components/angular-ui-router/release/angular-ui-router.js"></script>
+
   <script src="components/angular-file-upload/angular-file-upload.js"></script>
   <script src="components/angular-translate/angular-translate.js"></script>
-  <script src="components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
-  <script src="components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js"></script>
   <script src="components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="js/i18n.js"></script>
+
+  <script type="text/javascript" src="js/config/locales_config.js"></script>
+  <script src="components/rv-common-i18n/dist/i18n.js"></script>
+
+  <script src="components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js"></script>
   <script src="components/rv-subscription-status/dist/js/subscription-status.js"></script>
 
   <script type="text/javascript" src="js/config/config.js"></script>
@@ -62,9 +65,9 @@
     </button>
   </div>
   <h2>
-    Storage
+    <span translate="storage-client.header"></span>
     <a type="button" class="btn btn-rv-help btn-fixed-width" href="https://github.com/Rise-Vision/storage-client" target="_blank">
-      Contribute <i class="fa fa-github fa-lg "></i>
+      <span translate="common.contribute"></span> <i class="fa fa-github fa-lg "></i>
     </a>
   </h2>
   <div ui-view></div>
