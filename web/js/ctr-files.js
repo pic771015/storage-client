@@ -45,9 +45,7 @@ $window, MEDIA_LIBRARY_URL, $state) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList().then(function() {
-        $scope.$broadcast("files-refreshed", "");
-      });
+    listSvc.refreshFilesList();
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
