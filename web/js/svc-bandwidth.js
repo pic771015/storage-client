@@ -19,7 +19,7 @@ function bandwidthFactory($q, OAuthStatusService, requestService, $translate) {
       var params = {"companyId": companyId};
       return requestService.executeRequest("storage.getBucketBandwidth", params)
             .then(function(resp) {
-              if (!resp.message && resp.code !== 200) {
+              if ((!resp.message && resp.code !== 200) || resp.result === false) {
                 console.log("Bandwidth unavailable");
                 throw resp;
               }
