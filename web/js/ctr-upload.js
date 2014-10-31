@@ -22,7 +22,7 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc, $translat
       uploader.uploadItem(fileItem);
     })
     .then(null, function(resp) {
-      $scope.status = resp;
+      $scope.status.message = resp;
     });
   };
 

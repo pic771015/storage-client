@@ -101,7 +101,7 @@ describe("Services: Upload URI Service", function () {
       var uploadService = getService("UploadURIService");
       return uploadService.getURI({name: "filename", type: ""})
       .then(assert("false"), function (resp) {
-        expect(resp.result).to.equal(false);
+        expect(resp).to.equal("storage-client.upload-uri-request-failed");
       });
     });
   });
