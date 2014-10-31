@@ -29,10 +29,13 @@ function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $inter
       if (resp.result === false) {
         resp.message = resp.userEmail ? uriFailedMail(resp.userEmail)
                                       : uriFailed;
-        return $q.reject(resp);
+        return $q.reject(resp.message);
       } else {
         return resp.message;
       }
+    })
+    .then(null, function(resp) {
+      return $q.reject(resp || "An error ocurred attempting to begin an upload");
     });
   };
 
