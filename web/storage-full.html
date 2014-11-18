@@ -25,9 +25,10 @@
     <meta property="og:image" content="https://s3.amazonaws.com/Store-Products/Rise-Vision/storage_image.png" />
     <meta property="og:description" content="Rise Vision Storage is a media library for all of your digital signage content assets" />
 
-    <!-- build:css css/all.min.css -->
-    <link rel="stylesheet" type="text/css"
-          href="components/rv-common-style/dist/css/rise.min.css" />
+    <link rel="icon" href="storage.ico" />
+    
+    <!-- build:css css/all-stg-full.min.css -->
+    <link href="components/rv-common-style/dist/css/rise.min.css" rel="stylesheet" type="text/css">
     <!-- endbuild -->
   </head>
 
@@ -36,10 +37,11 @@
       <analytics analytics-account-id="'UA-82239-1'"></analytics>
       
       <div ng-controller="FullScreenController">
-        <common-header nav-options="navOptions">
+        <common-header nav-options="navOptions" hide-shopping-cart="true">
         </common-header>
-
-        <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
+      
+        <div class="container">
+          <div class="notifications alert alert-info alert-dismissable" ng-show="!userState.isLoggedIn() || currentState">
             <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
               <span translate="common.required-credentials"></span>
             </span>
@@ -49,10 +51,11 @@
             <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
               <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
             </span>
-        </div>
+          </div>
 
-        <div>
-          <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
+          <div>
+            <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -74,6 +77,7 @@
     <script src="components/angular-sanitize/angular-sanitize.min.js"></script>
     <script src="components/angular-spinner/angular-spinner.js"></script>
     <script src="components/angular-touch/angular-touch.min.js"></script>
+    <script src="components/angular-local-storage/dist/angular-local-storage.js"></script>
 
     <script src="components/ngstorage/ngStorage.min.js"></script>
     <script src="components/ng-biscuit/dist/ng-biscuit.min.js"></script>

@@ -5,11 +5,12 @@ describe("DeleteInstanceCtrl", function() {
     var DeleteInstanceCtrl
         ,scope = {}
         ,modalInstance = {}
-        ,confirmationMessages = {};
+        ,confirmationMessages = {}
+        ,action = "delete";
 
     beforeEach(inject(function($controller) {
         DeleteInstanceCtrl = $controller("DeleteInstanceCtrl"
-            ,{$scope: scope, $modalInstance: modalInstance, confirmationMessages: confirmationMessages});
+            ,{$scope: scope, $modalInstance: modalInstance, confirmationMessages: confirmationMessages, action: action});
     }));
 
     it("should be defined", function() {

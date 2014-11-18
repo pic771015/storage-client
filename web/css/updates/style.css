@@ -1,0 +1,128 @@
+.ellipsed {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; }
+
+.row-no-padding [class*="col-"] {
+  padding-right: 0 !important; }
+
+[class^="icon-"]::before, [class*=" icon-"]::before {
+  vertical-align: middle; }
+
+.icon-lg {
+  font-size: 24px; }
+
+.icon-sm {
+  font-size: 12px; }
+
+.form-control {
+  height: 40px;
+  font-size: 16px; }
+
+.btn-lg {
+  padding: 0 15px;
+  height: 40px;
+  line-height: 36px;
+  font-size: 16px;
+  font-weight: 600; }
+
+.btn-rv-help {
+  border-radius: 20px; }
+
+.table {
+  margin-top: 0; }
+
+.filetable > thead > tr > th {
+  border-bottom: none;
+  padding: 10px;
+  background: none; }
+  .filetable > thead > tr > th a {
+    color: #797e83; }
+
+.filetable > tbody > tr > td {
+  background: #fff;
+  padding: 10px; }
+
+.table-responsive {
+  border: 1px solid #d4d4d4;
+  border-radius: 6px; }
+
+.inner-addon {
+  position: relative; }
+  .inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+    color: #d1d1d1; }
+
+.left-addon i {
+  left: 0px; }
+
+.right-addon i {
+  right: 0px; }
+
+.left-addon input {
+  padding-left: 30px; }
+
+.right-addon input {
+  padding-right: 30px; }
+
+.app-header {
+  margin-bottom: 10px; }
+  .app-header h1 {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 41px;
+    margin: 0 5px 0 0;
+    display: inline-block; }
+  .app-header .btn-rv-help {
+    vertical-align: top;
+    margin-top: 8px; }
+  .app-header .global-actions {
+    margin-top: 4px;
+    float: right; }
+    @media (max-width: 480px) {
+      .app-header .global-actions {
+        margin-top: 20px;
+        float: none;
+        text-align: center; }
+        .app-header .global-actions .btn {
+          display: block;
+          width: 100%; } }
+
+.btn-cta {
+  background-color: #41b864;
+  color: #fff; }
+  .btn-cta:hover {
+    color: #fff;
+    background-color: #64c880; }
+  .btn-cta i {
+    vertical-align: top;
+    margin-right: 5px; }
+
+.toolbar {
+  border: 1px solid #d4d4d4;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  border-radius: 6px; }
+  .toolbar .toolbar-nav .btn:last-child {
+    border-right: none; }
+  .toolbar .toolbar-actions {
+    float: right; }
+    @media (max-width: 768px) {
+      .toolbar .toolbar-actions {
+        display: none; } }
+    .toolbar .toolbar-actions .btn:last-child {
+      border-right: none; }
+  .toolbar .btn {
+    border-radius: 0;
+    background: none;
+    border-right: 1px solid #e6e6e6;
+    line-height: 36px; }
+    .toolbar .btn i {
+      vertical-align: top;
+      color: #41b864; }
+  @media (max-width: 768px) {
+    .toolbar .ellipsed {
+      width: 150px;
+      display: inline-block; } }
