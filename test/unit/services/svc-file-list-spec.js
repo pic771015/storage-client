@@ -39,7 +39,7 @@ describe("Services: FileListService", function() {
     return fileListSvc.refreshFilesList()
     .then(function() {
       expect(fileListSvc.filesDetails.localFiles).to.equal(true);
-      expect(fileListSvc.filesDetails.files.length).to.equal(2);
+      expect(fileListSvc.filesDetails.files.length).to.equal(3);
     });
   });
 
@@ -47,7 +47,7 @@ describe("Services: FileListService", function() {
     var fileListSvc = getService("FileListService");
     return fileListSvc.refreshFilesList("fj243g43g4-g43g43g43g-34g43")
     .then(function() {
-      expect(fileListSvc.filesDetails.files.length).to.equal(2);
+      expect(fileListSvc.filesDetails.files.length).to.equal(3);
     });
   });
 });

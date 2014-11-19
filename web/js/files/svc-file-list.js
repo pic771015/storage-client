@@ -78,6 +78,9 @@ function (LocalFiles, requestor, $stateParams) {
             resp.files.unshift({ name: parentFolder, size: 0, updated: null });
           }          
         }
+        else if(!$stateParams.folderPath || !parentFolder || parentFolder === "/") {
+          resp.files.splice(1, 0, { name: "--TRASH--/", size: 0, updated: null });
+        }
 
         svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
           return prev + parseInt(next.size);

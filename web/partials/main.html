@@ -1,3 +1,4 @@
+<div>
   <div class="row row-no-padding">
     <div class="col-md-12">
       <div ng-controller="SubscriptionStatusController">
@@ -13,7 +14,7 @@
       <div class="col-lg-12">
         <div class="form-group search-bar left-inner-addon">
         	<i class="fa fa-search"></i>
-          <input type="text" class="form-control" placeholder="Search a file or folder" ng-model="query">
+          <input type="text" class="form-control" placeholder="Search for a File or Folder" ng-model="query">
           <span class="input-group-btn">
           </span>
         </div>
@@ -22,13 +23,10 @@
   </div>
 	
 	<div class="bar-wrapper" id="files-toolbar" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
-		<div class="bar" id="files-toolbar" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
-			<div class="col-sm-6">
-        <button class="btn btn-default btn-lg" ng-show="!isTrashFolder()" ng-click="showTrash()" ng-disabled="fileListStatus.code===202"><i class="fa fa-trash-o"></i> Trash</button>
-        <button class="btn btn-default btn-lg" ng-show="isTrashFolder()" ng-click="showYourFiles()" ng-disabled="fileListStatus.code===202"><i class="fa fa-arrow-left"></i> Go Back</button>
-
-  			<span class="ellipsed current-folder" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
-  			<span class="ellipsed current-folder" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
+		<div class="bar">
+			<div class="col-sm-6" style="transform: translateY(100%);">
+  			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
+  			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
 			</div>
 
 			<div class="col-sm-6 text-right hidden-xs">
@@ -36,25 +34,14 @@
           <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
         </button>
 				<button type="button" class="btn btn-lg" ng-show="!isTrashFolder()" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
-				<button type="button" class="btn btn-lg" ng-show="!isTrashFolder()" ng-click="trashButtonClick('md')" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-trash-o fa-lg"></i></button>
-        <button type="button" class="btn btn-lg" ng-show="isTrashFolder()" ng-click="restoreButtonClick('md')" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-repeat fa-lg"></i></button>
+				<button type="button" class="btn btn-lg" ng-show="!isTrashFolder()" ng-click="trashButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-trash-o fa-lg"></i></button>
+        <button type="button" class="btn btn-lg" ng-show="isTrashFolder()" ng-click="restoreButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-repeat fa-lg"></i></button>
 				<button type="button" class="btn btn-lg" ng-show="isTrashFolder()" ng-click="deleteButtonClick('md')" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-lg" ng-class="isTrashFolder() ? 'fa-times' : 'fa-trash-o'"></i></button>
 			</div>
 		</div>
 	</div>
-	
-  <div id="buttons-action" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
-    <div class="storage-used-info">
-      <div><span translate="storage-client.total-file-size"></span>: {{filesDetails.totalBytes | fileSizeFilter}} </div>
-      <div ng-controller="BandwidthController" ng-show="bandwidthUse">
-        <span translate="storage-client.month-bandwidth"></span>: {{bandwidthUse | bandwidthUseFilter}}
-      </div>
-    </div>
-    <div class="alert alert-danger" style="cursor:pointer" ng-show="statusDetails.code!==200" ng-click="resetStatus()">
-      {{statusDetails.message}}
-    </div>
-  </div>
 </div>
+
 <div class="row" ng-controller="UploadController">
   <div class="col-md-12">
     <div class="panel panel-info" ng-show="uploader.queue.length > 0">
@@ -98,37 +85,40 @@
 <script type="text/ng-template" id="deleteModal.html">
     <form id="deleteForm">
         <div class="modal-header">
-            <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h3 class="modal-title" ng-show="action === 'delete'">Please confirm PERMANENT deletion of:</h3>
-            <h3 class="modal-title" ng-show="action === 'trash'">Please confirm moving to Trash of:</h3>
-            <h3 class="modal-title" ng-show="action === 'restore'">Please confirm restoring of:</h3>
+            <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">{{'common.close' | translate}}</span></button>
+            <h2 class="modal-title">{{'storage-client.confirm-delete' | translate}}</h2>
         </div>
         <div class="modal-body">
-            <ul data-ng-repeat="message in confirmationMessages">
-                <li>{{ message }}</li>
-            </ul>
+          <span>{{confirmationMessage}}</span>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-default" ng-click="cancel()">Close</button>
-            <button class="btn btn-primary" ng-click="ok()">{{action === 'delete' ? 'Delete' : (action === 'trash' ? 'Move' : 'Restore')}}</button>
+            <button class="btn btn-primary" ng-click="ok()">
+              <span translate="common.delete-forever"></span> <i class="fa fa-white fa-check icon-right"></i>
+            </button>
+            <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
+              <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
+            </button>
         </div>
     </form>
 </script>
 <script type="text/ng-template" id="newFolderModal.html">
     <form>
         <div class="modal-header">
-          <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-          <h2 class="modal-title">New Folder</h2>
+          <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">{{'common.close' | translate}}</span></button>
+          <h2 class="modal-title">{{'storage-client.new-folder' | translate}}</h2>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label>Folder Name</label>
-            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter folder name">
+            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter Folder Name">
           </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-default" ng-click="cancel()">Close</button>
-            <button class="btn btn-primary" ng-click="ok()">Create Folder</button>
+            <button class="btn btn-primary btn-fixed-width" ng-click="ok()">
+              <span translate="common.save"></span> <i class="fa fa-white fa-check icon-right"></i>
+            </button>
+            <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
+              <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
+            </button>
         </div>
     </form>
 </script>

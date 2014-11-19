@@ -80,10 +80,14 @@ angular.module("medialibraryFilters", ["risevision.common.i18n"])
 }])
 
 .filter("fileNameFilter", ["$translate", function($translate) {
+	var trash = "--TRASH--/";
+	
 	var previousFolderLabel = "";
+	var trashLabel = "";
 
-    $translate("common.previous-folder").then(function(value) {
-      previousFolderLabel = value;
+    $translate(["common.previous-folder", "storage-client.trash"]).then(function(values) {
+      previousFolderLabel = values["common.previous-folder"];
+      trashLabel = values["storage-client.trash"];
     });
 
 	return function(filename, currentFolder) {
@@ -94,7 +98,10 @@ angular.module("medialibraryFilters", ["risevision.common.i18n"])
                     return filename.substr(currentFolder.length);
                   }
 		}
-
+		else if(filename === trash) {
+      	  return trashLabel;
+        }
+        
 		return filename;
 	};
 }])

@@ -89,6 +89,10 @@ $window, MEDIA_LIBRARY_URL, $state) {
     return file.name.substr(-1) === "/";
   };
 
+  $scope.fileIsTrash = function(file) {
+    return file.name === "--TRASH--/";
+  };
+
   $scope.$on("FileSelectAction", function(event, file) {
     var fileUrl = bucketUrl + file.name;
     var data = { params: fileUrl };
