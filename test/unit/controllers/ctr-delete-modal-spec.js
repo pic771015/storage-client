@@ -5,12 +5,11 @@ describe("DeleteInstanceCtrl", function() {
     var DeleteInstanceCtrl
         ,scope = {}
         ,modalInstance = {}
-        ,confirmationMessages = {}
-        ,action = "delete";
+        ,confirmationMessage = "";
 
     beforeEach(inject(function($controller) {
         DeleteInstanceCtrl = $controller("DeleteInstanceCtrl"
-            ,{$scope: scope, $modalInstance: modalInstance, confirmationMessages: confirmationMessages, action: action});
+            ,{$scope: scope, $modalInstance: modalInstance, confirmationMessage: confirmationMessage});
     }));
 
     it("should be defined", function() {
@@ -25,7 +24,7 @@ describe("DeleteInstanceCtrl", function() {
         expect(scope.ok).to.exist;
     });
 
-    it("should provide a confirmationsMessages variable ", function() {
-        expect(scope.confirmationMessages).to.exist;
+    it("should provide a confirmationsMessage variable ", function() {
+        expect(scope.confirmationMessage).to.exist;
     });
 });
