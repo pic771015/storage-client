@@ -164,7 +164,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
       message = "storage-client." + message + "-" + (selectedFileNames.length === 1 ? "singular" : "plural");
 
       $translate(message, { count: selectedFileNames.length }).then(function(confirmationMessage) {
-        var modalInstance = $modal.open({
+        $scope.modalInstance = $modal.open({
             templateUrl: "deleteModal.html",
             controller: "DeleteInstanceCtrl",
             windowClass: "modal-custom",
@@ -175,7 +175,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
             }
         });
 
-        modalInstance.result.then(function() {
+        $scope.modalInstance.result.then(function() {
           // do what you need if user presses ok
           $scope.processFilesAction("delete");
         }, function () {
@@ -225,28 +225,16 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
       });
   };
 
-  $scope.selectButtonClick = function() {
-    var fileUrls = [], data = {};
-    data.params = [];
-
-    getSelectedFiles().forEach(function(file) {
-      fileUrls.push(bucketUrl + file.name);
-      data.params.push(bucketUrl + file.name);
-    });
-
-    $window.parent.postMessage(fileUrls, "*");
-    gadgets.rpc.call("", "rscmd_saveSettings", null, data);
-  };
-
   $scope.newFolderButtonClick = function(size) {
       $scope.shouldBeOpen = true;
 
-      var modalInstance = $modal.open({
+      $scope.modalInstance = $modal.open({
           templateUrl: "newFolderModal.html",
           controller: "NewFolderCtrl",
           size: size
       });
-      modalInstance.result.then(function(newFolderName){
+
+      $scope.modalInstance.result.then(function(newFolderName){
           //do what you need if user presses ok
           if (!newFolderName || newFolderName.indexOf("/") > -1) {return;}
           var requestParams =

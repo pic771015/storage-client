@@ -49,6 +49,7 @@ angular.module("storageFull")
 
     $scope.storageModal = document.createElement("iframe");
     $scope.storageModal.id = "storage-modal-embedded";
+    $scope.storageModal.name = "storage-modal-embedded";
     $scope.storageModal.src = "storage-modal.html#/files/" + companyId + "?storageFullscreen=true";
     $scope.storageModal.className = "storage-selector-iframe-full";
 
