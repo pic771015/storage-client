@@ -33,15 +33,16 @@ angular.module("medialibrary")
 "GAPIRequestService", "MEDIA_LIBRARY_URL", "DownloadService", "$q", "$translate", "$state",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
 MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
-  $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = MEDIA_LIBRARY_URL + bucketName + "/";
+
+  $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
+  $scope.storageFull = ($window.location.href.indexOf("storageFullscreen=true") > -1);
+  $scope.showCloseButton = !$scope.storageFull;
 
   $scope.filesDetails = listSvc.filesDetails;
   $scope.fileListStatus = listSvc.statusDetails;
   $scope.statusDetails = { code: 200, message: "" };
-
-  $scope.showCloseButton = ($window.location.href.indexOf("storageFullscreen=true") === -1);
 
   $scope.isTrashFolder = function() {
     return $scope.fileListStatus.folder && $scope.fileListStatus.folder.indexOf("--TRASH--/") === 0;
@@ -84,7 +85,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
   };
 
   $scope.deleteButtonClick = function(size) {
-    $scope.confirmDeleteFilesAction("delete", size);
+    $scope.confirmDeleteFilesAction(size);
   };
 
   $scope.trashButtonClick = function() {
@@ -166,7 +167,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
         var modalInstance = $modal.open({
             templateUrl: "deleteModal.html",
             controller: "DeleteInstanceCtrl",
-            size: size,
+            windowClass: "modal-custom",
             resolve: {
                 confirmationMessage: function() {
                   return confirmationMessage;

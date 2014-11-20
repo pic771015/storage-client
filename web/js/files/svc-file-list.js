@@ -7,7 +7,8 @@ function (LocalFiles, requestor, $stateParams) {
                      ,localFiles: false
                      ,totalBytes: 0
                      ,checkedCount: 0
-                     ,folderCheckedCount: 0};
+                     ,folderCheckedCount: 0
+                     ,checkedItemsCount: 0};
 
   svc.statusDetails = {code: 200};
 
@@ -31,7 +32,10 @@ function (LocalFiles, requestor, $stateParams) {
     svc.filesDetails.files.forEach(function(val) {
       val.isChecked = false;
     });
-    svc.filesDetails.folderCheckedCount = svc.filesDetails.checkedCount = 0;
+    
+    svc.filesDetails.checkedCount = 0;
+    svc.filesDetails.folderCheckedCount = 0;
+    svc.filesDetails.checkedItemsCount = 0;
   };
 
   svc.refreshFilesList = function () {
@@ -60,11 +64,13 @@ function (LocalFiles, requestor, $stateParams) {
     });
 
     function processFilesResponse(resp) {
+      var TRASH = "--TRASH--/";
+      var parentFolder = decodeURIComponent($stateParams.folderPath);
+
       if (resp.files) {
-        var parentFolder = decodeURIComponent($stateParams.folderPath);
         var parentFolderFound = false;
 
-        if(parentFolder.indexOf("--TRASH--/") === 0) {
+        if(parentFolder.indexOf(TRASH) === 0) {
           for(var i = 0; i < resp.files.length; i++) {
             var file = resp.files[i];
 
@@ -78,9 +84,6 @@ function (LocalFiles, requestor, $stateParams) {
             resp.files.unshift({ name: parentFolder, size: 0, updated: null });
           }          
         }
-        else if(!$stateParams.folderPath || !parentFolder || parentFolder === "/") {
-          resp.files.splice(1, 0, { name: "--TRASH--/", size: 0, updated: null });
-        }
 
         svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
           return prev + parseInt(next.size);
@@ -91,6 +94,11 @@ function (LocalFiles, requestor, $stateParams) {
       }
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
+
+      if(!$stateParams.folderPath || !parentFolder || parentFolder === "/") {
+        svc.filesDetails.files.splice(1, 0, { name: TRASH, size: 0, updated: null });
+      }
+        
       return resp;
     }
   };

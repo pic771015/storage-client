@@ -1,10 +1,22 @@
 <div>
-  <div class="row row-no-padding">
-    <div class="col-md-12">
-      <div ng-controller="SubscriptionStatusController">
+  <div ng-controller="ButtonsController">
+    <div class="app-header">
+      <div class="title-block">
+        <h1 translate="storage-client.header"></h1>
+        <div ng-controller="SubscriptionStatusController" class="store-status">
         <div id="subscription-status" subscription-status
              product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
              ng-model="subscriptionStatus.result"></div>
+        </div>
+      </div>  
+      <div class="global-actions">
+        
+        <button class="btn btn-lg btn-primary" type="button" title="{{'storage-client.upload-file' | translate}}" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
+          <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>
+        </button>
+        <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+          <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -24,19 +36,24 @@
 	
 	<div class="bar-wrapper" id="files-toolbar" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
 		<div class="bar">
-			<div class="col-sm-6" style="transform: translateY(100%);">
-  			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
-  			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
+			<div class="col-sm-6">
+        <span ng-class="filesDetails.checkedItemsCount > 0 ? 'hidden-xs' : ''">
+    			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
+    			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
+        </span>
 			</div>
 
-			<div class="col-sm-6 text-right hidden-xs">
-        <button type="button" title="select" ng-if="storageModal" class="btn btn-success btn-lg" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+			<div class="col-sm-6 text-right">
+        <span ng-show="filesDetails.checkedItemsCount > 0">
+          <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
+        </span>
+        <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
           <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
         </button>
-				<button type="button" class="btn btn-lg" ng-show="!isTrashFolder()" ng-click="downloadButtonClick()" ng-disabled="!(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
-				<button type="button" class="btn btn-lg" ng-show="!isTrashFolder()" ng-click="trashButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-trash-o fa-lg"></i></button>
-        <button type="button" class="btn btn-lg" ng-show="isTrashFolder()" ng-click="restoreButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-repeat fa-lg"></i></button>
-				<button type="button" class="btn btn-lg" ng-show="isTrashFolder()" ng-click="deleteButtonClick('md')" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1"><i class="fa fa-lg" ng-class="isTrashFolder() ? 'fa-times' : 'fa-trash-o'"></i></button>
+				<button type="button" class="btn btn-lg" ng-click="downloadButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
+				<button type="button" class="btn btn-lg" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
+        <button type="button" class="btn btn-lg" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i><i class="fa fa-share"></i></button>
+				<button type="button" class="btn btn-lg" ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
 			</div>
 		</div>
 	</div>
@@ -85,11 +102,12 @@
 <script type="text/ng-template" id="deleteModal.html">
     <form id="deleteForm">
         <div class="modal-header">
-            <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">{{'common.close' | translate}}</span></button>
-            <h2 class="modal-title">{{'storage-client.confirm-delete' | translate}}</h2>
+            <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
+              <i class="fa fa-times"></i>
+            </button>
         </div>
         <div class="modal-body">
-          <span>{{confirmationMessage}}</span>
+          <p>{{confirmationMessage}}</p>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">
@@ -104,7 +122,9 @@
 <script type="text/ng-template" id="newFolderModal.html">
     <form>
         <div class="modal-header">
-          <button type="button" class="close" ng-click="cancel()"><span aria-hidden="true">&times;</span><span class="sr-only">{{'common.close' | translate}}</span></button>
+          <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
+            <i class="fa fa-times"></i>
+          </button>
           <h2 class="modal-title">{{'storage-client.new-folder' | translate}}</h2>
         </div>
         <div class="modal-body">
