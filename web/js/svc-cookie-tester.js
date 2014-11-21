@@ -13,8 +13,7 @@ angular.module("cookieTester", [])
              svc.status.passed = true;
            }, function() {
              svc.status.passed = false;
-             svc.status.message = "Please enable cookies " +
-                                  "(including third party cookies)";
+             svc.status.message = "Third party cookies are blocked. Check your browser settings and firewalls.";
              return $q.reject(false);
            });
   };
