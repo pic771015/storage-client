@@ -1,3 +1,6 @@
+"use strict";
+/* global sinon: "" */
+
 var gadgets = {
     rpc: {
         call: function() {}
@@ -5,8 +8,6 @@ var gadgets = {
 };
 
 describe("FileListCtrl", function() {
-    "use strict";
-
     var $window;
     var FileListCtrl, scope;
     var FileListService;
@@ -16,7 +17,7 @@ describe("FileListCtrl", function() {
     beforeEach(module("medialibrary"));
 
     beforeEach(inject(function ($controller, $rootScope, _$window_, $injector) {
-        $httpBackend = $injector.get('$httpBackend');
+        var $httpBackend = $injector.get("$httpBackend");
         $httpBackend.whenGET(/\.*/).respond(200, {});
 
         FileListService = {};

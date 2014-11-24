@@ -133,7 +133,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
       });
   };
 
-  $scope.confirmDeleteFilesAction = function(size) {
+  $scope.confirmDeleteFilesAction = function() {
       $scope.shouldBeOpen = true;
       var selectedFileNames = getSelectedFiles().map(function(file) {
           return file.name;
@@ -265,7 +265,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
     return {
         scope: { trigger: "@focusMe" },
         link: function(scope, element) {
-            scope.$watch("trigger", function(value) {
+            scope.$watch("trigger", function() {
                     $timeout(function() {
                         element[0].focus();
                     });
