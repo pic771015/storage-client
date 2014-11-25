@@ -77,6 +77,8 @@
     "$log": false,
     "Stripe": false,
     "Spinner": false,
+    "gadgets": true,
+    "sinon": false,
     /* ------------------- */
 
     /* auto/injector.js */

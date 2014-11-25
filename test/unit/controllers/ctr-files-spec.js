@@ -1,5 +1,4 @@
 "use strict";
-/* global sinon: "" */
 
 var gadgets = {
     rpc: {
