@@ -7,7 +7,7 @@ module.exports = function(config){
 
     autoWatch : true,
 
-    frameworks: ["mocha", "chai", "chai-as-promised"],
+    frameworks: ["mocha", "chai", "chai-as-promised", "sinon-chai"],
 
     browsers : ["PhantomJS"],
 

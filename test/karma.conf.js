@@ -5,7 +5,7 @@ module.exports = function(config){
 
     basePath : "../",
 
-    frameworks: ["mocha", "chai", "chai-as-promised"],
+    frameworks: ["mocha", "chai", "chai-as-promised", "sinon-chai"],
 
     browsers : ["PhantomJS"],
 
