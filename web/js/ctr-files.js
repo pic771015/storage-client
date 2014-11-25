@@ -1,5 +1,4 @@
 "use strict";
-/* global gadgets: true */
 
 angular.module("medialibrary").controller("FileListCtrl",
 ["$scope", "$stateParams", "$location", "FileListService",

@@ -1,6 +1,6 @@
-describe("ButtonsController", function() {
-    "use strict";
+"use strict";
 
+describe("ButtonsController", function() {
     var ButtonsController, scope;
     var FileListService, DownloadService;
     var invokedMethod = "";
@@ -8,7 +8,7 @@ describe("ButtonsController", function() {
     beforeEach(module("medialibrary"));
 
     beforeEach(inject(function ($controller, $rootScope, _$modal_, $injector, _FileListService_, _DownloadService_) {
-        $httpBackend = $injector.get('$httpBackend');
+        var $httpBackend = $injector.get("$httpBackend");
         $httpBackend.whenGET(/\.*/).respond(200, {});
 
         FileListService = _FileListService_;
