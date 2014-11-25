@@ -108,30 +108,6 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
     gadgets.rpc.call("", "rscmd_saveSettings", null, data);
   };
 
-  $scope.newFolderButtonClick = function(size) {
-      $scope.shouldBeOpen = true;
-
-      var modalInstance = $modal.open({
-          templateUrl: "newFolderModal.html",
-          controller: "NewFolderCtrl",
-          size: size
-      });
-      modalInstance.result.then(function(newFolderName){
-          //do what you need if user presses ok
-          if (!newFolderName || newFolderName.indexOf("/") > -1) {return;}
-          var requestParams =
-          {"companyId":$stateParams.companyId
-              ,"folder": decodeURIComponent($stateParams.folderPath || "") +
-              newFolderName};
-
-          requestSvc.executeRequest("storage.createFolder", requestParams)
-              .then(function() {listSvc.refreshFilesList();});
-      }, function (){
-          // do what you need to do if user cancels
-          $log.info("Modal dismissed at: " + new Date());
-      });
-  };
-
   $scope.confirmDeleteFilesAction = function() {
       $scope.shouldBeOpen = true;
       var selectedFileNames = getSelectedFiles().map(function(file) {
