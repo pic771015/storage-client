@@ -189,7 +189,7 @@ html[dir=rtl] .select2-search-choice-close{right:auto;left:3px}
 .sp-container button:focus,.sp-container button:hover{color:#333;text-decoration:none}
 .sp-container button:active{background-image:none;outline:0;-webkit-box-shadow:inset 0 3px 5px rgba(0,0,0,.125);box-shadow:inset 0 3px 5px rgba(0,0,0,.125)}
 .sp-container button.sp-cancel{color:#fff;background-color:#2d60ad;border-color:#2d60ad}
-.sp-container button.sp-choose{margin-right:2px;color:#fff;background-color:#45b864;border-color:#45b864}
+.sp-container button.sp-choose{margin-right:3px;color:#fff;background-color:#45b864;border-color:#45b864}
 .sp-palette span.sp-thumb-active,.sp-palette span:hover{border-color:#000}
 .sp-alpha,.sp-preview,.sp-thumb-el{position:relative;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==)}
 .sp-alpha-inner,.sp-preview-inner,.sp-thumb-inner{display:block;position:absolute;top:0;left:0;bottom:0;right:0}
@@ -2184,11 +2184,11 @@ ul.social li.email a{background-position:-96px 0}
 @media (-webkit-min-device-pixel-ratio:2),(-moz-min-device-pixel-ratio:2){.btn-widget-icon-link,.btn-widget-icon-link:active .btn-widget-icon-link.active{background-image:url(http://s3.amazonaws.com/Rise-Images/Icons/widget-icon-link-2x.png);-webkit-background-size:30px 30px}}
 .btn-widget-icon-storage,.btn-widget-icon-storage:active .btn-widget-icon-storage.active{width:30px;height:30px;border:none!important;background-repeat:no-repeat;background-color:transparent!important;background-image:url(http://s3.amazonaws.com/Rise-Images/Icons/widget-icon-storage.png)}
 @media (-webkit-min-device-pixel-ratio:2),(-moz-min-device-pixel-ratio:2){.btn-widget-icon-storage,.btn-widget-icon-storage:active .btn-widget-icon-storage.active{background-image:url(http://s3.amazonaws.com/Rise-Images/Icons/widget-icon-storage-2x.png);-webkit-background-size:30px 30px}}
-.app-header .app-title,.app-header .title-block,.box-list .box-list-aside,.box-list .box-list-body,.box-list .title,.box-list p,.ellipsed{text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.box-list .box-list-aside,.box-list .box-list-body,.box-list .title,.box-list p,.ellipsed{text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
 .row-no-padding [class*=col-]{padding-right:0!important}
 .left-inner-addon{position:relative}
 .left-inner-addon input{padding-left:40px}
-.left-inner-addon i{position:absolute;padding:12px 14px;pointer-events:none}
+.left-inner-addon i{position:absolute;padding:10px 14px;pointer-events:none}
 .left-inner-addon i::before{color:#CCC}
 .right-inner-addon{position:relative}
 .right-inner-addon input{padding-right:40px}
@@ -2212,9 +2212,14 @@ ul.social li.email a{background-position:-96px 0}
 .stripe{margin-bottom:0}}
 @media print{.navbar{display:none}}
 .modal-open{overflow:auto}
+.modal-custom>div{width:auto;display:table}
+.modal-custom>div .modal-content p{display:inline-block;white-space:nowrap}
+@media (max-width:480px){.modal-custom>div{display:block}
+.modal-custom>div .modal-content p{white-space:normal}}
 .modal{z-index:9999}
 .modal-backdrop.in{z-index:9001}
-.modal-footer,.modal-header{border:none}
+.modal-content{overflow:hidden}
+.modal-footer,.modal-header{border:none;overflow:hidden}
 .modal-footer .btn .fa::before,.modal-footer .btn .glyphicons::before,.modal-footer .btn .sign-in,.modal-footer .btn .top-auth-button,.modal-header .btn .fa::before,.modal-header .btn .glyphicons::before,.modal-header .btn .sign-in,.modal-header .btn .top-auth-button{margin-top:-2px;font-size:18px}
 .modal-footer{margin-top:0}
 .modal-footer .btn-fixed-width{width:102px}
@@ -2224,8 +2229,7 @@ ul.social li.email a{background-position:-96px 0}
 .scrollable-list{max-height:400px;overflow:auto;cursor:pointer}
 @media (max-width:480px){.modal-dialog{margin:5px}
 .modal-header .modal-title{font-size:20px}
-.modal-header .close{padding:10px}
-.modal-footer{text-align:center;padding-left:5px;padding-right:5px}
+.modal-header .close{padding:5px}
 .modal-footer .btn-fixed-width{width:96px}}
 .alignment .dropdown-menu{min-width:145px;padding:5px}
 .btn-alignment{min-width:50px}
@@ -2279,6 +2283,7 @@ a[data-wysihtml5-command=bold].active,a[data-wysihtml5-command=italic].active,a[
 .off-canvas--nav.is-off-canvas-opened{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);transform:translate3d(0,0,0);-webkit-box-shadow:0 0 8px rgba(0,0,0,.2);box-shadow:0 0 8px rgba(0,0,0,.2)}
 .action-sheet{width:100%;height:auto;background-color:#fff;position:absolute;left:0;bottom:0;z-index:1051;padding:24px 0;-webkit-box-shadow:0 0 8px rgba(0,0,0,.2);box-shadow:0 0 8px rgba(0,0,0,.2);-webkit-transform:translate3d(0,100%,0);-moz-transform:translate3d(0,100%,0);-ms-transform:translate3d(0,100%,0);-o-transform:translate3d(0,100%,0);transform:translate3d(0,100%,0);-webkit-transition:all .3s cubic-bezier(0.16,.63,.45,.98);-moz-transition:all .3s cubic-bezier(0.16,.63,.45,.98);-ms-transition:all .3s cubic-bezier(0.16,.63,.45,.98);-o-transition:all .3s cubic-bezier(0.16,.63,.45,.98);transition:all .3s cubic-bezier(0.16,.63,.45,.98)}
 .action-sheet.is-action-sheet-opened{-webkit-transform:translate3d(0,0,0);-moz-transform:translate3d(0,0,0);-ms-transform:translate3d(0,0,0);-o-transform:translate3d(0,0,0);transform:translate3d(0,0,0)}
+.action-sheet.is-action-sheet-closed{display:none}
 .action-sheet li{list-style:none!important;display:list-item;margin:0!important;padding:0 24px!important}
 .action-sheet li.system-message{padding-bottom:10px!important}
 .action-sheet li:active{background-color:#eee}
@@ -2320,23 +2325,25 @@ a[data-wysihtml5-command=bold].active,a[data-wysihtml5-command=italic].active,a[
 @media (min-width:484px) and (max-width:580px){.distribution-modal .list-group-item-danger{line-height:30px;height:100px}}
 @media (max-width:580px){.distribution-modal .list-group-item-danger .confirm-btn-group{display:block;float:left;width:100%;text-align:center}
 .distribution-modal .list-group-item-danger .btn,.distribution-modal .list-group-item-danger .sign-in,.distribution-modal .list-group-item-danger .top-auth-button{width:100px}}
-.app-header{margin-left:-15px;margin-right:-15px;margin-bottom:20px}
+.app-header{margin:10px -15px}
 .app-header:after,.app-header:before{content:" ";display:table}
 .app-header:after{clear:both}
-.app-header .app-title,.app-header .title-block{position:relative;min-height:1px;padding-left:15px;padding-right:15px;padding-bottom:20px;margin-left:0;margin-right:0}
+.app-header .app-title,.app-header .title-block{position:relative;min-height:1px;padding-left:15px;padding-right:15px}
 @media (min-width:768px){.app-header .app-title,.app-header .title-block{float:left;width:50%}}
-.app-header .title-block-links,.app-header .title-block-links:active,.app-header .title-block-links:hover{display:block;color:#4AB767}
-.app-header .title-block-links i:before,.app-header .title-block-links:active i:before,.app-header .title-block-links:hover i:before{color:#4AB767!important}
+.app-header .app-title h1,.app-header .title-block h1{font-weight:400;line-height:38px;margin:0 5px 0 0;display:inline-block}
+.app-header .app-title .store-status,.app-header .title-block .store-status{display:inline-block;vertical-align:top}
+.app-header .app-title .store-status h3,.app-header .title-block .store-status h3{margin:0;font-size:14px;font-weight:400;line-height:43px}
+.app-header .app-title .store-status h3 a,.app-header .title-block .store-status h3 a{font-weight:700}
+@media (max-width:768px){.app-header .app-title .store-status,.app-header .title-block .store-status{display:block}
+.app-header .app-title .store-status h3,.app-header .title-block .store-status h3{line-height:normal}}
 .app-header .app-title{border-bottom:1px solid #D6D6D6}
-.app-header h1{font-weight:400;line-height:40px;margin:0 5px 0 0;display:inline-block}
-.app-header .btn-github{vertical-align:top;margin-top:8px}
 .app-header .global-actions{text-align:right;position:relative;min-height:1px;padding-left:15px;padding-right:15px}
+.app-header .global-actions .btn,.app-header .global-actions .sign-in,.app-header .global-actions .top-auth-button{float:right;margin-left:10px}
 @media (min-width:768px){.app-header .global-actions{float:left;width:50%}}
-.app-header .global-actions.no-breadcrumb{margin-top:0}
+@media (max-width:768px){.app-header .global-actions{margin-top:10px;float:none}
+.app-header .global-actions .btn,.app-header .global-actions .sign-in,.app-header .global-actions .top-auth-button{float:none;width:100%;margin:0 0 5px}}
 .app-header .form-group{position:relative;min-height:1px;padding-left:15px;padding-right:15px;margin-top:20px;margin-bottom:0}
 @media (min-width:768px){.app-header .form-group{float:left;width:100%}}
-@media (max-width:768px){.app-header .global-actions{float:none;margin-top:20px}
-.app-header .global-actions .btn,.app-header .global-actions .sign-in,.app-header .global-actions .top-auth-button{width:100%;margin:0 0 10px}}
 .bar{margin-left:-15px;margin-right:-15px}
 .bar:after,.bar:before{content:" ";display:table}
 .bar:after{clear:both}
@@ -2408,6 +2415,7 @@ ul.tree ul li:last-child:before{background:#fff;height:auto;top:15px;bottom:0}
 .responsive-table .storage-modal div.title-row,.responsive-table .storage-modal div.tr-row,.storage-modal .responsive-table div.title-row,.storage-modal .responsive-table div.tr-row,.storage-modal .support-app .ticket-list-table div.ticket,.storage-modal .support-app .ticket-list-table div.title-row,.storage-modal div.row,.support-app .ticket-list-table .storage-modal div.ticket,.support-app .ticket-list-table .storage-modal div.title-row{margin-right:0}
 .storage-modal .commands{position:relative}
 .storage-modal .storage-used-info{font-size:10px;text-align:right;float:right}
+.storage-modal .current-folder-icon .fa::before{color:#4AB767}
 .storage-modal #store-modal .overlay{z-index:2;background-color:#fff}
 .storage-modal .inline-progress{margin-bottom:0}
 .storage-modal .inline-cancel{float:right;width:auto;padding-left:10px;text-align:center;cursor:pointer}
@@ -2426,9 +2434,8 @@ ul.tree ul li:last-child:before{background:#fff;height:auto;top:15px;bottom:0}
 .storage-modal .thumbnail:nth-child(3n+1){clear:none}
 .storage-modal .thumbnail:nth-child(6n){padding-right:0}
 .storage-modal .thumbnail:nth-child(6n+1){clear:left;padding-left:0}}
-#shareModal input{margin-top:10px}
-#foldersModal .content-box{padding:15px 0}
-.show-2{display:none}
+.storage-modal .current-folder{line-height:43px}
+.storage-modal .form-group{margin-bottom:10px}
 .storage-selector-backdrop{position:absolute;top:0;left:0;width:100%;height:100%;background-color:#e7e7e7;opacity:.9}
 .storage-selector-iframe{width:90%;height:500px;position:absolute;top:20%;left:5%;box-shadow:0 5px 15px rgba(0,0,0,.5);border-radius:6px;border:1px solid rgba(0,0,0,.2);padding:5px;background-color:#f4f4f4}
 .storage-selector-iframe-full{width:100%;height:100%;position:absolute;border:0;padding:0;background-color:#f4f4f4}
@@ -2502,7 +2509,7 @@ iframe.modal-dialog{border:0;width:100%;height:500px;background-color:#f4f4f4;ma
 .paid-on-board .store-link .subscribe{height:60px;line-height:60px;background-color:#45b864;color:#fff;border-bottom-right-radius:6px;border-bottom-left-radius:6px;box-shadow:inset 0 -4px 0 #3ea55a}
 @media (max-width:480px){.paid-on-board .store-link .subscribe{height:40px;line-height:40px}}
 .paid-on-board .about{border-radius:6px;background-color:#424242;margin-top:120px;position:relative}
-.paid-on-board .about .cover{background-image:url(http://placehold.it/1200x400);background-size:cover;background-position:center;height:160px;width:100%;border-top-right-radius:6px;border-top-left-radius:6px}
+.paid-on-board .about .cover{background-image:url(/images/support-ob-bg.png);background-size:cover;background-position:center;height:160px;width:100%;border-top-right-radius:6px;border-top-left-radius:6px}
 .paid-on-board .about .tab-buttons{width:50%;margin:-20px auto 0;background-color:#fff;line-height:40px;border-radius:20px;font-weight:700;color:#ccc}
 @media (max-width:480px){.paid-on-board .about .tab-buttons{font-size:12px;width:75%}}
 .paid-on-board .about .tab-buttons .tab-title{display:inline-block;width:50%;text-align:center;cursor:pointer}

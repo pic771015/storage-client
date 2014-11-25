@@ -69,21 +69,6 @@
 					<i class="fa fa-times"></i>
 				</button>
             </div>
-            <div ng-controller="ButtonsController">
-                <div class="app-header">
-                  <div class="title-block">
-                    <h1 translate="storage-client.header"></h1>
-                  </div>    
-                  <div class="global-actions">
-                    <button class="btn btn-lg btn-default" type="button" title="New Folder" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
-                      <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
-                    </button>
-                        <button class="btn btn-lg btn-primary" type="button" title="Upload" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.checkedCount === 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false && !isTrashFolder())">
-                        <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>
-                    </button>
-                  </div>
-                </div>
-			</div>
 
 			<!--Body content-->
 			<div ui-view></div>
