@@ -66,32 +66,32 @@ function (LocalFiles, requestor, $stateParams) {
     function processFilesResponse(resp) {
       var TRASH = "--TRASH--/";
       var parentFolder = decodeURIComponent($stateParams.folderPath);
+      var parentFolderFound = false;
 
-      if (resp.files) {
-        var parentFolderFound = false;
+      resp.files = resp.files || [];
 
-        if(parentFolder.indexOf(TRASH) === 0) {
-          for(var i = 0; i < resp.files.length; i++) {
-            var file = resp.files[i];
+      if(parentFolder.indexOf(TRASH) === 0) {
+        for(var i = 0; i < resp.files.length; i++) {
+          var file = resp.files[i];
 
-            if(file.name === parentFolder) {
-              parentFolderFound = true;
-              break;
-            }
+          if(file.name === parentFolder) {
+            parentFolderFound = true;
+            break;
           }
-
-          if(!parentFolderFound) {
-            resp.files.unshift({ name: parentFolder, size: 0, updated: null });
-          }          
         }
 
-        svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
-          return prev + parseInt(next.size);
-        }, 0);
-
-        console.log(svc.filesDetails.totalBytes + " bytes in " +
-        resp.files.length + " files");
+        if(!parentFolderFound) {
+          resp.files.unshift({ name: parentFolder, size: 0, updated: null });
+        }          
       }
+
+      svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
+        return prev + parseInt(next.size);
+      }, 0);
+
+      console.log(svc.filesDetails.totalBytes + " bytes in " +
+      resp.files.length + " files");
+      
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
 
