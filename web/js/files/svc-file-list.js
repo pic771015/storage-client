@@ -47,6 +47,20 @@ function (LocalFiles, requestor, $stateParams) {
     svc.filesDetails.checkedItemsCount = 0;
   };
 
+  svc.removeFiles = function(files) {
+    var oldFiles = svc.filesDetails.files;
+    var removedSize = 0;
+
+    for(var i = oldFiles.length - 1; i >= 0; i--) {
+      if(files.indexOf(oldFiles[i]) >= 0) {
+        removedSize += parseInt(oldFiles[i].size);
+        oldFiles.splice(i, 1);
+      }
+    }
+
+    svc.filesDetails.totalBytes -= removedSize;
+  };
+
   svc.refreshFilesList = function () {
     var params = {companyId: $stateParams.companyId};
     if ($stateParams.folderPath) {

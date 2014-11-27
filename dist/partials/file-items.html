@@ -1,11 +1,3 @@
-<div ng-controller="ButtonsController">
-  <div class="alert alert-info alert-dismissable" ng-show="fileListStatus.latestAction === 'trash'">
-    <span translate="storage-client.moved-to-trash"></span>
-  </div>
-  <div class="alert alert-info alert-dismissable" ng-show="fileListStatus.latestAction === 'restore'">
-    <span translate="storage-client.restored-from-trash"></span>
-  </div>
-</div>
 <div ng-controller="FileListCtrl" id="list">
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
   <span translate="storage-client.requesting-file-list"></span>
