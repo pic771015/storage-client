@@ -9,6 +9,10 @@ angular.module("storageFull")
     title: "Platform",
     link: "http://rva.risevision.com/",
     target: "_blank"
+  }, {
+    title: "Help",
+    link: "http://help.risevision.com/#/user/storage/what-is-storage",
+    target: "_blank"
   }];
 
   $scope.$on("risevision.user.signedOut", function () {
