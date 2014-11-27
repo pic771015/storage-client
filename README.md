@@ -30,7 +30,7 @@ Chrome is the only browser that is supported with this application and any other
 sudo apt-get install nodejs
 ```
 
-* clone the repo using Git to your local:
+* use Git to clone the repo:
 ```bash
 git clone https://github.com/Rise-Vision/storage-client.git
 ```

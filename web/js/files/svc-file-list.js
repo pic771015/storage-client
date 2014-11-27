@@ -28,6 +28,15 @@ function (LocalFiles, requestor, $stateParams) {
     }
   };
 
+  svc.getFileNameIndex = function(fileName) {
+    for (var i = 0, j = svc.filesDetails.files.length; i < j; i += 1) {
+      if (svc.filesDetails.files[i].name === fileName) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
   svc.resetSelections = function() {
     svc.filesDetails.files.forEach(function(val) {
       val.isChecked = false;

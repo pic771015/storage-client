@@ -18,8 +18,16 @@ angular.module("medialibrary")
     };
 }
 ])
-.controller("NewFolderCtrl", ["$scope","$modalInstance", function($scope, $modalInstance) {
+.controller("NewFolderCtrl", ["$scope","$modalInstance", "FileListService",
+function($scope, $modalInstance, listSvc) {
+    $scope.duplicateFolderSpecified = false;
     $scope.ok = function() {
+        if (!$scope.folderName) {$scope.folderName = "";}
+        $scope.folderName = $scope.folderName.replace(/\//g,"");
+        if (listSvc.getFileNameIndex($scope.folderName + "/") > -1) {
+          $scope.duplicateFolderSpecified = true;
+          return;
+        }
         $modalInstance.close($scope.folderName);
     };
     $scope.cancel = function() {
@@ -211,7 +219,7 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
 
       $scope.modalInstance.result.then(function(newFolderName){
           //do what you need if user presses ok
-          if (!newFolderName || newFolderName.indexOf("/") > -1) {return;}
+          if (newFolderName === "") {return;}
           var requestParams =
           {"companyId":$stateParams.companyId
               ,"folder": decodeURIComponent($stateParams.folderPath || "") +
