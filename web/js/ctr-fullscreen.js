@@ -1,7 +1,7 @@
 "use strict";
 
 angular.module("storageFull")
-.controller("FullScreenController", ["$scope", "$timeout", "userState", "usSpinnerService", function($scope, $timeout, userState, usSpinnerService) {
+.controller("FullScreenController", ["$scope", "$location", "$timeout", "userState", "usSpinnerService", function($scope, $location, $timeout, userState, usSpinnerService) {
   $scope.userState = userState;
   $scope.currentState = null;
 
@@ -11,12 +11,20 @@ angular.module("storageFull")
     target: "_blank"
   }];
 
+  $scope.$on("risevision.user.signedOut", function () {
+    // Redirect to root when the user signs out
+    $location.path("/");
+  });
+
   $scope.$watch(function () {
       return userState.isLoggedIn();
     }, function(loggedIn) {
       if(loggedIn) {
         usSpinnerService.spin("spn-stg-full");
         $scope.currentState = "loggingIn";
+
+        // Avoid having all CH auth parameters visible
+        $location.path("/");
       }
     });
 
