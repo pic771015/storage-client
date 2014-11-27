@@ -18,6 +18,7 @@ $window, MEDIA_LIBRARY_URL, $state, $translate) {
   $scope.bucketCreationStatus = {code: 202};
   $scope.currentDecodedFolder = $stateParams.folderPath ? 
                                 decodeURIComponent($stateParams.folderPath) : undefined;
+  $scope.storageFull = ($window.location.href.indexOf("storageFullscreen=true") > -1);
 
   $translate("storage-client.trash").then(function(value) {
     trashLabel = value;

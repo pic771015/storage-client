@@ -8,7 +8,7 @@
 "use strict";
 
 var port = require("system").env.E2E_PORT || 8000;
-var url = "http://localhost:" + port + "/storage-full.html";
+var url = "http://localhost:" + port + "/index.html";
 var imgdir = "test/e2e/storage-full/";
 var customHeaders = {
     "Accept-Language": "en-US,en;q=0.8"
@@ -79,8 +79,8 @@ casper.test.begin("Connecting to " + url, function suite(test) {
   });
 
   // Waits for the redirect page to load
-  casper.waitForUrl(/storage-full\.html/, function() {
-
+  casper.waitForUrl(/index\.html/, function() {
+    
   });
 
   // Waits for storage-modal iframe to load
