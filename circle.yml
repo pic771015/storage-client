@@ -1,0 +1,19 @@
+dependencies:
+  post:
+    - bower install --force-latest
+general:
+  artifacts:
+    - dist.tar.gz
+deployment:
+  staging:
+    branch: /(feature|fix|chore).*/
+    commands:
+      - NODE_ENV=stage npm run ci-build
+      - lftp 192.254.220.36 -u $RISE_FTP_USER,$RISE_FTP_PASS -e "set ssl:verify-certificate false; lcd dist; rm -rf /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); mkdir /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); cd /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); mirror -R; quit"
+      - tar czvf dist.tar.gz dist
+  production:
+    branch: master
+    commands:
+      - NODE_ENV=prod npm run ci-build
+      - lftp 192.254.220.36 -u $RISE_FTP_USER,$RISE_FTP_PASS -e "set ssl:verify-certificate false; lcd dist; rm -rf /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); mkdir /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); cd /public_html/storage-client-builds/$(echo -n $CIRCLE_BRANCH |sed 's/\//-/g'); mirror -R; quit"
+      - tar czvf dist.tar.gz dist

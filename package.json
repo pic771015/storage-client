@@ -46,7 +46,7 @@
     "dev-install": "npm install && bower install && gulp config",
     "dev": "gulp server",
     "dist": "gulp server-dist",
-    "ci-build": "npm install && bower install --force-latest && gulp config && gulp test-ci && gulp build",
+    "ci-build": "gulp config && gulp test-ci && gulp build",
     "setenv": "NODE_ENV=$(select env in dev local prod;do echo $env;break;done) gulp config"
   },
   "author": "Rise",
