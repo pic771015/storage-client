@@ -129,7 +129,10 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter Folder Name">
+            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter Folder Name" ng-focus="duplicateFolderSpecified=false">
+            <div ng-show="duplicateFolderSpecified">
+              <div class="alert alert-warning" role="alert">{{"storage-client.duplicate-folder" | translate}}</div>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
