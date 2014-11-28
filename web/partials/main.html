@@ -34,29 +34,61 @@
     </div>
   </div>
 	
-	<div class="bar-wrapper" id="files-toolbar" ng-controller="ButtonsController" ng-hide="fileListStatus.code === 404">
-		<div class="bar">
-			<div class="col-sm-6">
-        <span ng-class="filesDetails.checkedItemsCount > 0 ? 'hidden-xs' : ''">
-    			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
-    			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
-        </span>
-			</div>
+  <div ng-controller="ButtonsController">
+  	<div class="bar-wrapper" id="files-toolbar" ng-hide="fileListStatus.code === 404">
+  		<div class="bar">
+  			<div class="col-sm-6">
+          <span ng-class="filesDetails.checkedItemsCount > 0 ? 'hidden-xs' : ''">
+      			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
+      			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
+          </span>
+  			</div>
 
-			<div class="col-sm-6 text-right">
-        <span ng-show="filesDetails.checkedItemsCount > 0">
-          <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
-        </span>
-        <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-          <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
-        </button>
-				<button type="button" class="btn btn-lg" ng-click="downloadButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
-				<button type="button" class="btn btn-lg" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
-        <button type="button" class="btn btn-lg" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i><i class="fa fa-share"></i></button>
-				<button type="button" class="btn btn-lg" ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
-			</div>
-		</div>
-	</div>
+  			<div class="col-sm-6 text-right">
+          <span ng-show="filesDetails.checkedItemsCount > 0">
+            <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
+          </span>
+          <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+            <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
+          </button>
+  				<button type="button" class="btn btn-lg" ng-click="downloadButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
+  				<button type="button" class="btn btn-lg" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
+          <button type="button" class="btn btn-lg" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i><i class="fa fa-share"></i></button>
+  				<button type="button" class="btn btn-lg" ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-lg"></i></button>
+  			</div>
+  		</div>
+  	</div>
+
+    <div class="row" ng-show="pendingOperations.length > 0">
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-heading" ng-click="isPOCollapsed = !isPOCollapsed">
+            <h3 class="panel-title">
+              <span ng-hide="pendingOperations[0].failed">{{'storage-client.pending-' + pendingOperations[0].action | translate}}...</span>
+              <span ng-hide="!pendingOperations[0].failed">{{'storage-client.failed-' + pendingOperations[0].action | translate}}</span>
+              <span class="pull-right"><i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isPOCollapsed]"></i></span>
+            </h3>
+          </div>
+          <div class="panel-body" ng-show="!isPOCollapsed">
+            <table class="table">
+              <tbody>
+                <tr ng-repeat="item in pendingOperations">
+                  <td ng-show="!item.actionFailed">{{'storage-client.pending-' + item.action | translate}}</td>
+                  <td ng-show="item.actionFailed">{{'storage-client.failed-' + item.action | translate}}</td>
+                  <td>{{item.name | trashItemFilter}}</td>
+                  <td>
+                    <span class="text-danger" ng-click="removePendingOperation(item)">
+                      <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="row" ng-controller="UploadController">

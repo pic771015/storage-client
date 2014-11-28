@@ -50,6 +50,21 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
   $scope.filesDetails = listSvc.filesDetails;
   $scope.fileListStatus = listSvc.statusDetails;
   $scope.statusDetails = { code: 200, message: "" };
+  $scope.isPOCollapsed = true;
+  $scope.pendingOperations = [];
+  $scope.leavePageMessage = "";
+
+  $translate("storage-client.pending-ops-leave-page").then(function(value) {
+    $scope.leavePageMessage = value;
+  });
+
+  $window.addEventListener("beforeunload", function(e) {
+    if(getActivePendingOperations().length > 0) {
+      (e || window.event).returnValue = $scope.leavePageMessage;
+
+      return $scope.leavePageMessage;
+    }
+  });
 
   $scope.isTrashFolder = function() {
     return $scope.fileListStatus.folder && $scope.fileListStatus.folder.indexOf("--TRASH--/") === 0;
@@ -101,6 +116,14 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
 
   $scope.restoreButtonClick = function() {
     $scope.processFilesAction("restore");
+  };
+
+  $scope.removePendingOperation = function(file) {
+    var position = $scope.pendingOperations.indexOf(file);
+
+    if(position >= 0) {
+      $scope.pendingOperations.splice(position, 1);      
+    }
   };
 
   $scope.selectButtonClick = function() {
@@ -170,9 +193,20 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
   };
 
   $scope.processFilesAction = function(action) {
-    var selectedFileNames = getSelectedFiles().map(function(file) {
+    var selectedFiles = getSelectedFiles();
+    var selectedFileNames = selectedFiles.map(function(file) {
         return file.name;
     });
+
+    selectedFiles.forEach(function(file) {
+      file.action = action;
+
+      $scope.pendingOperations.push(file);
+    });
+
+    listSvc.removeFiles(selectedFiles);
+    listSvc.resetSelections();
+    $scope.isPOCollapsed = true;
 
     var apiMethod = "storage.files.delete";
 
@@ -192,17 +226,21 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
             $translate("storage-client.permission-refused", { email: resp.userEmail }).then(function(msg) {
               $scope.statusDetails.message = msg;
             });
-          }
-          else { //if (resp.code === 200) {
-            $scope.fileListStatus.latestAction = action;
 
-            $timeout(function() {
-              $scope.fileListStatus.latestAction = "";
-            }, 3000);
+            selectedFiles.forEach(function(file) {
+              file.actionFailed = true;
+            });
           }
+          else {
+            // Removed completed pending operations
+            for(var i = $scope.pendingOperations.length - 1; i >= 0; i--) {
+              var file = $scope.pendingOperations[i];
 
-          listSvc.resetSelections();
-          listSvc.refreshFilesList();
+              if(selectedFiles.indexOf(file) >= 0) {
+                $scope.pendingOperations.splice(i, 1);
+              }
+            }
+          }
 
           $scope.shouldBeOpen = false;
       });
@@ -242,6 +280,19 @@ MEDIA_LIBRARY_URL, downloadSvc, $q, $translate, $state) {
       }
     }
     return selectedFiles;
+  }
+
+  function getActivePendingOperations() {
+    var ops = $scope.pendingOperations;
+    var activeOps = [];
+
+    for(var i = 0; i < ops.length; i++) {
+      if(!ops[i].failed) {
+        activeOps.push(ops[i]);
+      }
+    }
+
+    return activeOps;
   }
 }])
 .directive("focusMe", function($timeout) {
