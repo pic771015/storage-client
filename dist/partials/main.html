@@ -17,6 +17,9 @@
         <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
           <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
         </button>
+        <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-sm hidden-md hidden-lg" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+            <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
+        </button>
       </div>
     </div>
   </div>
@@ -48,7 +51,7 @@
           <span ng-show="filesDetails.checkedItemsCount > 0">
             <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
           </span>
-          <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+          <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
             <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
           </button>
   				<button type="button" class="btn btn-lg" ng-click="downloadButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0 && filesDetails.localFiles === false)"><i class="fa fa-cloud-download fa-lg"></i></button>
