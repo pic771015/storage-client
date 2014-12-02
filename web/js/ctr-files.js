@@ -4,10 +4,10 @@ angular.module("medialibrary")
 .controller("FileListCtrl",
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
 "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
-"$window","STORAGE_API_URL", "$state", "$translate",
+"$window","STORAGE_API_URL", "STORAGE_CLIENT_API", "$state", "$translate",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
-$window, STORAGE_API_URL, $state, $translate) {
+$window, STORAGE_API_URL, STORAGE_CLIENT_API, $state, $translate) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = STORAGE_API_URL + bucketName + "/";
   var trashLabel;
@@ -119,7 +119,9 @@ $window, STORAGE_API_URL, $state, $translate) {
   };
 
   $scope.$on("FileSelectAction", function(event, file) {
-    var fileUrl = encodeURI((file.kind === "folder") ? file.selfLink : bucketUrl + "o/" + file.name + "?&alt=media");
+    var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName +"/o?prefix=";
+    var fileUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) :
+        bucketUrl + "o/" + encodeURIComponent(file.name) + "?&alt=media";
     var data = { params: fileUrl };
 
     if ($scope.fileIsFolder(file)) {
