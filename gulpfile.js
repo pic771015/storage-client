@@ -129,7 +129,6 @@ gulp.task("lint", function() {
   return gulp.src(appJSFiles)
     .pipe(jshint(".jshintrc"))
     .pipe(jshint.reporter("jshint-stylish"))
-    
     .pipe(jshint.reporter("fail"));
 });
 

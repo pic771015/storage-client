@@ -7,6 +7,7 @@ var gadgets = {
 };
 
 describe("FileListCtrl", function() {
+
     var $window;
     var FileListCtrl, scope;
     var FileListService;
