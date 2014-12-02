@@ -144,7 +144,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
     var fileUrls = [], data = {};
     data.params = [];
     getSelectedFiles().forEach(function(file) {
-      var copyUrl = encodeURI((file.kind === "folder") ? folderSelfLinkUrl + file.name  : bucketUrl + "o/" + file.name + "?&alt=media");
+      var copyUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) : bucketUrl + "o/" + encodeURIComponent(file.name) + "?&alt=media";
       fileUrls.push(copyUrl);
       data.params.push(copyUrl);
     });
@@ -169,7 +169,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
 
     modalInstance.opened.then(function(){
       setTimeout(function() {
-        var copyUrl = encodeURI((copyFile.kind === "folder") ? folderSelfLinkUrl + copyFile.name : bucketUrl + "o/" + copyFile.name + "?&alt=media");
+        var copyUrl = copyFile.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(copyFile.name) : bucketUrl + "o/" + encodeURIComponent(copyFile.name) + "?&alt=media";
         $("#copyUrlInput").val(copyUrl);
         $("#copyUrlInput").focus(function() { $(this).select(); } );
         $("#copyUrlInput").focus();
