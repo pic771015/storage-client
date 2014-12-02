@@ -49,12 +49,13 @@ function($scope, $modalInstance, listSvc) {
 ])
 .controller("ButtonsController",
 ["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
-"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state",
+"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_API_URL, downloadSvc, $q, $translate, $state) {
+          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = STORAGE_API_URL + bucketName + "/";
+  var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
 
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   $scope.storageFull = ($window.location.href.indexOf("storageFullscreen=true") > -1);
@@ -143,7 +144,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
     var fileUrls = [], data = {};
     data.params = [];
     getSelectedFiles().forEach(function(file) {
-      var copyUrl = encodeURI((file.kind === "folder") ? file.selfLink : bucketUrl + "o/" + file.name + "?&alt=media");
+      var copyUrl = encodeURI((file.kind === "folder") ? folderSelfLinkUrl + file.name  : bucketUrl + "o/" + file.name + "?&alt=media");
       fileUrls.push(copyUrl);
       data.params.push(copyUrl);
     });
@@ -168,7 +169,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
 
     modalInstance.opened.then(function(){
       setTimeout(function() {
-        var copyUrl = encodeURI((copyFile.kind === "folder") ? copyFile.selfLink : bucketUrl + "o/" + copyFile.name + "?&alt=media");
+        var copyUrl = encodeURI((copyFile.kind === "folder") ? folderSelfLinkUrl + copyFile.name : bucketUrl + "o/" + copyFile.name + "?&alt=media");
         $("#copyUrlInput").val(copyUrl);
         $("#copyUrlInput").focus(function() { $(this).select(); } );
         $("#copyUrlInput").focus();
