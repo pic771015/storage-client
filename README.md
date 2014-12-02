@@ -1,5 +1,4 @@
-# Storage Client  ![Build Status](http://devtools1.risevision.com:8080/job/Storage-Client-BranchPush/badge/icon)
-
+# Storage Client  [![Circle CI](https://circleci.com/gh/Rise-Vision/storage-client/tree/master.svg?style=svg)](https://circleci.com/gh/Rise-Vision/storage-client/tree/master)
 ## Introduction
 
 Storage provides the media library for the Rise Vision digital signage management application and a demonstration of it can be viewed here [http://storage.risevision.com/storage-full.html](http://storage.risevision.com/storage-full.html)
