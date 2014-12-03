@@ -68,8 +68,8 @@
         <div class="panel panel-info">
           <div class="panel-heading" ng-click="isPOCollapsed = !isPOCollapsed">
             <h3 class="panel-title">
-              <span ng-hide="pendingOperations[0].failed">{{'storage-client.pending-' + pendingOperations[0].action | translate}}...</span>
-              <span ng-hide="!pendingOperations[0].failed">{{'storage-client.failed-' + pendingOperations[0].action | translate}}</span>
+              <span ng-hide="pendingOperations[0].actionFailed">{{'storage-client.pending-' + pendingOperations[0].action | translate}}...</span>
+              <span ng-hide="!pendingOperations[0].actionFailed">{{'storage-client.failed-' + pendingOperations[0].action | translate}}</span>
               <span class="pull-right"><i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isPOCollapsed]"></i></span>
             </h3>
           </div>
