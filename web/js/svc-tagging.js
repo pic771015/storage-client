@@ -40,6 +40,21 @@ angular.module("tagging", [])
     };
 
     //unit tested
+    svc.clearAllInvalidLookupTags = function(){
+      var noInvalidArray = angular.copy(svc.selected.lookupTags);
+      var invalids = [];
+      svc.selected.lookupTags.forEach(function(i, pos){
+        if(i.invalid){
+          invalids.push(i);
+          noInvalidArray.splice(pos, 1);
+        }
+      });
+      svc.available.lookupTags.push.apply(svc.available.lookupTags, invalids);
+      svc.selected.lookupTags.splice(0, svc.selected.lookupTags.length);
+      svc.selected.lookupTags.push.apply(svc.selected.lookupTags, noInvalidArray);
+    };
+
+    //unit tested
     svc.clearAllLookupTagsAndSave = function(){
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
@@ -742,6 +757,7 @@ angular.module("tagging", [])
                   addLookup.name = items[i].tags[x].name;
                   addLookup.value = items[i].tags[x].values[y];
                   if(uniqueLookupValues.length < 1 || uniqueLookupValues.indexOf(addLookup.name + addLookup.value) === -1){
+                    addLookup.invalid = localData.availableNameValuePairs().indexOf(addLookup.name + addLookup.value) === -1;
                     uniqueLookupValues.push(addLookup.name + addLookup.value);
                     lookupTags.push(addLookup);
                   }

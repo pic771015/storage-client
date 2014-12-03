@@ -56,7 +56,7 @@ taggingSvc,  localData) {
   $scope.fileExtOrderFunction = function(file) {
     return file.name.substr(-1) === "/" ?
            "Folder" :
-           file.name.split(".").pop();
+      (file.name.split(".").pop() === file.name) ? "" : file.name.split(".").pop();
   };
 
   $scope.fileSizeOrderFunction = function(file) {

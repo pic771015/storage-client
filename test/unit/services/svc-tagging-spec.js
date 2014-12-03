@@ -174,6 +174,10 @@ function mocklocalDataStore(){
         return 200;
       };
 
+      svc.availableNameValuePairs= function(){
+        return 200;
+      };
+
       return svc;
     });
   };
@@ -237,7 +241,11 @@ describe("Services: TaggingService2",function() {
       sandbox.stub(taggingSvc, "refreshLocalStore", function(){
         return Q.resolve();} );
       sandbox.stub(localDatastore, "getFilesWithTags", function(){return angular.copy(mockFiles); });
-
+      sandbox.stub(localDatastore, "availableNameValuePairs", function() { return [
+        "brandbrand1", "brandbrand2", "stylestyle1", "stylestyle2",
+        "brandbrand3", "stylestyle4", "stylestyle5", "sizes", "sizem", "sizel"
+        ];
+      });
       taggingSvc.refreshSelection(angular.copy(mockSelectedFiles), "union");
       expect(localDatastore.getFilesWithTags.callCount).to.equal(1);
       expect(taggingSvc.tagGroups.lookupTags.length).to.equal(7);
@@ -499,6 +507,15 @@ describe("Services: TaggingService2",function() {
       expect(taggingSvc.clearTimeLineOnly.getCall(0).args[1]).to.eql(taggingSvc.selected.timelineTag);
       expect(taggingSvc.clearTimeLineOnly.getCall(0).args[2]).to.eql("TIMELINE");
     });
+
+    it("clearAllInvalidLookupTags should remove all invalid tags froms selected LookupTags, but does not call save.", function () {
+      sandbox.stub(taggingSvc,"available", {lookupTags: angular.copy(mockLookupAvailableTags)});
+      sandbox.stub(taggingSvc,"selected", {lookupTags: angular.copy(mockLookupSelectedTags)});
+      taggingSvc.selected.lookupTags[0].invalid = true;
+      taggingSvc.clearAllInvalidLookupTags();
+      expect(taggingSvc.selected.lookupTags.length).to.eql(6);
+      expect(taggingSvc.available.lookupTags.length).to.eql(6);
+    });
   });
 
   describe("misc functions:", function() {
@@ -557,6 +574,11 @@ describe("Services: TaggingService2",function() {
     });
 
     it("refreshSelection should refresh all service variables and union multiple files given union command.", function () {
+      sandbox.stub(localDatastore, "availableNameValuePairs", function() { return [
+        "brandbrand1", "brandbrand2", "stylestyle1", "stylestyle2",
+        "brandbrand3", "stylestyle4", "stylestyle5", "sizes", "sizem", "sizel"
+      ];
+      });
       sandbox.stub(localDatastore, "getTagConfigs", function(){ return angular.copy(mockTagConfigs);});
       sandbox.stub(localDatastore, "getFilesWithTags", function(){return angular.copy(mockFiles); });
       sandbox.stub(taggingSvc,"getFlattenedTagsConfigList", function(type) {

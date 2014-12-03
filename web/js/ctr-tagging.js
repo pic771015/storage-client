@@ -179,66 +179,13 @@ angular.module("tagging")
   $scope.addToSelectedLookupTag = function(tag){
     taggingSvc.addToSelectedLookupTag(tag);
 
-    taggingSvc.tagGroups.lookupTags.sort(function(a, b){
-      if (a.name + a.value > b.name + b.value) {
-        return 1;
-      }
-      if (a.name + a.value < b.name + b.value) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
-
-    taggingSvc.selected.lookupTags.sort(function(a, b){
-      if (a.name + a.value > b.name + b.value) {
-        return 1;
-      }
-      if (a.name + a.value < b.name + b.value) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
-    $scope.changedLookup = taggingSvc.tagGroups.lookupTags.length === taggingSvc.selected.lookupTags.length &&
-    taggingSvc.tagGroups.lookupTags.every(function(v,i){ return v.name === taggingSvc.selected.lookupTags[i].name &&
-      v.value === taggingSvc.selected.lookupTags[i].value;});
-    $scope.invalidLookupTag = taggingSvc.selected.lookupTags.some(function(i){
-      return localData.availableNameValuePairs().indexOf(i.name + i.value) === -1;
-    });
+    changedLookupAndValidate();
   };
   $scope.removeFromSelectedLookupTag = function(tag){
 
     taggingSvc.removeFromSelectedLookupTag(tag);
 
-    taggingSvc.tagGroups.lookupTags.sort(function(a, b){
-      if (a.name > b.name) {
-        return 1;
-      }
-      if (a.name < b.name) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
-
-    taggingSvc.selected.lookupTags.sort(function(a, b){
-      if (a.name > b.name) {
-        return 1;
-      }
-      if (a.name < b.name) {
-        return -1;
-      }
-      // a must be equal to b
-      return 0;
-    });
-
-    $scope.changedLookup = taggingSvc.tagGroups.lookupTags.length === taggingSvc.selected.lookupTags.length &&
-    taggingSvc.tagGroups.lookupTags.every(function(v,i){ return v.name === taggingSvc.selected.lookupTags[i].name &&
-      v.value === taggingSvc.selected.lookupTags[i].value;});
-    $scope.invalidLookupTag = taggingSvc.selected.lookupTags.some(function(i){
-      return localData.availableNameValuePairs().indexOf(i.name + i.value) === -1;
-    });
+    changedLookupAndValidate();
   };
 
   $scope.refreshMainList = function(){
@@ -293,6 +240,11 @@ angular.module("tagging")
       $scope.tagGroups = taggingSvc.tagGroups;
       $scope.availableLookupTags = taggingSvc.available.lookupTags;
       $scope.selectedFreeformTags = taggingSvc.selected.freeformTags;
+  };
+
+  $scope.clearAllInvalidLookupTags = function(){
+    taggingSvc.clearAllInvalidLookupTags();
+    changedLookupAndValidate();
   };
 
   $scope.clearAllLookupTags = function(){
@@ -410,6 +362,37 @@ angular.module("tagging")
     $scope.resetView();
     $modalInstance.dismiss("cancel");
   };
+
+  function changedLookupAndValidate(){
+    taggingSvc.tagGroups.lookupTags.sort(function(a, b){
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
+
+    taggingSvc.selected.lookupTags.sort(function(a, b){
+      if (a.name > b.name) {
+        return 1;
+      }
+      if (a.name < b.name) {
+        return -1;
+      }
+      // a must be equal to b
+      return 0;
+    });
+
+    $scope.changedLookup = taggingSvc.tagGroups.lookupTags.length === taggingSvc.selected.lookupTags.length &&
+    taggingSvc.tagGroups.lookupTags.every(function(v,i){ return v.name === taggingSvc.selected.lookupTags[i].name &&
+      v.value === taggingSvc.selected.lookupTags[i].value;});
+    $scope.invalidLookupTag = taggingSvc.selected.lookupTags.some(function(i){
+      return localData.availableNameValuePairs().indexOf(i.name + i.value) === -1;
+    });
+  }
 }])
 .controller("FilterLookupCtrl", ["$scope", "TaggingService", "$modalInstance","available", "selected",
     function($scope, taggingSvc, $modalInstance, available, selected){
