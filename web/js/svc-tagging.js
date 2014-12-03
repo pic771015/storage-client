@@ -12,6 +12,7 @@ angular.module("tagging", [])
     svc.filterStartDate = undefined;
     svc.filterEndDate = undefined;
     svc.justAddedTimeline = false;
+    svc.errorHandle = false;
       svc.options = {week:["First", "Second", "Third", "Fourth", "Last"],
     day: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -56,21 +57,43 @@ angular.module("tagging", [])
 
     //unit tested
     svc.clearAllLookupTagsAndSave = function(){
+      var deferred = $q.defer();
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
       });
 
-      svc.tagGroups.lookupTags.splice(0, svc.tagGroups.lookupTags.length);
-      return svc.updateLookupTags(namesOfFiles, [], "LOOKUP");
+      svc.updateLookupTags(namesOfFiles, [], "LOOKUP").then(function(resp){
+        if(resp !== undefined && resp[0].code === 200){
+          svc.tagGroups.lookupTags.splice(0, svc.tagGroups.lookupTags.length);
+        } else {
+          svc.errorHandle = true;
+        }
+        deferred.resolve();
+      });
+
+      return deferred.promise;
     };
 
     //unit tested
     svc.clearAllTimelineTagsAndSave = function(){
+      var deferred = $q.defer();
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
       });
 
-      return svc.clearTimeLineOnly(namesOfFiles , svc.tagGroups.timelineTag, "TIMELINE");
+      svc.clearTimeLineOnly().then(function(resp){
+        if(resp !== undefined && resp[0].code === 200) {
+          svc.tagGroups.timelineTag = null;
+          svc.selected.timelineTag = null;
+          localData.clearSelectedTimelines(namesOfFiles);
+        } else {
+          //update locally
+          svc.errorHandle = true;
+        }
+        deferred.resolve();
+      });
+
+      return deferred.promise;
     };
 
     //unit tested
@@ -82,10 +105,19 @@ angular.module("tagging", [])
 
     //unit tested
     svc.clearAllFreeformTagsAndSave = function(){
-      svc.clearAllFreeformTags();
-      return svc.saveChangesToTags([], "FREEFORM").then(function(){
-        svc.tagGroups.freeformTags.splice(0, svc.tagGroups.freeformTags.length);
+      var deferred = $q.defer();
+
+      svc.saveChangesToTags([], "FREEFORM").then(function(resp){
+        if(resp !== undefined && resp[0].code === 200) {
+          svc.clearAllFreeformTags();
+          svc.tagGroups.freeformTags.splice(0, svc.tagGroups.freeformTags.length);
+        } else {
+          svc.errorHandle = true;
+        }
+        deferred.resolve();
       });
+
+      return deferred.promise;
     };
 
     //unit tested
@@ -104,54 +136,60 @@ angular.module("tagging", [])
 
     //unit tested
     svc.saveChangesToTags = function(selectedItems, type){
-      var promise;
-      promise = $q.defer();
-
+      var deferred = $q.defer();
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
       });
 
       if(type === "FREEFORM"){
-        return svc.updateFreeformTags(namesOfFiles, selectedItems, type).then(function(){
-          selectedItems = cleanEmptyFreeformTags(selectedItems);
-          localData.updateTags(namesOfFiles, type, selectedItems);
+        svc.updateFreeformTags(namesOfFiles, selectedItems, type).then(function(resp){
+          if(resp !== undefined && resp[0].code === 200){
+            selectedItems = cleanEmptyFreeformTags(selectedItems);
+            localData.updateTags(namesOfFiles, type, selectedItems);
+          } else {
+            svc.errorHandle = true;
+          }
 
-          promise.resolve();
+          deferred.resolve(resp);
         });
       }
-      if(type === "LOOKUP"){
-        return svc.updateLookupTags(namesOfFiles, selectedItems, type).then(function(){
-          selectedItems = (selectedItems === null) ? [] : selectedItems;
-          localData.updateTags(namesOfFiles, type, selectedItems);
+      else if(type === "LOOKUP"){
+        svc.updateLookupTags(namesOfFiles, selectedItems, type).then(function(resp){
+          console.log(resp);
+          if(resp !== undefined && resp[0].code === 200){
+            selectedItems = (selectedItems === null) ? [] : selectedItems;
+            localData.updateTags(namesOfFiles, type, selectedItems);
+          } else {
+            svc.errorHandle = true;
+          }
 
-          promise.resolve();
+          deferred.resolve(resp);
         });
       }
-      if(type === "TIMELINE"){
-        return svc.updateTimelineTag(namesOfFiles, selectedItems, type).then(function(resp){
-          resp.forEach(function(so) {
-            var timeline = localData.fileTagFromStorageTag(so.item, { type: "TIMELINE", name: "TIMELINE"}, selectedItems);
-            localData.updateTimelineTag(timeline);
-          });
+      else if(type === "TIMELINE"){
+        svc.updateTimelineTag(namesOfFiles, selectedItems, type).then(function(resp){
+          if(resp !== undefined && resp[0].code === 200) {
+            resp.forEach(function(so) {
+              var timeline = localData.fileTagFromStorageTag(so.item, { type: "TIMELINE", name: "TIMELINE"}, selectedItems);
+              localData.updateTimelineTag(timeline);
+            });
+          } else {
+            svc.errorHandle = true;
+          }
 
-          promise.resolve();
+          deferred.resolve(resp);
         });
       }
+
       if (!$stateParams.companyId) {
         selectedItems = (selectedItems === null) ? [] : selectedItems;
         localData.updateTags(namesOfFiles, type, selectedItems);
       }
       
-      return promise.promise;
+      return deferred.promise;
     };
 
-    svc.clearTimeLineOnly = function(namesOfFiles) {
-      //update locally
-      svc.tagGroups.timelineTag = null;
-      svc.selected.timelineTag = null;
-
-      localData.clearSelectedTimelines(namesOfFiles);
-
+    svc.clearTimeLineOnly = function() {
       return svc.saveChangesToTags([null], "TIMELINE");
     };
 
@@ -167,6 +205,7 @@ angular.module("tagging", [])
     };
 
     svc.updateTimelineTag = function(namesOfFiles, selectedItems) {
+      var deferred = $q.defer();
       var promises = [];
 
       namesOfFiles.forEach(function(objectId) {
@@ -176,7 +215,15 @@ angular.module("tagging", [])
         promises.push(svc.updateStorageObject(objectId, tags, timeline));
       });
 
-      return $q.all(promises);
+      $q.all(promises).then(function(resp){
+        if(resp.code === 403){
+          svc.errorHandle = true;
+        }
+
+        deferred.resolve(resp);
+      });
+
+      return deferred.promise;
     };
 
     svc.updateFreeformTags = function(namesOfFiles, selectedItems) {
@@ -303,16 +350,20 @@ angular.module("tagging", [])
       var params;
       if((oldName !== "" && oldName !== selectedTag.name) ||
         selectedTag.name === ""){
-      params = {};
+        params = {};
 
-      params.id = tagDefFound[0].id;
-      requestor.executeRequest("storage.tagdef.delete", params).then(function () {
-        localData.refreshConfigTags().then(function(){
-          deferred.resolve();
+        params.id = tagDefFound[0].id;
+        requestor.executeRequest("storage.tagdef.delete", params).then(function (resp) {
+          if(resp.code === 200){
+            localData.refreshConfigTags().then(function(){
+              deferred.resolve();
+            });
+          } else {
+            deferred.resolve(resp);
+          }
+        }, function(message){
+          deferred.reject(message);
         });
-      }, function(message){
-        deferred.reject(message);
-      });
       }
 
       if(selectedTag.name !== ""){
@@ -323,10 +374,14 @@ angular.module("tagging", [])
         if(selectedTag.type === "LOOKUP") {
           params.values = selectedTag.values;
         }
-        requestor.executeRequest("storage.tagdef.put", params).then(function () {
-          localData.refreshConfigTags().then(function(){
-            deferred.resolve();
-          });
+        requestor.executeRequest("storage.tagdef.put", params).then(function (resp) {
+          if(resp.code === 200){
+            localData.refreshConfigTags().then(function(){
+              deferred.resolve();
+            });
+          } else {
+            deferred.resolve(resp);
+          }
         });
       }
       return deferred.promise;
@@ -524,6 +579,7 @@ angular.module("tagging", [])
         //do what you need if user presses ok
       }, function (){
         // do what you need to do if user cancels
+        svc.errorHandle = false;
         svc.justAddedTimeline = false;
         svc.selected.timelineTag = null;
         svc.timelineClear = false;
@@ -591,67 +647,63 @@ angular.module("tagging", [])
       });
     }
 
+    function unionTagGroups(items) {
+      var tagGroups = {};
+      var lookupTags = [];
+      var freeformTags = [];
+      var timelineTag = null;
+      var uniqueLookupValues = [];
+      var uniqueFreeformValues = [];
 
-
-
-      function unionTagGroups(items) {
-        var tagGroups = {};
-        var lookupTags = [];
-        var freeformTags = [];
-        var timelineTag = null;
-        var uniqueLookupValues = [];
-        var uniqueFreeformValues = [];
-
-        for ( var i = 0; i < items.length; i++ ) {
-          if(typeof items[i].tags !== "undefined") {
-            for (var x = 0; x < items[i].tags.length; x++) {
-              if(items[i].tags[x].type === "LOOKUP"){
-                for (var y = 0; y < items[i].tags[x].values.length; ++y) {
-                  var addLookup = {};
-                  addLookup.type = "LOOKUP";
-                  addLookup.name = items[i].tags[x].name;
-                  addLookup.value = items[i].tags[x].values[y];
-                  if(uniqueLookupValues.length < 1 || uniqueLookupValues.indexOf(addLookup.name + addLookup.value) === -1){
-                    addLookup.invalid = localData.availableNameValuePairs().indexOf(addLookup.name + addLookup.value) === -1;
-                    uniqueLookupValues.push(addLookup.name + addLookup.value);
-                    lookupTags.push(addLookup);
-                  }
+      for ( var i = 0; i < items.length; i++ ) {
+        if(typeof items[i].tags !== "undefined") {
+          for (var x = 0; x < items[i].tags.length; x++) {
+            if(items[i].tags[x].type === "LOOKUP"){
+              for (var y = 0; y < items[i].tags[x].values.length; ++y) {
+                var addLookup = {};
+                addLookup.type = "LOOKUP";
+                addLookup.name = items[i].tags[x].name;
+                addLookup.value = items[i].tags[x].values[y];
+                if(uniqueLookupValues.length < 1 || uniqueLookupValues.indexOf(addLookup.name + addLookup.value) === -1){
+                  addLookup.invalid = localData.availableNameValuePairs().indexOf(addLookup.name + addLookup.value) === -1;
+                  uniqueLookupValues.push(addLookup.name + addLookup.value);
+                  lookupTags.push(addLookup);
                 }
               }
-              if(items[i].tags[x].type === "FREEFORM"){
-                var addFreeform = {};
-                addFreeform.type = "FREEFORM";
-                addFreeform.name = items[i].tags[x].name;
-                addFreeform.value = items[i].tags[x].values[0];
-                if(uniqueFreeformValues.length < 1 || uniqueFreeformValues.indexOf(addFreeform.name) === -1){
-                  uniqueFreeformValues.push(addFreeform.name);
-                  freeformTags.push(addFreeform);
-                } else if(uniqueFreeformValues.indexOf(addFreeform.name) > -1) {
-                  var namesOfFreeforms = mapNameToArray(freeformTags);
-                  var changeIdx = namesOfFreeforms.indexOf(addFreeform.name);
-                  if(freeformTags[changeIdx].value !== addFreeform.value) {
-                    freeformTags[changeIdx].value = freeformTags[changeIdx].value + ", " + addFreeform.value;
-                  }
+            }
+            if(items[i].tags[x].type === "FREEFORM"){
+              var addFreeform = {};
+              addFreeform.type = "FREEFORM";
+              addFreeform.name = items[i].tags[x].name;
+              addFreeform.value = items[i].tags[x].values[0];
+              if(uniqueFreeformValues.length < 1 || uniqueFreeformValues.indexOf(addFreeform.name) === -1){
+                uniqueFreeformValues.push(addFreeform.name);
+                freeformTags.push(addFreeform);
+              } else if(uniqueFreeformValues.indexOf(addFreeform.name) > -1) {
+                var namesOfFreeforms = mapNameToArray(freeformTags);
+                var changeIdx = namesOfFreeforms.indexOf(addFreeform.name);
+                if(freeformTags[changeIdx].value !== addFreeform.value) {
+                  freeformTags[changeIdx].value = freeformTags[changeIdx].value + ", " + addFreeform.value;
                 }
               }
-              if(items[i].tags[x].type === "TIMELINE"){
-                if(items[i].tags[x].values[0].timeDefined === undefined){
-                  items[i].tags[x].values[0] = JSON.parse(items[i].tags[x].values[0]);
-                }
-                timelineTag = items[i].tags[x];
+            }
+            if(items[i].tags[x].type === "TIMELINE"){
+              if(items[i].tags[x].values[0].timeDefined === undefined){
+                items[i].tags[x].values[0] = JSON.parse(items[i].tags[x].values[0]);
               }
+              timelineTag = items[i].tags[x];
             }
           }
         }
-        tagGroups.lookupTags = lookupTags;
-        tagGroups.freeformTags = freeformTags;
-        if((svc.selected.timelineTag !== undefined && svc.selected.timelineTag !== null) || items.length === 1 && timelineTag !== null){
-          tagGroups.timelineTag = timelineTag;
-        } else {
-          tagGroups.timelineTag = null;
-        }
-
-        return tagGroups;
       }
-  }]);
+      tagGroups.lookupTags = lookupTags;
+      tagGroups.freeformTags = freeformTags;
+      if((svc.selected.timelineTag !== undefined && svc.selected.timelineTag !== null) || items.length === 1 && timelineTag !== null){
+        tagGroups.timelineTag = timelineTag;
+      } else {
+        tagGroups.timelineTag = null;
+      }
 
+      return tagGroups;
+    }
+  }]);

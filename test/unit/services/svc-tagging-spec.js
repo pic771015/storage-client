@@ -381,11 +381,18 @@ describe("Services: TaggingService2",function() {
 
     it("saveChangesToTags for LookupTags should map names of files and call updateLookupTags and " +
     "updateTags with no companyId", function () {
-      sandbox.stub(taggingSvc,"selected", {lookupTags: angular.copy(mockLookupSelectedTags), files: angular.copy(mockSelectedFiles)});
+      sandbox.stub(taggingSvc,"selected", {
+        lookupTags: angular.copy(mockLookupSelectedTags),
+        files: angular.copy(mockSelectedFiles)
+      });
       sandbox.stub(taggingSvc,"updateLookupTags", function(){
-        return Q.resolve();});
-      sandbox.stub(localDatastore, "updateTags", function(){return 200;});
-      return taggingSvc.saveChangesToTags(taggingSvc.selected.lookupTags, "LOOKUP").then(function() {
+        return Q.resolve([{code: 200}]);
+      });
+      sandbox.stub(localDatastore, "updateTags", function(){
+        return 200;
+      });
+
+      taggingSvc.saveChangesToTags(taggingSvc.selected.lookupTags, "LOOKUP").then(function() {
         expect(taggingSvc.updateLookupTags.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
         expect(taggingSvc.updateLookupTags.getCall(0).args[0].length).to.eql(2);
         expect(taggingSvc.updateLookupTags.getCall(0).args[1]).to.eql(taggingSvc.selected.lookupTags);
@@ -398,11 +405,18 @@ describe("Services: TaggingService2",function() {
     });
 
     it("saveChangesToTags for FreeformTags should map names of files and call updateTags", function () {
-      sandbox.stub(taggingSvc,"selected", {freeformTags: angular.copy(mockFreeformSelectedTagsWithValues), files: angular.copy(mockSelectedFiles)});
-      sandbox.stub(localDatastore, "updateTags", function(){return 200;});
+      sandbox.stub(taggingSvc,"selected", {
+        freeformTags: angular.copy(mockFreeformSelectedTagsWithValues),
+        files: angular.copy(mockSelectedFiles)
+      });
+      sandbox.stub(localDatastore, "updateTags", function(){
+        return 200;
+      });
       sandbox.stub(taggingSvc,"updateFreeformTags", function(){
-        return Q.resolve();});
-      return taggingSvc.saveChangesToTags(taggingSvc.selected.freeformTags, "FREEFORM").then(function(){
+        return Q.resolve([{code: 200}]);
+      });
+
+      taggingSvc.saveChangesToTags(taggingSvc.selected.freeformTags, "FREEFORM").then(function(){
         expect(taggingSvc.updateFreeformTags.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
         expect(taggingSvc.updateFreeformTags.getCall(0).args[0].length).to.eql(2);
         expect(taggingSvc.updateFreeformTags.getCall(0).args[1]).to.eql(taggingSvc.selected.freeformTags);
@@ -417,12 +431,18 @@ describe("Services: TaggingService2",function() {
     });
 
     it("saveChangesToTags for FreeformTags should not send freeform Tag entries that are empty", function () {
-      sandbox.stub(taggingSvc,"selected", {freeformTags: mockFreeformSelectedTagsWithValuesMissing, files: angular.copy(mockSelectedFiles)});
-      sandbox.stub(localDatastore, "updateTags", function(){return 200;});
+      sandbox.stub(taggingSvc,"selected", {
+        freeformTags: mockFreeformSelectedTagsWithValuesMissing,
+        files: angular.copy(mockSelectedFiles)
+      });
+      sandbox.stub(localDatastore, "updateTags", function(){
+        return 200;
+      });
       sandbox.stub(taggingSvc,"updateFreeformTags", function(){
-        return Q.resolve();});
-      taggingSvc.saveChangesToTags(taggingSvc.selected.freeformTags, "FREEFORM");
-      return taggingSvc.saveChangesToTags(taggingSvc.selected.freeformTags, "FREEFORM").then(function(){
+        return Q.resolve([{code: 200}]);
+      });
+
+      taggingSvc.saveChangesToTags(taggingSvc.selected.freeformTags, "FREEFORM").then(function(){
         expect(taggingSvc.updateFreeformTags.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
         expect(taggingSvc.updateFreeformTags.getCall(0).args[0].length).to.eql(2);
         expect(taggingSvc.updateFreeformTags.getCall(0).args[1]).to.eql(taggingSvc.selected.freeformTags);
@@ -436,21 +456,26 @@ describe("Services: TaggingService2",function() {
     });
 
     it("saveChangesToTags for TimelineTag should map names of files and call updateTags", function () {
-      sandbox.stub(taggingSvc,"selected", {timelineTag: angular.copy(mockTimelineObjectToSave), files: angular.copy(mockSelectedFiles)});
-      sandbox.stub(localDatastore, "updateTimelineTag", function(){return 200;});
+      sandbox.stub(taggingSvc,"selected", {
+        timelineTag: angular.copy(mockTimelineObjectToSave),
+        files: angular.copy(mockSelectedFiles)
+      });
+      sandbox.stub(localDatastore, "updateTimelineTag", function(){
+        return 200;
+      });
       localDatastore.fileTagFromStorageTag = function(){
         return 200;
       };
       sandbox.stub(taggingSvc,"updateTimelineTag", function(){
-        return Q.resolve([200]);
+        return Q.resolve([{code: 200}]);
       });
 
-      return taggingSvc.saveChangesToTags(taggingSvc.selected.timelineTag, "TIMELINE").then(function(){
+      taggingSvc.saveChangesToTags(taggingSvc.selected.timelineTag, "TIMELINE").then(function(){
         expect(taggingSvc.updateTimelineTag.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
         expect(taggingSvc.updateTimelineTag.getCall(0).args[0].length).to.eql(2);
         expect(taggingSvc.updateTimelineTag.getCall(0).args[1]).to.eql(taggingSvc.selected.timelineTag);
         expect(taggingSvc.updateTimelineTag.getCall(0).args[2]).to.eql("TIMELINE");
-        expect(localDatastore.updateTimelineTag.getCall(0).args[0]).to.eql(200);
+        expect(localDatastore.updateTimelineTag.getCall(0).args[0].code).to.eql(200);
       });
 
     });
@@ -465,9 +490,12 @@ describe("Services: TaggingService2",function() {
 
     it("clearAllLookupTagsAndSave should call clearAllLookupTags and then call saveChangesToTags and" +
     "should remove all tags froms selected LookupTags.", function () {
-      sandbox.stub(taggingSvc,"selected", {files: angular.copy(mockSelectedFiles)});
+      sandbox.stub(taggingSvc,"selected", {
+        files: angular.copy(mockSelectedFiles)
+      });
       sandbox.stub(taggingSvc,"updateLookupTags", function(){
-        return Q.resolve();});
+        return Q.resolve({code: 200});
+      });
       taggingSvc.tagGroups = {};
       sandbox.stub(taggingSvc,"tagGroups", {lookupTags: angular.copy(mockLookupSelectedTags)});
       sandbox.stub(taggingSvc,"clearAllLookupTags", function(){ return 200;});
@@ -475,7 +503,7 @@ describe("Services: TaggingService2",function() {
       expect(taggingSvc.updateLookupTags.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
       expect(taggingSvc.updateLookupTags.getCall(0).args[0].length).to.eql(2);
       expect(taggingSvc.updateLookupTags.getCall(0).args[2]).to.eql("LOOKUP");
-      return taggingSvc.updateLookupTags().then(function(){
+      taggingSvc.updateLookupTags().then(function(){
         expect(taggingSvc.tagGroups.lookupTags.length).to.equal(0);
       });
     });
@@ -488,7 +516,7 @@ describe("Services: TaggingService2",function() {
 
     it("clearAllFreeformTagsAndSave should remove all tags froms selected FreeformTags, and calls save.", function () {
       sandbox.stub(taggingSvc,"saveChangesToTags", function(){
-        return Q.resolve();
+        return Q.resolve({code: 200});
       });
 
       taggingSvc.tagGroups = {};
@@ -496,11 +524,15 @@ describe("Services: TaggingService2",function() {
         return [{}];
       };
       taggingSvc.selected = { files: [] };
-      sandbox.stub(taggingSvc,"tagGroups", {freeformTags: angular.copy(mockFreeformSelectedTagsWithValues)});
-      sandbox.stub(taggingSvc,"clearAllFreeformTags", function(){ return 200;});
+      sandbox.stub(taggingSvc, "tagGroups", {
+        freeformTags: angular.copy(mockFreeformSelectedTagsWithValues)
+      });
+      sandbox.stub(taggingSvc, "clearAllFreeformTags", function(){ 
+        return 200;
+      });
       taggingSvc.clearAllFreeformTagsAndSave();
       expect(taggingSvc.saveChangesToTags.callCount).to.equal(1);
-      return taggingSvc.saveChangesToTags().then(function(){
+      taggingSvc.saveChangesToTags().then(function(){
         expect(taggingSvc.tagGroups.freeformTags.length).to.equal(0);
       });
     });
@@ -509,12 +541,15 @@ describe("Services: TaggingService2",function() {
       taggingSvc.tagGroups = {};
       sandbox.stub(taggingSvc,"selected", {timelineTag: angular.copy(mockTimelineObjectToSave), files: angular.copy(mockSelectedFiles)});
       sandbox.stub(taggingSvc,"tagGroups", {timelineTag: angular.copy(mockTimelineObjectToSave)});
-      sandbox.stub(taggingSvc,"clearTimeLineOnly", function(){ return 200;});
-      taggingSvc.clearAllTimelineTagsAndSave();
-      expect(taggingSvc.clearTimeLineOnly.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
-      expect(taggingSvc.clearTimeLineOnly.getCall(0).args[0].length).to.eql(2);
-      expect(taggingSvc.clearTimeLineOnly.getCall(0).args[1]).to.eql(taggingSvc.selected.timelineTag);
-      expect(taggingSvc.clearTimeLineOnly.getCall(0).args[2]).to.eql("TIMELINE");
+      sandbox.stub(taggingSvc,"clearTimeLineOnly", function(){
+        var resp = [{code: 200}];
+        return Q.resolve(resp);});
+      taggingSvc.clearAllTimelineTagsAndSave().then(function(){
+        expect(taggingSvc.clearTimeLineOnly.getCall(0).args[0][0]).to.eql(taggingSvc.selected.files[0].name);
+        expect(taggingSvc.clearTimeLineOnly.getCall(0).args[0].length).to.eql(2);
+        expect(taggingSvc.clearTimeLineOnly.getCall(0).args[1]).to.eql(taggingSvc.selected.timelineTag);
+        expect(taggingSvc.clearTimeLineOnly.getCall(0).args[2]).to.eql("TIMELINE");
+      });
     });
 
     it("clearAllInvalidLookupTags should remove all invalid tags froms selected LookupTags, but does not call save.", function () {
