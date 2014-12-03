@@ -1,0 +1,24 @@
+<span ng-hide="ngModel.setDate === 'false'">Every Day</span>
+
+<span ng-hide="ngModel.setDate === 'true'">
+    <span>Start {{ngModel.startDate | date:'dd-MMM-yyyy' }}</span> <span>End {{ngModel.endDate | date:'dd-MMM-yyyy' }}</span>
+</span>
+<span ng-show="ngModel.trash === 'true' && ngModel.setDate === 'false'">Move to Trash</span>
+<span ng-hide="ngModel.setTime === 'false'">All Day</span>
+<span ng-hide="ngModel.setTime === 'true'">
+    <span>{{ngModel.startTime | date:'shortTime' }}</span><span> to </span> <span>{{ngModel.endTime | date:'shortTime' }}</span>
+</span>
+<span ng-hide="ngModel.pud == 'true'" ng-bind="ngModel.duration + ' Seconds'"></span>
+<span ng-hide="ngModel.pud == 'false'">Play Until Done</span>
+<span ng-show="ngModel.carryon === 'true'">Carry On</span>
+<span ng-show="ngModel.timelineRecurrence === 'true'">{{ngModel.recurrenceType}}</span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() === 'monthly' && ngModel.recurrenceAbsolute == 'true' && ngModel.timelineRecurrence === 'true'">Day {{ngModel.recurrenceDayOfMonth}} Of</span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() === 'monthly' && ngModel.recurrenceAbsolute == 'false' && ngModel.timelineRecurrence === 'true'">{{optionsWeek[ngModel.recurrenceWeekOfMonth]}}
+    {{ optionsDay[ngModel.recurrenceDayOfWeek] }} Of</span>
+<span ng-show="ngModel.timelineRecurrence !== 'false'">Every</span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() === 'yearly' && ngModel.recurrenceAbsolute == 'true' && ngModel.timelineRecurrence === 'true'">{{ optionsMonth[ngModel.recurrenceMonthOfYear] }} {{ngModel.recurrenceDayOfMonth}}</span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() === 'yearly' && ngModel.recurrenceAbsolute == 'false' && ngModel.timelineRecurrence === 'true'">{{optionsWeek[ngModel.recurrenceWeekOfMonth]}}
+    {{ optionsDay[ngModel.recurrenceDayOfWeek] }} Of {{ optionsMonth[ngModel.recurrenceMonthOfYear] }}</span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() !== 'yearly' && ngModel.timelineRecurrence === 'true'"> {{ngModel.recurrenceFrequency}}  {{ngModel.recurrenceType.substring(0, ngModel.recurrenceType.length - 2).replace('i','y')}} (s) </span>
+<span ng-show="ngModel.recurrenceType.toLowerCase() === 'weekly' && ngModel.timelineRecurrence === 'true'">{{ngModel.daySelection.toString()}}</span>
+

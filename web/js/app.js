@@ -7,6 +7,8 @@ angular.module("medialibrary", [
   "medialibraryServices",
   "gapi-auth",
   "cookieTester",
+  "tagging",
+  "localData",
   "gapi-file",
   "multi-download",
   "risevision.widget.common.subscription-status",
@@ -21,6 +23,7 @@ function($urlRouterProvider, $stateProvider) {
   .state("main", {
        url: "/files",
        templateUrl: "partials/main.html"
+
   })
   .state("main.local", {
        url: "/local",
@@ -28,11 +31,27 @@ function($urlRouterProvider, $stateProvider) {
   })
   .state("main.company-root", {
        url: "/:companyId",
-       templateUrl: "partials/file-items.html"
+       templateUrl: "partials/file-items.html",
+        controller: function($state, $stateParams, FULLSCREEN) {
+        if(FULLSCREEN){
+          $(window.parent).on("hashchange", function () {
+            if(window.parent.location.hash === "#/tagConfiguration") {
+              $state.go("tagConfiguration", {companyId: $stateParams.companyId});
+            }
+            if(window.parent.location.hash === "#/") {
+              $state.go("main.company-root", {folderPath: "/", companyId: $stateParams.companyId});
+            }
+          });
+        }
+      }
   })
   .state("main.company-folders", {
        url: "/:companyId/*folderPath",
        templateUrl: "partials/file-items.html"
+  })
+  .state("tagConfiguration", {
+    url: "/tagConfiguration/:companyId",
+    templateUrl: "partials/tagConfiguration.html"
   });
 }])
 .config(function($provide) {

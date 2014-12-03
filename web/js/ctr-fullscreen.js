@@ -1,7 +1,8 @@
 "use strict";
 
 angular.module("storageFull")
-.controller("FullScreenController", ["$scope", "$location", "$timeout", "userState", "usSpinnerService", function($scope, $location, $timeout, userState, usSpinnerService) {
+.controller("FullScreenController", ["$scope", "$location", "$timeout", "userState", "usSpinnerService", "$state",
+    function($scope, $location, $timeout, userState, usSpinnerService, $state) {
   $scope.userState = userState;
   $scope.currentState = null;
 
@@ -40,6 +41,23 @@ angular.module("storageFull")
         usSpinnerService.stop("spn-stg-full");
         $scope.currentState = null;
         $scope.loadStorageModal(companyId);
+        $scope.navOptions = [{
+          title: "Platform",
+          link: "http://rva.risevision.com/",
+          target: "_blank"
+        }, {
+          title: "Storage",
+          link: $state.href("storageMain"),
+          target: "_self"
+        }, {
+          title: "Tag Settings",
+          link: $state.href("tagConfiguration"),
+          target: "_self"
+        }, {
+          title: "Help",
+          link: "http://help.risevision.com/#/user/storage/what-is-storage",
+          target: "_blank"
+        }];
       }
       else {
         $scope.clearStorageContainer();     
