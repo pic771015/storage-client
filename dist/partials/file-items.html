@@ -91,7 +91,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="file in filesDetails.files | filter:query | orderBy:orderByAttribute:reverseSort" ng-class="{active: file.isChecked}">
+    <tr ng-repeat="file in filesDetails.files | filter:query | orderBy:orderByAttribute:reverseSort track by $index" ng-class="{active: file.isChecked}">
       <td class="check-col">
         <input type="checkbox" ng-model="file.isChecked" ng-change="fileCheckToggled(file)" ng-show="!fileIsCurrentFolder(file) && !fileIsTrash(file)">
       </td>
