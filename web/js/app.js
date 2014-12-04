@@ -35,4 +35,7 @@ function($urlRouterProvider, $stateProvider) {
        url: "/:companyId/*folderPath",
        templateUrl: "partials/file-items.html"
   });
-}]);
+}])
+.config(function($provide) {
+  $provide.value("FULLSCREEN", (window.location.href.indexOf("storageFullscreen=true") > -1));
+});

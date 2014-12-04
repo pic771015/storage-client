@@ -4,10 +4,10 @@ angular.module("medialibrary")
 .controller("FileListCtrl",
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
 "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
-"$window","STORAGE_API_URL", "STORAGE_CLIENT_API", "$state", "$translate",
+"$window","STORAGE_API_URL", "STORAGE_CLIENT_API", "$state", "$translate", "FULLSCREEN",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
-$window, STORAGE_API_URL, STORAGE_CLIENT_API, $state, $translate) {
+$window, STORAGE_API_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = STORAGE_API_URL + bucketName + "/";
   var trashLabel;
@@ -19,7 +19,7 @@ $window, STORAGE_API_URL, STORAGE_CLIENT_API, $state, $translate) {
   $scope.bucketCreationStatus = {code: 202};
   $scope.currentDecodedFolder = $stateParams.folderPath ? 
                                 decodeURIComponent($stateParams.folderPath) : undefined;
-  $scope.storageFull = ($window.location.href.indexOf("storageFullscreen=true") > -1);
+  $scope.storageFull = FULLSCREEN;
 
   $translate("storage-client.trash").then(function(value) {
     trashLabel = value;

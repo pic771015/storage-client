@@ -49,16 +49,16 @@ function($scope, $modalInstance, listSvc) {
 ])
 .controller("ButtonsController",
 ["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
-"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API",
+"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API) {
+          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = STORAGE_API_URL + bucketName + "/";
   var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
 
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
-  $scope.storageFull = ($window.location.href.indexOf("storageFullscreen=true") > -1);
+  $scope.storageFull = FULLSCREEN;
   $scope.showCloseButton = !$scope.storageFull;
 
   $scope.filesDetails = listSvc.filesDetails;
