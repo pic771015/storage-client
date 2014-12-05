@@ -9,6 +9,11 @@
 
 var port = require("system").env.E2E_PORT || 8000;
 var url = "http://localhost:" + port + "/index.html";
+
+var loginPort = require("system").env.E2E_LOGIN_PORT || 8888;
+var loginUrlRoot = "http://localhost:" + loginPort;
+var loginUrl = loginUrlRoot + "/_ah/login?continue=%2f";
+
 var imgdir = "test/e2e/storage-full/";
 var customHeaders = {
     "Accept-Language": "en-US,en;q=0.8"
@@ -25,6 +30,21 @@ casper.test.begin("Connecting to " + url, function suite(test) {
 
   casper.then(function() {
     casper.page.customHeaders = customHeaders;
+  });
+
+  casper.then(function() {
+    casper.open(loginUrl).then(function(resp) {
+      this.evaluate(function(user) {
+        document.querySelector("#email").value = user;
+        document.querySelector("#btn-login").click();
+      }, casper.cli.options.user);
+    });
+
+    casper.test.assert(true, "displayed local login");
+  });
+
+  casper.waitForUrl(loginUrlRoot, function() {
+    casper.test.assert(true, "processed local login");
   });
 
   casper.then(function() {
@@ -79,7 +99,7 @@ casper.test.begin("Connecting to " + url, function suite(test) {
   });
 
   // Waits for the redirect page to load
-  casper.waitForUrl(/storage-full\.html/, function() {
+  casper.waitForUrl(/index\.html/, function() {
     
   });
 
@@ -90,6 +110,11 @@ casper.test.begin("Connecting to " + url, function suite(test) {
 
   // From this point on, all the actions happen inside the iframe
   casper.withFrame("storage-modal-embedded", function() {
+    // Waits for the loading info message to show
+    casper.waitUntilVisible(".alert-info", function() {
+      casper.test.assert(true, "files are being loaded");
+    });
+
     // Waits until the file listing is loaded
     casper.waitUntilVisible("#filesTable", function() {
       casper.test.assert(true, "files have been listed");
@@ -147,21 +172,23 @@ casper.test.begin("Connecting to " + url, function suite(test) {
       casper.test.assert(true, "send to trash button clicked");
     });
 
-    // Waits for the loading info message to show
-    casper.waitUntilVisible(".alert-info", function() {
-      casper.test.assert(true, "files are being refreshed");
+    // Waits for the moving to trash info message to show
+    casper.waitUntilVisible(".panel-info", function() {
+      casper.test.assert(true, "files are being moved to trash");
     });
 
-    // Waits for the updated file listing to show
-    casper.waitUntilVisible("#filesTable", function() {
-      casper.test.assert(true, "files have been refreshed");
+    // Waits for the moving to trash info message to hide
+    casper.waitWhileVisible(".panel-info", function() {
+      casper.test.assert(true, "files successfully moved to trash");
     });
 
     // Clicks the Show Trash button, to list the files on Trash
     casper.then(function() {
-      this.click("a[title='Trash']");
-      // When using PhantomJS, setting the locale is ignored (it does not happen with SlimeJS)
-      //this.click("a[title='Papelera']");
+      var sufix = "[ng-show='fileIsFolder(file) || !storageFull']";
+
+      this.click("a[title='Trash']" + sufix);
+      // When using PhantomJS, setting the locale is ignored (it does not happen with SlimerJS)
+      //this.click("a[title='Papelera']" + sufix);
       
       casper.test.assert(true, "trash button clicked");
     });
@@ -215,14 +242,14 @@ casper.test.begin("Connecting to " + url, function suite(test) {
       casper.test.assert(true, "confirm permanent deletion dialog hidden");
     });
 
-    // Waits for the loading info message to show
-    casper.waitUntilVisible(".alert-info", function() {
-      casper.test.assert(true, "trash files are being loaded");
+    // Waits for the deleting info message to show
+    casper.waitUntilVisible(".panel-info", function() {
+      casper.test.assert(true, "files are being deleted");
     });
 
-    // Waits for the trash file listing to show
-    casper.waitUntilVisible("#filesTable", function() {
-      casper.test.assert(true, "trash displayed");
+    // Waits for the deleting info message to hide
+    casper.waitWhileVisible(".panel-info", function() {
+      casper.test.assert(true, "files successfully deleted");
     });
 
     // Checks the delete folder does not show in the file listing anymore
