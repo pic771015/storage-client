@@ -33,7 +33,7 @@ casper.test.begin("Connecting to " + url, function suite(test) {
   });
 
   casper.then(function() {
-    casper.open(loginUrl).then(function(resp) {
+    casper.open(loginUrl).then(function() {
       this.evaluate(function(user) {
         document.querySelector("#email").value = user;
         document.querySelector("#btn-login").click();
