@@ -1,7 +1,7 @@
 "use strict";
 angular.module("medialibrary")
-.factory("UploadURIService", ["$q", "GAPIRequestService", "OAuthStatusService", "$stateParams", "$interpolate", "$translate",
-function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $interpolate, $translate) {
+.factory("UploadURIService", ["$q", "GAPIRequestService", "OAuthStatusService", "$stateParams", "$interpolate", "$translate", "$window",
+function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $interpolate, $translate, $window) {
   var svc = {};
 
   var uriFailed = "storage-client.upload-uri-request-failed";
@@ -26,7 +26,8 @@ function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $inter
       var gapiPath = "storage.getResumableUploadURI";
       var params = {"companyId": $stateParams.companyId,
                     "fileName": encodeURIComponent(file.name),
-                    "fileType": file.type};
+                    "fileType": file.type,
+                    "origin": $window.location.origin};
       return gapiRequestor.executeRequest(gapiPath,params);
     })
     .then(function(resp) {
