@@ -1,15 +1,29 @@
 "use strict";
 angular.module("multi-download",[])
-.factory("DownloadService", ["$timeout", "$window", function($timeout, $window) {
+.factory("DownloadService", ["$timeout", "$window", "GAPIRequestService", "$stateParams",
+  function($timeout, $window, requestor, $stateParams) {
   var svc = {};
   svc.downloadFiles = function(files, bucketName, delay) {
     $timeout(function() {
       if (files.length === 0) {return;}
-      var fileName = files.shift().name;
+      var file = files.shift();
+      var fileName = file.name;
       if (fileName.substr(-1) !== "/") {
-        $window.location.assign("https://www.googleapis.com/storage/v1/b/" +
-            bucketName + "/o/" +
-            encodeURIComponent(fileName) + "?alt=media");
+        var params = {
+          companyId: $stateParams.companyId,
+          fileName: encodeURIComponent(file.name),
+          fileType: file.type
+        };
+        requestor.executeRequest("storage.getSignedDownloadURI", params).then(function (resp) {
+          if(resp.result) {
+            var header = "&response-content-disposition=attachment;filename=" + encodeURIComponent(file.name);
+
+            $window.location.assign(resp.message + header);            
+          }
+          else {
+            console.log(resp.message);
+          }
+        });
       }
       svc.downloadFiles(files, bucketName, 1000);
     }, delay, false);
