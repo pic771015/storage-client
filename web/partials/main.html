@@ -92,6 +92,34 @@
         </div>
       </div>
     </div>
+
+    <div class="row" ng-show="rejectedUploads.length > 0">
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-heading" ng-click="isRUCollapsed = !isRUCollapsed">
+            <h3 class="panel-title">
+              <h3 class="panel-title"><span translate="storage-client.download-status"></span>
+              <span class="pull-right"><i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isPOCollapsed]"></i></span>
+            </h3>
+          </div>
+          <div class="panel-body" ng-show="!isRUCollapsed">
+            <table class="table">
+              <tbody>
+                <tr ng-repeat="item in rejectedUploads">
+                  <td>{{'storage-client.' + item.rejectedUploadMessage | translate}}</td>
+                  <td>{{item.name | trashItemFilter}}</td>
+                  <td>
+                    <span class="text-danger" ng-click="removeRejectedDownload(item)">
+                      <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

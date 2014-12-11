@@ -68,6 +68,9 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
   $scope.pendingOperations = [];
   $scope.leavePageMessage = "";
 
+  $scope.rejectedUploads = downloadSvc.rejectedUploads;
+  $scope.isRUCollapsed = false;
+
   $translate("storage-client.pending-ops-leave-page").then(function(value) {
     $scope.leavePageMessage = value;
   });
@@ -137,6 +140,14 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
 
     if(position >= 0) {
       $scope.pendingOperations.splice(position, 1);      
+    }
+  };
+
+  $scope.removeRejectedDownload = function(file) {
+    var position = $scope.rejectedUploads.indexOf(file);
+
+    if(position >= 0) {
+      $scope.rejectedUploads.splice(position, 1);      
     }
   };
 

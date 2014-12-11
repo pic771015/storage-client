@@ -3,6 +3,9 @@ angular.module("multi-download",[])
 .factory("DownloadService", ["$timeout", "$window", "GAPIRequestService", "$stateParams",
   function($timeout, $window, requestor, $stateParams) {
   var svc = {};
+
+  svc.rejectedUploads = [];
+
   svc.downloadFiles = function(files, bucketName, delay) {
     $timeout(function() {
       if (files.length === 0) {return;}
@@ -22,6 +25,8 @@ angular.module("multi-download",[])
           }
           else {
             console.log(resp.message);
+            file.rejectedUploadMessage = resp.message;
+            svc.rejectedUploads.push(file);
           }
         });
       }
