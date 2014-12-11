@@ -18,6 +18,23 @@ describe("Services: Download", function() {
       }};
       return svc;
     });
+    $provide.service("GAPIRequestService", function() {
+      var svc = {};
+
+      svc.executeRequest = function(endpoint, params) {
+        return {
+          then: function(cb) {
+            cb({ message: "Invoked: " + endpoint, result: true, params: params });
+          }
+        };
+      };
+      return svc;
+    });
+    $provide.service("$stateParams", function() {
+      var svc = { companyId: "dummy-id"};
+
+      return svc;
+    });
   }));
 
   it("should exist", function() {
