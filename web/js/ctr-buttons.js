@@ -267,15 +267,20 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
 
     requestSvc.executeRequest(apiMethod, requestParams)
       .then(function(resp) {
-          if (resp.code === 403) {
+          if (!resp.result) {
             $scope.statusDetails.code = resp.code;
-            $translate("storage-client.permission-refused", { email: resp.userEmail }).then(function(msg) {
+            
+            $translate("storage-client." + resp.message, { email: resp.userEmail }).then(function(msg) {
               $scope.statusDetails.message = msg;
             });
 
             selectedFiles.forEach(function(file) {
               file.actionFailed = true;
+
+              $scope.filesDetails.files.push(file);
             });
+
+            listSvc.resetSelections();
           }
           else {
             // Removed completed pending operations
