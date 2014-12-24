@@ -19,7 +19,7 @@ angular.module("multi-download",[])
         };
         requestor.executeRequest("storage.getSignedDownloadURI", params).then(function (resp) {
           if(resp.result) {
-            var header = "&response-content-disposition=attachment;filename=" + encodeURIComponent(file.name);
+            var header = "&response-content-disposition=attachment;filename=" + encodeURIComponent(file.name.replace("--TRASH--/", ""));
 
             $window.location.assign(resp.message + header);            
           }
