@@ -9,7 +9,7 @@
     "rv-common-style": "https://github.com/Rise-Vision/common-style.git",
     "rv-common-header": "https://github.com/Rise-Vision/common-header.git",
     "rv-subscription-status": "https://github.com/Rise-Vision/component-subscription-status.git#master",
-    "rv-common-i18n": "https://github.com/Rise-Vision/common-i18n.git#fix/allow-download-without-subscription",
+    "rv-common-i18n": "https://github.com/Rise-Vision/common-i18n.git",
     "rv-widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git",
     "angular-file-upload": "https://github.com/tejohnso/angular-file-upload.git",
     "angular-ui-router": "~0.2.11"
@@ -20,7 +20,6 @@
     "jquery": "~1.11.1",
     "angular-mocks": "~1.2.24",
     "angular-translate": "~2.4.2",
-    "angular-translate-loader-static-files": "~2.4.2",
-    "rv-common-i18n": "fix/allow-download-without-subscription"
+    "angular-translate-loader-static-files": "~2.4.2"
   }
 }
