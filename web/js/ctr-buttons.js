@@ -67,6 +67,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
   $scope.isPOCollapsed = true;
   $scope.pendingOperations = [];
   $scope.leavePageMessage = "";
+  $scope.showStoreModal = false;
 
   $scope.rejectedUploads = downloadSvc.rejectedUploads;
   $scope.isRUCollapsed = false;

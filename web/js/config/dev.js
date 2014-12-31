@@ -19,11 +19,11 @@ angular.module("risevision.common.config")
     .value("STORAGE_API_URL", "https://www.googleapis.com/download/storage/v1/b/")
     .value("STORE_PRODUCT_CODE", "b0cba08a4baa0c62b8cdc621b6f6a124f89a03db")
     .value("STORE_PRODUCT_ID", "24")
-  .value("STORAGE_CLIENT_API", "https://www.googleapis.com/storage/v1/b/")
+    .value("STORAGE_CLIENT_API", "https://www.googleapis.com/storage/v1/b/")
     // Subscription status
     //.value("STORE_SERVER_URL", "https://store-dot-rvacore-test.appspot.com/")
     //.value("IN_RVA_PATH", "?up_id=iframeId&parent=parentUrl#/product/productId/?inRVA&cid=companyId")
     //.value("PATH_URL", "v1/company/companyId/product/status?pc=")
-    //.value("STORE_URL", "https://store.risevision.com") // Also used by common-header
+    .value("STORE_URL", "https://store.risevision.com/~rvi/store-ci") // Also used by common-header
     //.value("CORE_URL", "https://rvacore-test.appspot.com/_ah/api")
     ;
