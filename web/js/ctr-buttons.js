@@ -49,9 +49,10 @@ function($scope, $modalInstance, listSvc) {
 ])
 .controller("ButtonsController",
 ["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
-"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN",
+"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", "PublicReadService",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN) {
+          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
+          publicReadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var bucketUrl = STORAGE_API_URL + bucketName + "/";
@@ -83,6 +84,8 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
       return $scope.leavePageMessage;
     }
   });
+
+  publicReadSvc.enablePublicRead($stateParams.companyId);
 
   $scope.isTrashFolder = function() {
     return $scope.fileListStatus.folder && $scope.fileListStatus.folder.indexOf("--TRASH--/") === 0;
