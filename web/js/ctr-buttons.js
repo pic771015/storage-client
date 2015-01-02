@@ -49,13 +49,12 @@ function($scope, $modalInstance, listSvc) {
 ])
 .controller("ButtonsController",
 ["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
-"GAPIRequestService", "STORAGE_API_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", "PublicReadService",
+"GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", "PublicReadService",
 function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_API_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
+          STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
           publicReadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
-  var bucketUrl = STORAGE_API_URL + bucketName + "/";
   var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
 
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
@@ -159,7 +158,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
     var fileUrls = [], data = {};
     data.params = [];
     getSelectedFiles().forEach(function(file) {
-      var copyUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) : bucketUrl + "o/" + encodeURIComponent(file.name) + "?&alt=media";
+      var copyUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) : STORAGE_FILE_URL + bucketName + "/" + encodeURIComponent(file.name);
       fileUrls.push(copyUrl);
       data.params.push(copyUrl);
     });
@@ -184,7 +183,7 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
 
     modalInstance.opened.then(function(){
       setTimeout(function() {
-        var copyUrl = copyFile.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(copyFile.name) : bucketUrl + "o/" + encodeURIComponent(copyFile.name) + "?&alt=media";
+        var copyUrl = copyFile.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(copyFile.name) : STORAGE_FILE_URL + bucketName + "/" + encodeURIComponent(copyFile.name);
         $("#copyUrlInput").val(copyUrl);
         $("#copyUrlInput").focus(function() { $(this).select(); } );
         $("#copyUrlInput").focus();
