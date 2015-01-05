@@ -5,3 +5,4 @@ test_reports
 test/e2e/*.png
 web/js/config/config.js
 web/js/config/locales_config.js
+dist/
