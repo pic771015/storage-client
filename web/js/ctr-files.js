@@ -120,7 +120,7 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
   $scope.$on("FileSelectAction", function(event, file) {
     var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName +"/o?prefix=";
     var fileUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) :
-        STORAGE_FILE_URL + bucketName + encodeURIComponent(file.name);
+        STORAGE_FILE_URL + bucketName + "/" + encodeURIComponent(file.name);
     var data = { params: fileUrl };
 
     if ($scope.fileIsFolder(file)) {
