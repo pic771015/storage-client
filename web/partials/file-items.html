@@ -2,16 +2,6 @@
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202">
   <span translate="storage-client.requesting-file-list"></span>
 </div>
-<div ng-class="{alert:true, 'alert-info':(bucketCreationStatus.code < 300), 'alert-danger':(bucketCreationStatus.code > 299), 'alert-dismissable':true}" ng-show="statusDetails.code===404">
-  <button class="btn btn-success btn-fixed-width" type="button" ng-click="createBucket()">
-    <span title="{{ 'storage-client.create-initial-folder' | translate }}">
-      <span translate="storage-client.create-initial-folder"></span> <i class="fa fa-white fa-check icon-right"></i>
-    </span>
-  </button>
-  <span ng-show="bucketCreationStatus.code > 299">
-    <span translate="storage-client.create-initial-folder-failed" translate-values="{ email: bucketCreationStatus.userEmail }"></span>
-  </span>
-</div>
 <div class="alert alert-danger" ng-show="statusDetails.code===403">
   <span translate="storage-client.not-authorized"></span>
 </div>

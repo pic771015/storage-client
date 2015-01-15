@@ -48,9 +48,9 @@ function($scope, $modalInstance, listSvc) {
 }
 ])
 .controller("ButtonsController",
-["$scope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
+["$scope", "$rootScope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
 "GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", "PublicReadService",
-function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
+function ($scope, $rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
           STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
           publicReadSvc) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
@@ -329,7 +329,10 @@ function ($scope, $stateParams, $window, $modal, $log, $timeout, $filter, listSv
               newFolderName};
 
           requestSvc.executeRequest("storage.createFolder", requestParams)
-              .then(function() {listSvc.refreshFilesList();});
+              .then(function() {
+                $rootScope.$emit("refreshSubscriptionStatus", "trial-available");
+                listSvc.refreshFilesList();
+              });
       }, function (){
           // do what you need to do if user cancels
           $log.info("Modal dismissed at: " + new Date());

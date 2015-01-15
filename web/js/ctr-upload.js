@@ -1,7 +1,7 @@
 "use strict";
 
-angular.module("medialibrary").controller("UploadController", ["$scope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService", "$translate",
-function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc, $translate) {
+angular.module("medialibrary").controller("UploadController", ["$scope", "$rootScope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService", "$translate",
+function ($scope, $rootScope, $stateParams, $http, FileUploader, uriSvc, filesSvc, $translate) {
   var uploader = $scope.uploader = new FileUploader();
 
   uploader.method = "PUT";
@@ -18,6 +18,8 @@ function ($scope, $stateParams, $http, FileUploader, uriSvc, filesSvc, $translat
     
     uriSvc.getURI(fileItem.file)
     .then(function(resp) {
+      $rootScope.$emit("refreshSubscriptionStatus", "trial-available");
+
       fileItem.url = resp;
       uploader.uploadItem(fileItem);
     })
