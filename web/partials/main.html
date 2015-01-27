@@ -136,10 +136,10 @@
               <td>{{item.file.name}}</td>
               <td nowrap>{{ item.file.size|fileSizeFilter }}</td>
               <td>
-                <span style="float: right" class="inline-cancel" ng-show="item.isUploading" ng-click="item.remove()">
+                <span style="float: right" class="inline-cancel" ng-show="item.isUploading" ng-click="removeItem(item)">
                   <i class="text-danger fa fa-times-circle-o cancel"></i>
                 </span>
-                <span class="text-danger" ng-show="!item.isUploading" ng-click="item.remove()">
+                <span class="text-danger" ng-show="!item.isUploading" ng-click="removeItem(item)">
                   <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
                 </span>
 
@@ -157,7 +157,7 @@
 
   <div class="modal fade" tabindex="-1">
     <form id="uploadform">
-      <input type="file" id="file" nv-file-select="" uploader="uploader" multiple />
+      <input type="file" id="file" storage-file-select uploader="uploader" multiple>
     </form>
   </div>
 </div>

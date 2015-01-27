@@ -1,13 +1,13 @@
 /*jshint expr:true */
 
-describe("Services: fileUpload", function() {
+describe("Services: FileUploader", function() {
   "use strict";
 
-  beforeEach(module("gapi-file"));
+  beforeEach(module("medialibrary"));
 
   it("should exist", function (done) {
-    inject(function(fileUpload) {
-      expect(fileUpload).be.defined;
+    inject(function(FileUploader) {
+      expect(FileUploader).be.defined;
       done();
     });
   });

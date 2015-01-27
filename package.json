@@ -16,7 +16,7 @@
     "gulp-minify-css": "~0.3.0",
     "gulp-notify": "~1.2.5",
     "gulp-uglify": "~0.2.1",
-    "gulp-usemin": "~0.3.3",
+    "gulp-usemin": "0.3.6",
     "tiny-lr": "~0.0.5",
     "gulp-rename": "~1.2.0",
     "gulp-watch": "~0.6.4",
@@ -46,7 +46,7 @@
     "dev-install": "npm install && bower install && gulp config",
     "dev": "gulp server",
     "dist": "gulp server-dist",
-    "ci-build": "gulp config && gulp test-ci && gulp build && [ -d dist ]",
+    "ci-build": "gulp config && gulp test-ci && gulp build",
     "setenv": "NODE_ENV=$(select env in dev local prod;do echo $env;break;done) gulp config"
   },
   "author": "Rise",

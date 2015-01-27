@@ -8,7 +8,6 @@ angular.module("medialibrary", [
   "gapi-auth",
   "cookieTester",
   "gapi-file",
-  "angularFileUpload",
   "multi-download",
   "risevision.widget.common.subscription-status",
   "risevision.common.i18n"
