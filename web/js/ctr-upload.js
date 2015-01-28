@@ -70,6 +70,8 @@ function ($scope, $rootScope, $stateParams, $http, uploader, uriSvc, filesSvc, $
 
       element.bind("change", function() {
         uploader.addToQueue(this.files);
+
+        element.prop("value", null);
       });
     }
   };

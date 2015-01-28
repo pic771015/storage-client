@@ -175,7 +175,7 @@ angular.module("medialibrary")
         });
       });
       
-      form.append(item.alias, item.file, item.file.name);
+      form.append(item.alias, item.domFileItem, item.file.name);
       
       xhr.upload.onprogress = function(event) {
         var previousChunkBytes, progress;
@@ -244,7 +244,7 @@ angular.module("medialibrary")
         });
       
         xhr.setRequestHeader("Content-Range", range);
-        xhr.send(item.file.slice(startByte, startByte + item.chunkSize));
+        xhr.send(item.domFileItem.slice(startByte, startByte + item.chunkSize));
       };
       
       xhr.sendChunk(0);
@@ -262,7 +262,11 @@ angular.module("medialibrary")
         method: uploader.method
       }, options, {
         uploader: uploader,
-        file: file,
+        domFileItem: file,
+        file: {"lastModifiedDate": angular.copy(file.lastModifiedDate)
+              ,"size": file.size
+              ,"type": file.type
+              ,"name": file.name},
         isReady: false,
         isUploading: false,
         isUploaded: false,
