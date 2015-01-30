@@ -1,0 +1,143 @@
+<div ng-controller="TagSettingsCtrl">
+    <div class="app-header add-top add-bottom">
+        <div class="title-block">
+            <h1>Tags</h1>
+        </div>
+        <div class="global-actions">
+            <button class="btn btn-lg btn-primary" ng-show="showMainView" ng-click="addTags()"><i class="fa fa-plus"></i> Add Tag</button>
+        </div>
+    </div>
+    <div id="mainTagSettings" ng-show="showMainView">
+        <div class="alert alert-info alert-dismissable" ng-show="tagStatusDetails.code !== 200">
+            <span translate="storage-client.requesting-file-list"></span>
+        </div>
+        <div ng-show="tagStatusDetails.code === 200">
+            <label class="control-label">Lookup Tags</label>
+            <div class="content-box">
+                <table class="table-2 table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-1">Name</th>
+                        <th>Values</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="clickable-row" ng-click="editTags(lookup)" ng-repeat="lookup in lookupTags">
+                        <td class="col-xs-1">
+                            <strong>{{lookup.name}}</strong>
+                        </td>
+                        <td>
+                            {{lookup.values.join(', ').toString()}}
+                        </td>
+                    </tr>
+                    <tr ng-show="lookupTags.length === 0">
+                        <td colspan="2" class="text-center"><span>You haven't added any lookup tags</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <label class="control-label add-top">Freeform Tags</label>
+            <div class="content-box">
+                <table class="table-2 table-hover">
+                    <thead>
+                    <tr>
+                        <th class="col-xs-1">Name</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="clickable-row" ng-repeat="freeform in freeformTags" ng-click="editTags(freeform)">
+                        <td class="col-xs-1">
+                            <strong>{{freeform.name}}</strong>
+                        </td>
+                    </tr>
+                    <tr ng-show="freeformTags.length === 0">
+                        <td class="text-center"><span>You haven't added any freeform tags</span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="addTagSettings" ng-show="showAddView">
+        <div ng-include="'editTagSetting.html'"></div>
+    </div>
+    <div id="editTagSettings" ng-show="showEditView">
+        <div ng-include="'editTagSetting.html'"></div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="editTagSetting.html">
+    <form name="updateTag">
+        <div class="app-header add-top add-bottom hidden-sm hidden-md hidden-lg">
+            <div class="global-actions">
+                <button type="button" class="btn btn-lg btn-danger" ng-hide="showAddView" ng-click="openConfirm()" ng-disabled="!updateTag.$valid">
+                    Delete <i class="fa fa-white fa-trash-o icon-right"></i>
+                </button>
+                <!-- Indicates a successful or positive action -->
+                <button type="button" class="btn btn-lg btn-primary" ng-click="updateOrAddTag()" ng-disabled="(sameTagName && showAddView) || duplicates || oldNameOfTag === selectedTag.name && oldValuesOfTag.toString() === selectedTag.values.toString()  || !updateTag.$valid">
+                    Save <i class="fa fa-white fa-check icon-right"></i>
+                </button>
+                <!-- Indicates cancel or non-destructive action -->
+                <button type="button" class="btn btn-lg btn-default" ng-click="resetView()">
+                    Cancel <i class="fa fa-white fa-times icon-right"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Name</label>
+            <input type="text" class="form-control" ng-keyup="tagNameAlready(selectedTag.name)" placeholder="Tag Name" ng-model="selectedTag.name" ng-required="true">
+        </div>
+
+        <label class="control-label half-top add-bottom" ng-show="showAddView">
+            <input type="checkbox" ng-model="tagType" ng-checked="tagType" ng-click="changeTagType()">  Make Freeform Tag
+        </label>
+
+        <div class="form-group" ng-hide="tagType">
+            <label class="control-label">Lookup Values</label>
+            <input id="tagSettingValues" ng-keyup="hasDuplicates(selectedTag.values)" type="text" class="form-control" placeholder="Enter Values Separated by Commas" ng-model="selectedTag.values" ng-list ng-required="!tagType">
+        </div>
+        <div class="alert alert-danger" ng-show="sameTagName && showAddView">
+            Tag definition name already exists.
+        </div>
+        <div class="alert alert-danger" ng-show="duplicates">
+            Values for a Lookup Tag must all be unique.
+        </div>
+
+        <div class="add-top add-bottom text-right hidden-xs">
+            <!-- Indicates delete or destructive action -->
+            <button type="button" class="btn btn-danger pull-left" ng-hide="showAddView" ng-click="openConfirm()" ng-disabled="!updateTag.$valid">
+                Delete <i class="fa fa-white fa-trash-o icon-right"></i>
+            </button>
+            <!-- Indicates a successful or positive action -->
+            <button type="button" class="btn btn-primary" ng-click="updateOrAddTag()"
+                    ng-disabled="(sameTagName && showAddView) || duplicates || oldNameOfTag === selectedTag.name && oldValuesOfTag.toString() === selectedTag.values.toString()  || !updateTag.$valid">
+                Save <i class="fa fa-white fa-check icon-right"></i>
+            </button>
+            <!-- Indicates cancel or non-destructive action -->
+            <button type="button" class="btn btn-default" ng-click="resetView()">
+                Cancel <i class="fa fa-white fa-times icon-right"></i>
+            </button>
+        </div>
+    </form>
+</script>
+<script type="text/ng-template" id="deleteConfirm.html">
+    <form id="deleteForm">
+        <div class="modal-header">
+            <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>This Tag is about to be permanently deleted and it cannot be recovered</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">
+                <span translate="common.delete-forever"></span> <i class="fa fa-white fa-check icon-right"></i>
+            </button>
+            <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
+                <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
+            </button>
+        </div>
+    </form>
+</script>

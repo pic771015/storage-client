@@ -21,7 +21,6 @@
     "angular-mocks": "~1.2.24",
     "angular-translate": "~2.4.2",
     "angular-translate-loader-static-files": "~2.4.2",
-    "rv-common-style": "1.1.2",
     "angular-sanitize": "~1"
   }
 }

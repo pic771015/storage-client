@@ -49,10 +49,11 @@ function($scope, $modalInstance, listSvc) {
 ])
 .controller("ButtonsController",
 ["$scope", "$rootScope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
-"GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", "PublicReadService",
-function ($scope, $rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
+"GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", 
+  "PublicReadService", "TaggingService", "localDatastore",
+function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
           STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
-          publicReadSvc) {
+          publicReadSvc, taggingSvc, localData) {
   $scope.storageModal = ($window.location.href.indexOf("storage-modal.html") > -1);
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
@@ -349,6 +350,22 @@ function ($scope, $rootScope, $stateParams, $window, $modal, $log, $timeout, $fi
     }
     return selectedFiles;
   }
+
+  $scope.taggingButtonClick = function(){
+    var fileNames = getSelectedFiles().map(function(i){
+      return i.name;
+    });
+    var filesWithTags = localData.getFilesWithTags().filter(function(i){
+      return fileNames.indexOf(i.name) > -1;
+    });
+
+    //to remember checked files
+    listSvc.taggingCheckedItems = filesWithTags.map(function(i){
+      return i.name;
+    });
+    listSvc.checkedTagging = true;
+    taggingSvc.taggingButtonClick(filesWithTags, "union");
+  };
 
   function getActivePendingOperations() {
     var ops = $scope.pendingOperations;

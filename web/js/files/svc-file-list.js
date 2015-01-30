@@ -1,7 +1,7 @@
 "use strict";
 angular.module("gapi-file", ["gapi", "medialibraryServices","ui.router"])
-.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams",
-function (LocalFiles, requestor, $stateParams) {
+.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope",
+function (LocalFiles, requestor, $stateParams, $rootScope) {
   var svc = {};
   svc.filesDetails = {files: []
                      ,localFiles: false
@@ -11,6 +11,16 @@ function (LocalFiles, requestor, $stateParams) {
                      ,checkedItemsCount: 0};
 
   svc.statusDetails = {code: 200};
+  svc.taggingCheckedItems = [];
+  svc.checkedTagging = false;
+
+  //on all state Changes do not hold onto checkedFiles list
+  $rootScope.$on("$stateChangeStart", function(){
+    svc.checkedTagging = false;
+    svc.filesDetails.checkedCount = 0;
+    svc.filesDetails.folderCheckedCount = 0;
+    svc.filesDetails.checkedItemsCount = 0;
+  });
 
   svc.addFile = function(newFile) {
     var existingFileNameIndex;
@@ -83,6 +93,16 @@ function (LocalFiles, requestor, $stateParams) {
     svc.filesDetails.localFiles = false;
     return requestor.executeRequest("storage.files.get", params)
     .then(function (resp) {
+        if(svc.checkedTagging){
+          resp.files.forEach(function(i){
+            if(svc.taggingCheckedItems.indexOf(i.name) > -1){
+              i.isChecked = true;
+            }
+            else {
+              i.isChecked = false;
+            }
+          });
+        }
       return processFilesResponse(resp);
     });
 
@@ -125,5 +145,6 @@ function (LocalFiles, requestor, $stateParams) {
       return resp;
     }
   };
+
   return svc;
 }]);

@@ -4,10 +4,12 @@ angular.module("medialibrary")
 .controller("FileListCtrl",
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
 "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
-"$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate", "FULLSCREEN",
+"$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate",
+  "FULLSCREEN","TaggingService","localDatastore",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
-$window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
+$window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN,
+taggingSvc,  localData) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var trashLabel;
 
@@ -15,6 +17,7 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
   $scope.isAuthed = true;
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
+  $scope.tagStatusDetails = localData.statusDetails;
   $scope.bucketCreationStatus = {code: 202};
   $scope.currentDecodedFolder = $stateParams.folderPath ? 
                                 decodeURIComponent($stateParams.folderPath) : undefined;
@@ -35,14 +38,16 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
   $scope.login = function() {
     OAuthAuthorizationService.authorize().then(function() {
       $scope.isAuthed = true;
-      listSvc.refreshFilesList();
+      listSvc.refreshFilesList().then(function(){
+        localData.loadLocalData();
+      });
     })
     .then(null, function(errResult) {
       console.log(errResult);
     });
   };
 
-  $scope.fileNameOrderFunction = function(file) {
+  $scope.fileNameOrderFunction = function(file){
     return file.name.replace("--TRASH--/", trashLabel).toLowerCase();
   };
 
@@ -60,7 +65,9 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList();
+    listSvc.refreshFilesList().then(function(){
+      localData.loadLocalData();
+    });
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
@@ -82,6 +89,7 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
     }
 
     $scope.filesDetails.checkedItemsCount += file.isChecked ? 1 : -1;
+
   };
 
   $scope.selectAllCheckboxes = function() {
@@ -113,11 +121,48 @@ $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN) {
     return file.name.substr(-1) === "/";
   };
 
+  $scope.fileHasTag = function(file){
+    var fileTagEntriesNames = localData.getTagEntries().map(function(i){
+      return i.objectId;
+    });
+    return fileTagEntriesNames.indexOf(file.name) > -1;
+  };
+
   $scope.fileIsTrash = function(file) {
     return file.name === "--TRASH--/";
   };
 
+  $scope.taggingButtonClick = function(item, command){
+    $scope.selectAllCheckboxes();
+    $scope.selectAllCheckboxes();
+    if(item.isChecked === undefined || item.isChecked === false){
+      item.isChecked = true;
+      $scope.fileCheckToggled(item);
+    }
+    var items = [];
+    items.push(item);
+    //to remember checked files
+    listSvc.taggingCheckedItems = [item.name];
+    listSvc.checkedTagging = true;
+    taggingSvc.taggingButtonClick(items, command);
+  };
+
+  $scope.filterTags = function(){
+    if((taggingSvc.filteredTags === undefined || taggingSvc.filteredTags.length === 0) &&
+    (taggingSvc.filterStartDate === undefined || taggingSvc.filterStartDate === null) &&
+    (taggingSvc.filterEndDate === undefined || taggingSvc.filterEndDate === null)){
+      return;
+    }
+    return function(file){
+        var fileFromDataStore = localData.getFilesWithTags().filter(function(i){
+          return i.name === file.name;
+        })[0];
+        return taggingSvc.filterFile(fileFromDataStore);
+    };
+  };
+
   $scope.$on("FileSelectAction", function(event, file) {
+    listSvc.checkedTagging = false;
     var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName +"/o?prefix=";
     var fileUrl = file.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(file.name) :
         STORAGE_FILE_URL + bucketName + "/" + encodeURIComponent(file.name);
