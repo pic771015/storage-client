@@ -1,8 +1,15 @@
 "use strict";
 
 angular.module("medialibrary")
-.factory("FileUploader", ["$rootScope",
-  function($rootScope) {
+.factory("XHRFactory", [function() {
+  return {
+    get: function() {
+      return new XMLHttpRequest();
+    }
+  };
+}])
+.factory("FileUploader", ["$rootScope", "XHRFactory",
+  function($rootScope, XHRFactory) {
     var svc = {};
 
     svc.url = "/";
@@ -164,7 +171,7 @@ angular.module("medialibrary")
     };
     
     svc.xhrTransport = function(item) {
-      var xhr = item.xhr = new XMLHttpRequest();
+      var xhr = item.xhr = XHRFactory.get();
       var form = new FormData();
       
       svc.notifyBeforeUploadItem(item);

@@ -1,5 +1,7 @@
 "use strict";
 
+/* global sinon */
+
 describe("ButtonsController", function() {
     var ButtonsController, scope;
     var FileListService, DownloadService;

@@ -1,8 +1,8 @@
 "use strict";
 
 angular.module("medialibrary").controller("UploadController",
-["$scope", "$rootScope", "$stateParams", "$http", "FileUploader", "UploadURIService", "FileListService", "$translate", "STORAGE_UPLOAD_CHUNK_SIZE",
-function ($scope, $rootScope, $stateParams, $http, uploader, uriSvc, filesSvc, $translate, chunkSize) {
+["$scope", "$rootScope", "$stateParams", "FileUploader", "UploadURIService", "FileListService", "$translate", "STORAGE_UPLOAD_CHUNK_SIZE",
+function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $translate, chunkSize) {
   $scope.uploader = uploader;
   $scope.status = {};
 
@@ -11,7 +11,7 @@ function ($scope, $rootScope, $stateParams, $http, uploader, uriSvc, filesSvc, $
   };
 
   uploader.onAfterAddingFile = function(fileItem) {
-    console.info("onAfterAddingFile", fileItem);
+    console.info("onAfterAddingFile", fileItem.file.name);
     fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
                          fileItem.file.name;
 
