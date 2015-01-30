@@ -35,10 +35,12 @@ function($urlRouterProvider, $stateProvider) {
         controller: function($state, $stateParams, FULLSCREEN) {
         if(FULLSCREEN){
           $(window.parent).on("hashchange", function () {
-            if(window.parent.location.hash === "#/tagConfiguration") {
+            var windowhash = window.parent.location.hash.substring(window.parent.location.hash.indexOf("?"),0);
+            windowhash = (windowhash === "") ? window.parent.location.hash : windowhash;
+            if(windowhash === "#/tagConfiguration") {
               $state.go("tagConfiguration", {companyId: $stateParams.companyId});
             }
-            if(window.parent.location.hash === "#/") {
+            if(windowhash === "#/") {
               $state.go("main.company-root", {folderPath: "/", companyId: $stateParams.companyId});
             }
           });
