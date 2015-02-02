@@ -9,7 +9,7 @@ function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $inter
   var inactiveSubscription = "storage-client.upload-inactive-subscription";
   var verifyCompany = "storage-client.upload-verify-company";
 
-  $translate([uriFailed, uriFailedMail, inactiveSubscription, verifyCompany], { email: "{{email}}" }).then(function(values) {
+  $translate([uriFailed, uriFailedMail, inactiveSubscription, verifyCompany], { username: "{{username}}" }).then(function(values) {
     uriFailed = values[uriFailed];
     uriFailedMail = $interpolate(values[uriFailedMail]);
     inactiveSubscription = $interpolate(values[inactiveSubscription]);
@@ -33,13 +33,13 @@ function uploadURIService ($q, gapiRequestor, OAuthService, $stateParams, $inter
     .then(function(resp) {
       if (resp.result === false) {
         if(resp.message === "upload-inactive-subscription") {
-          resp.message = inactiveSubscription({ email: resp.userEmail });
+          resp.message = inactiveSubscription({ username: resp.userEmail });
         }
         else if(resp.message === "upload-verify-company") {
-          resp.message = verifyCompany({ email: resp.userEmail });
+          resp.message = verifyCompany({ username: resp.userEmail });
         }
         else {
-          resp.message = resp.userEmail ? uriFailedMail({ email: resp.userEmail })
+          resp.message = resp.userEmail ? uriFailedMail({ username: resp.userEmail })
                                         : uriFailed;          
         }
 

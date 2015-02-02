@@ -1,6 +1,6 @@
 <div ng-controller="FileListCtrl" id="list">
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202 && tagStatusDetails.code === 200">
-  <span translate="storage-client.requesting-file-list"></span>
+  <span translate="storage-client.loading-files"></span>
 </div>
 <div id="serverCallError" class="alert alert-danger" ng-show="tagStatusDetails === 500">
   <span> There was an error retrieving your files, please refresh and try again.</span>

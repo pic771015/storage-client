@@ -285,7 +285,7 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
           if (!resp.result) {
             $scope.statusDetails.code = resp.code;
             
-            $translate("storage-client." + resp.message, { email: resp.userEmail }).then(function(msg) {
+            $translate("storage-client." + resp.message, { username: resp.userEmail }).then(function(msg) {
               $scope.statusDetails.message = msg;
             });
 
