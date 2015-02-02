@@ -19,9 +19,13 @@ angular.module("multi-download",[])
         };
         requestor.executeRequest("storage.getSignedDownloadURI", params).then(function (resp) {
           if(resp.result) {
-            var header = "&response-content-disposition=attachment;filename=" + encodeURIComponent(file.name.replace("--TRASH--/", ""));
+            var downloadName = file.name.replace("--TRASH--/", "");
 
-            $window.location.assign(resp.message + header);            
+            if(downloadName.indexOf("/") >= 0) {
+              downloadName = downloadName.substr(downloadName.lastIndexOf("/") + 1);
+            }
+
+            $window.location.assign(resp.message + "&response-content-disposition=attachment;filename=" + encodeURIComponent(downloadName));
           }
           else {
             console.log(resp.message);
