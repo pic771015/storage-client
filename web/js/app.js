@@ -32,7 +32,7 @@ function($urlRouterProvider, $stateProvider) {
   .state("main.company-root", {
        url: "/:companyId",
        templateUrl: "partials/file-items.html",
-        controller: function($state, $stateParams, FULLSCREEN) {
+        controller: ["$state", "$stateParams", "FULLSCREEN", function($state, $stateParams, FULLSCREEN) {
         if(FULLSCREEN){
           $(window.parent).on("hashchange", function () {
             if(window !== null) {
@@ -47,7 +47,7 @@ function($urlRouterProvider, $stateProvider) {
             }
           });
         }
-      }
+      }]
   })
   .state("main.company-folders", {
        url: "/:companyId/*folderPath",
@@ -58,6 +58,6 @@ function($urlRouterProvider, $stateProvider) {
     templateUrl: "partials/tagConfiguration.html"
   });
 }])
-.config(function($provide) {
+.config(["$provide", function($provide) {
   $provide.value("FULLSCREEN", (window.location.href.indexOf("storageFullscreen=true") > -1));
-});
+}]);
