@@ -35,8 +35,10 @@
         </span>
         </div>
 
-        <div collapse="isCollapsed" class="content-box content-box-filters">
+        <div collapse="isCollapsed" class="content-box">
+          <div class="content-box-body">
             <ng-include src="'partials/tagging/filter.html'"></ng-include>
+          </div>
         </div>
     <div>
 
@@ -147,7 +149,7 @@
               <i class="fa fa-times"></i>
             </button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" autofocus="autofocus">
           <p>{{confirmationMessage}}</p>
         </div>
         <div class="modal-footer">
@@ -168,7 +170,7 @@
           </button>
           <h2 class="modal-title">{{'storage-client.new-folder' | translate}}</h2>
         </div>
-        <div class="modal-body">
+        <div class="modal-body" autofocus="autofocus">
           <div class="form-group">
             <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter Folder Name" ng-focus="duplicateFolderSpecified=false" autofocus="autofocus">
             <div ng-show="duplicateFolderSpecified">
@@ -189,7 +191,7 @@
 <script type="text/ng-template" id="copyUrl.html">
     <form>
 
-        <div class="modal-body">
+        <div class="modal-body" autofocus="autofocus">
             <input id="okCopyButton" type="submit" value="x" class="close" ng-click="ok()" ng-hide="true"/>
             <button type="button" class="close" ng-click="cancel()" aria-hidden="true"><i class="fa fa-times"></i></button>
             <h5 class="ellipsed span12 text-left">Link To "{{copyFile.name}}"</h5>
@@ -213,29 +215,29 @@
                     <div id="lookup">
                     <button class="btn btn-link btn-remove pull-right" id="remove-all-tags" ng-click="clearAllLookupTags()" ng-disabled="clearLookupDisable">Clear All</button>
                         <label class="control-label">Lookup</label>
-                        <div id="lookupEditBox" class="content-box-editable add-bottom content-box" ng-click="editLookup()">
+                        <div id="lookupEditBox" class="content-box-editable add-bottom clickable" ng-click="editLookup()">
                             <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
                             <div class="text-muted" ng-show="tagGroups.lookupTags.length === 0" >Add Lookup</div>
                             <div class="label label-tag" ng-repeat="lookup in tagGroups.lookupTags">
-                                {{ lookup.name }}: <span class="tag-value">{{ lookup.value }}</span>
+                                <span class="tag-name">{{ lookup.name }}</span> <span class="tag-value">{{ lookup.value }}</span>
                             </div>
                         </div><!-- active-tags -->
                     </div>
                     <div id="freeform">
                         <button class="btn btn-link btn-remove pull-right" ng-click="clearAllFreeFormTags()" ng-disabled="clearFreeformDisable">Clear All</button>
                         <label class="control-label">Freeform</label>
-                        <div class="content-box-editable add-bottom content-box"  ng-click="editFreeform()">
+                        <div class="content-box-editable add-bottom clickable"  ng-click="editFreeform()">
                             <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
                             <div class="text-muted" ng-show="tagGroups.freeformTags.length === 0">Add Freeform</div>
                             <div class="label label-tag" ng-repeat="freeform in tagGroups.freeformTags">
-                                {{ freeform.name }}: <span class="tag-value">{{ freeform.value }}</span>
+                                <span class="tag-name">{{ freeform.name }}</span> <span class="tag-value">{{ freeform.value }}</span>
                             </div>
                         </div><!-- active-tags -->
                     </div>
                     <div id="timeline">
                         <button class="btn btn-link btn-remove pull-right" ng-click="clearAllTimelineTags()" ng-disabled="clearTimelineDisable">Clear All</button>
                         <label class="control-label">Timeline</label>
-                        <div class="content-box-editable add-bottom content-box" ng-click="editTimeline()">
+                        <div class="content-box-editable add-bottom clickable" ng-click="editTimeline()">
                             <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
                             <div class="text-muted" ng-show="(tagGroups.timelineTag === undefined || tagGroups.timelineTag === null) &&
                             !(selectedFiles.length > 1 && (tagGroups.timelineTag === undefined || tagGroups.timelineTag === null) && noTimeline === false && timelineTagCount() > 0)">Add Timeline</div>
@@ -250,10 +252,10 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-body" id="EditLookupTagView"  ng-show="showLookupEditView">
+            <div class="modal-body" id="EditLookupTagView"  ng-show="showLookupEditView" autofocus="autofocus">
                 <div ng-include="'partials/tagging/lookup-tags.html'"></div>
             </div>
-            <div class="modal-body" id="EditFreeformTagView" ng-show="showFreeformEditView">
+            <div class="modal-body" id="EditFreeformTagView" ng-show="showFreeformEditView" autofocus="autofocus">
                 <div>
                     <button class="btn btn-link btn-remove pull-right" id="remove-all-freeform-tags-edit" ng-click="clearAllFreeFormTags()">Clear All</button>
                     <label class="control-label add-bottom">Freeform
@@ -266,7 +268,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-body" id="EditTimelineTagView" ng-show="showTimelineEditView">
+            <div class="modal-body" id="EditTimelineTagView" ng-show="showTimelineEditView" autofocus="autofocus">
               <label class="control-label add-bottom">Timeline</label>
                 <div class="timeline">
 

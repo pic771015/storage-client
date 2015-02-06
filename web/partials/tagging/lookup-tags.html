@@ -4,27 +4,27 @@
     <label class="control-label add-bottom">Lookup</label>
 </div>
 <div class="editable-tags">
-    <div class="content-box content-box-editable">
+    <div class="content-box-editable">
         <div ng-show="selectedLookupTags.length === 0" class="text-muted">Select Tags From List</div>
-        <div class="label label-tag" ng-repeat="lookup in selectedLookupTags" ng-click="removeFromSelectedLookupTag(lookup)">
-        {{ lookup.name }}: <span class="text-danger tag-value">{{ lookup.value }}</span> <i class="fa fa-minus-circle"></i>
+        <div class="label label-tag" ng-class="{'invalid': lookup.invalid}" ng-repeat="lookup in selectedLookupTags" ng-click="removeFromSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}"><span class="tag-name">{{ lookup.name }}</span> <span class="text-danger tag-value">{{ lookup.value }}</span> <i class="fa fa-minus-circle"></i>
     </div>
     </div>
 </div>
 <div>
-   
-    <div class="content-box half-top select-tags">
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" placeholder="Search Lookup Tags" class="form-control" ng-model="tagQuery" ng-keyup="lookupOnEnter($event.keyCode, availableLookupTags, tagQuery)">
-        </div>
+ 
+ <div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+    <input type="text" placeholder="Search Lookup Tags" class="form-control" ng-model="tagQuery" ng-keyup="lookupOnEnter($event.keyCode, availableLookupTags, tagQuery)">
+ </div>
 
-        <div class="label label-tag" ng-repeat="lookup in availableLookupTags | filter:tagQuery" ng-click="addToSelectedLookupTag(lookup)">
-            {{ lookup.name }}: <span class="tag-value">{{ lookup.value }}</span> <i class="fa fa-plus-circle"></i>
+<div class="content-box-editable half-top">
+    <div class="label label-tag" ng-repeat="lookup in availableLookupTags | filter:tagQuery" ng-click="addToSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}"><span class="tag-name">{{ lookup.name }}</span> <span class="tag-value">{{ lookup.value }}</span> <i class="fa fa-plus-circle"></i>
         </div>
     </div><!-- content-box -->
 </div><!-- hidden-div -->
 <br>
 <div id="invalidTags" class="alert alert-danger" ng-show="invalidLookupTag && showLookupEditView">
     <span>The highlighted Tags are no longer available and must be first deleted to proceed.</span>
+    <button class="btn btn-link btn-remove" ng-click="clearAllInvalidLookupTags()">Clear All Invalid Tags
+    </button>
 </div>

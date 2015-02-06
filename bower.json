@@ -1,3 +1,4 @@
+
 {
   "name": "rv-storage-client",
   "dependencies": {
@@ -8,14 +9,21 @@
     "jQuery": "~1.11.1",
     "q": "~1.0.1",
     "rv-common-style": "https://github.com/Rise-Vision/common-style.git#master",
-    "rv-common-header": "https://github.com/Rise-Vision/common-header.git",
+    "rv-common-header": "https://github.com/Rise-Vision/common-header.git#v1.0.2",
     "rv-subscription-status": "https://github.com/Rise-Vision/component-subscription-status.git#master",
     "rv-common-i18n": "https://github.com/Rise-Vision/common-i18n.git#master",
     "rv-widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git",
+    "angular-file-upload": "https://github.com/tejohnso/angular-file-upload.git",
     "angular-ui-router": "~0.2.11"
   },
+  "overrides": {
+    "jQuery.dotdotdot": {
+      "main": [
+        "src/js/jquery.dotdotdot.js"
+      ]
+    }
+  },
   "resolutions": {
-    "jQuery": "~1.11.1",
     "angular": ">=1",
     "jquery": "~1.11.1",
     "angular-mocks": "~1.2.24",

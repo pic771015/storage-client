@@ -1,11 +1,10 @@
 <label class="control-label">Filter by Lookup Tag</label>
 
-<div class="content-box content-box-editable add-bottom" id="lookup" ng-click="openModal()">
+<div class="content-box-editable half-bottom clickable" id="lookup" ng-click="openModal()">
   <div class="edit-icon"><i class="fa fa-pencil fa-lg"></i></div>
   <div class="text-muted" ng-hide="selectedTags === undefined || selectedTags.length > 0">Add Lookup</div>
   <div ng-show="selectedTags === undefined || selectedTags.length > 0">
-      <div class="label label-tag" ng-repeat="lookup in filteredTags ">
-            {{ lookup.name }}: <span class="tag-value">{{ lookup.value }}</span>
+      <div class="label label-tag" ng-repeat="lookup in filteredTags "><span class="tag-name">{{ lookup.name }}</span> <span class="tag-value">{{ lookup.value }}</span>
       </div>
   </div>
 </div>
