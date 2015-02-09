@@ -15,10 +15,10 @@ function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $transla
     fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
                          fileItem.file.name;
 
-    $translate("storage-client.requesting-permission").then(function(msg) {
+    $translate("storage-client.uploading", { filename: fileItem.file.name }).then(function(msg) {
       $scope.status.message = msg;
     });
-    
+
     uriSvc.getURI(fileItem.file)
     .then(function(resp) {
       $rootScope.$emit("refreshSubscriptionStatus", "trial-available");

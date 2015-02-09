@@ -283,8 +283,6 @@ gulp.task("server", ["sass", "watch-dev"], function() {
 });
 
 gulp.task("server-dist", function() {
-  gulp.start("build");
-  gulp.start("watch-dist");
   httpServer = connect.server({
     root: "dist",
     port: 8000,
