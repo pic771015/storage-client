@@ -59,12 +59,9 @@ angular.module("tagging", [])
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
       });
-      var deleteObjects = angular.copy(svc.tagGroups.lookupTags);
-      deleteObjects.forEach(function(i){
-        i.delete = true;
-      });
+
       svc.tagGroups.lookupTags.splice(0, svc.tagGroups.lookupTags.length);
-      return svc.updateLookupTags(namesOfFiles, deleteObjects, "LOOKUP");
+      return svc.updateLookupTags(namesOfFiles, [], "LOOKUP");
     };
 
     //unit tested
@@ -86,7 +83,7 @@ angular.module("tagging", [])
     //unit tested
     svc.clearAllFreeformTagsAndSave = function(){
       svc.clearAllFreeformTags();
-      return svc.saveChangesToTags(svc.selected.freeformTags, "FREEFORM").then(function(){
+      return svc.saveChangesToTags([], "FREEFORM").then(function(){
         svc.tagGroups.freeformTags.splice(0, svc.tagGroups.freeformTags.length);
       });
     };
@@ -107,256 +104,113 @@ angular.module("tagging", [])
 
     //unit tested
     svc.saveChangesToTags = function(selectedItems, type){
+      var promise;
+      promise = $q.defer();
+
       var namesOfFiles = svc.selected.files.map(function(i){
         return i.name;
       });
+
       if(type === "FREEFORM"){
         return svc.updateFreeformTags(namesOfFiles, selectedItems, type).then(function(){
           selectedItems = cleanEmptyFreeformTags(selectedItems);
           localData.updateTags(namesOfFiles, type, selectedItems);
+
+          promise.resolve();
         });
       }
       if(type === "LOOKUP"){
         return svc.updateLookupTags(namesOfFiles, selectedItems, type).then(function(){
           selectedItems = (selectedItems === null) ? [] : selectedItems;
           localData.updateTags(namesOfFiles, type, selectedItems);
+
+          promise.resolve();
         });
       }
       if(type === "TIMELINE"){
         return svc.updateTimelineTag(namesOfFiles, selectedItems, type).then(function(resp){
-          resp.forEach(function(i){
-            localData.updateTimelineTag(i);
+          resp.forEach(function(so) {
+            var timeline = localData.fileTagFromStorageTag(so.item, { type: "TIMELINE", name: "TIMELINE"}, selectedItems);
+            localData.updateTimelineTag(timeline);
           });
+
+          promise.resolve();
         });
       }
       if (!$stateParams.companyId) {
         selectedItems = (selectedItems === null) ? [] : selectedItems;
         localData.updateTags(namesOfFiles, type, selectedItems);
       }
-      var fake;
-      fake = $q.defer();
-      fake.resolve();
-      return fake.promise;
+      
+      return promise.promise;
     };
 
-
-
-
-    svc.clearTimeLineOnly = function(namesOfFiles, selectedItems, type) {
-      var deletePromises = [];
-      namesOfFiles.forEach(function (i, pos) {
-          var haveTimelineTag = svc.selected.files[pos].tags.filter(function (i) {
-            return i.type === type;
-          });
-          if (haveTimelineTag.length > 0) {
-            var foundTagToDelete = svc.selected.files[pos].tags.filter(function (y) {
-              return y.type === type;
-            });
-            if (foundTagToDelete.length > 0) {
-              var params = {};
-              params.id = foundTagToDelete[0].id;
-              deletePromises.push(requestor.executeRequest("storage.filetag.delete", params));
-            }
-          }
-      });
-
+    svc.clearTimeLineOnly = function(namesOfFiles) {
       //update locally
       svc.tagGroups.timelineTag = null;
       svc.selected.timelineTag = null;
-//    ========
 
       localData.clearSelectedTimelines(namesOfFiles);
-      return $q.all(deletePromises);
+
+      return svc.saveChangesToTags([null], "TIMELINE");
     };
 
-    svc.updateTimelineTag = function(namesOfFiles, selectedItems, type) {
-      var addPromises = [];
-      var deletePromises = [];
-      var timelinesFilesToAdd = [];
-      var addParams = {};
-      namesOfFiles.forEach(function(i, pos){
-        selectedItems.forEach(function() {
-          var haveTimelineTag = svc.selected.files[pos].tags.filter(function (i) {
-            return i.type === type;
-          });
-          if (haveTimelineTag.length > 0) {
-            var foundTagToDelete = svc.selected.files[pos].tags.filter(function (y) {
-              return y.type === type;
-            });
-            if (foundTagToDelete.length > 0) {
-              var params = {};
-              params.id = foundTagToDelete[0].id;
-              deletePromises.push(requestor.executeRequest("storage.filetag.delete", params));
-            }
-            addParams = {};
-            addParams.objectId = i;
-            addParams.companyId = $stateParams.companyId;
-            addParams.name = "timeline";
-            addParams.type = type;
-            addParams.values = JSON.stringify(selectedItems[0]);
-
-            addPromises.push(requestor.executeRequest("storage.filetag.put", addParams).then(function (resp) {
-              timelinesFilesToAdd.push(resp.item);
-            }));
-          } else {
-            addParams = {};
-            addParams.objectId = i;
-            addParams.companyId = $stateParams.companyId;
-            addParams.name = "timeline";
-            addParams.type = type;
-
-            addParams.values = JSON.stringify(selectedItems[0]);
-            addPromises.push(requestor.executeRequest("storage.filetag.put", addParams).then(function (resp) {
-              timelinesFilesToAdd.push(resp.item);
-            }));
-          }
-        });
-      });
-      return $q.all(deletePromises).then(function(){
-        return $q.all(addPromises).then(function(){
-          var defer = $q.defer();
-          defer.resolve(timelinesFilesToAdd);
-          return defer.promise;
-        });
-      });
+    svc.updateStorageObject = function(objectId, tags, timeline) {
+      var params = {
+        companyId: $stateParams.companyId,
+        objectId: objectId,
+        tags: tags,
+        timeline: timeline
+      };
+      
+      return requestor.executeRequest("storage.filetags.put", params);
     };
 
-    svc.updateFreeformTags = function(namesOfFiles, selectedItems, type) {
-      var deletePromises = [];
-      var addPromises = [];
+    svc.updateTimelineTag = function(namesOfFiles, selectedItems) {
+      var promises = [];
 
-      namesOfFiles.forEach(function(i){
-        selectedItems.forEach(function(y){
-          var addParams = {companyId: $stateParams.companyId};
-          addParams.name = y.name;
-          addParams.objectId = i;
-          addParams.type = type;
-          if (y.value !== ""){
-            addParams.values = y.value;
-          }
+      namesOfFiles.forEach(function(objectId) {
+        var tags = localData.getFileTags(objectId, ["LOOKUP", "FREEFORM"]);
+        var timeline = selectedItems[0] && JSON.stringify(selectedItems[0]);
 
-          addPromises.push(requestor.executeRequest("storage.filetag.put", addParams).then(function(resp){
-
-            var selItemNames = selectedItems.map(function(elem){
-              return elem.name;
-            });
-            var indx = selItemNames.indexOf(y.name);
-            if(indx !== -1 && resp.item !== undefined){
-              selectedItems[indx].changedBy = resp.item.changedBy;  selectedItems[indx].changedDate = resp.item.changedDate;
-              selectedItems[indx].companyId = resp.item.companyId;selectedItems[indx].createdBy = resp.item.createdBy;
-              selectedItems[indx].creationDate = resp.item.creationDate;selectedItems[indx].id = resp.item.id;
-              selectedItems[indx].objectId = resp.item.objectId;
-            }
-          }));
-        });
+        promises.push(svc.updateStorageObject(objectId, tags, timeline));
       });
-      return $q.all(deletePromises).then(function(){
-        return $q.all(addPromises);
-      });
+
+      return $q.all(promises);
     };
 
-    //
-    svc.updateLookupTags = function(namesOfFiles, selectedItems, type) {
-      var deletePromises = [];
-      var addPromises = [];
-      var lookupsToBeAdded = [];
-      var lookupsNamesToBeRemoved = [];
-      var lookupTagDefs = localData.getTagConfigs().filter(function(x){
-        return x.type === "LOOKUP";
-      });
-      var availableNames = lookupTagDefs.map(function(y){
-        return y.name;
-      });
-      var availableNameValuePairs = localData.availableNameValuePairs();
+    svc.updateFreeformTags = function(namesOfFiles, selectedItems) {
+      var promises = [];
 
-      selectedItems.forEach(function(i){
-        var lookupsAddedNames = lookupsToBeAdded.map(function(elem){
-          return elem.name;
+      namesOfFiles.forEach(function(objectId) {
+        var tags = localData.getFileTags(objectId, ["LOOKUP"]);
+        var timeline = localData.getFileTags(objectId, ["TIMELINE"]);
+        // Don't send empty freeform tags
+        var filteredItems = selectedItems.filter(function(tag) {
+          return tag.value;
         });
-        var indx = lookupsAddedNames.indexOf(i.name);
-        if(indx  > -1){
-          if(availableNameValuePairs.indexOf(i.name + i.value) > -1){
-            lookupsToBeAdded[indx].values.push(i.value);
-          }
-        }else {
-          var addObject = {name: i.name, values: [i.value]};
-          if(i.delete){
-            addObject.delete = i.delete;
-          }
-          if(availableNames.indexOf(i.name) === -1){
-            lookupsNamesToBeRemoved.push(i.name);
-          } else {
-            lookupsToBeAdded.push(addObject);
-          }
-        }
-      });
-      var nameMapLookupToBeAdded = lookupsToBeAdded.map(function(i){
-        return i.name;
+
+        timeline = timeline && timeline[0] && timeline[0].value;
+
+        promises.push(svc.updateStorageObject(objectId, filteredItems.concat(tags), timeline));
       });
 
-      svc.tagGroups.lookupTags.forEach(function(i){
-        if(nameMapLookupToBeAdded.indexOf(i.name) === -1){
-          var noLookupName = {
-            name: i.name,
-            values: []
-          };
-          noLookupName.delete = true;
-          lookupsToBeAdded.push(noLookupName);
-        }
+      return $q.all(promises);
+    };
+
+    svc.updateLookupTags = function(namesOfFiles, selectedItems) {
+      var promises = [];
+
+      namesOfFiles.forEach(function(objectId) {
+        var tags = localData.getFileTags(objectId, ["FREEFORM"]);
+        var timeline = localData.getFileTags(objectId, ["TIMELINE"]);
+
+        timeline = timeline && timeline[0] && timeline[0].value;
+
+        promises.push(svc.updateStorageObject(objectId, selectedItems.concat(tags), timeline));
       });
 
-
-      namesOfFiles.forEach(function(i){
-        lookupsNamesToBeRemoved.forEach(function(y){
-          var entryObjectToDelete = localData.getTagEntries().filter(function(elem){
-            return elem.name === y && elem.companyId === $stateParams.companyId &&
-                elem.objectId === i && elem.type === "LOOKUP";
-          });
-
-          if(entryObjectToDelete.length > 0){
-            var params = {};
-            params.id = entryObjectToDelete[0].id;
-            deletePromises.push(requestor.executeRequest("storage.filetag.delete", params).then(function(resp){
-              console.log(resp);
-            }));
-          }
-        });
-      });
-
-      namesOfFiles.forEach(function(i){
-        lookupsToBeAdded.forEach(function(y){
-          var addParams = {companyId: $stateParams.companyId};
-          addParams.name = y.name;
-          addParams.objectId = i;
-          addParams.type = type;
-          if (!y.delete){
-            addParams.values = y.values;
-          }
-
-          addPromises.push(requestor.executeRequest("storage.filetag.put", addParams).then(function(resp){
-            console.log(resp);
-
-            var selItemNames = selectedItems.map(function(elem){
-              return elem.name;
-            });
-            if(resp.code === 200 && resp.item){
-              var indx = selItemNames.indexOf(y.name);
-              if(indx !== -1){
-                selectedItems[indx].changedBy = resp.item.changedBy;  selectedItems[indx].changedDate = resp.item.changedDate;
-                selectedItems[indx].companyId = resp.item.companyId;selectedItems[indx].createdBy = resp.item.createdBy;
-                selectedItems[indx].creationDate = resp.item.creationDate;selectedItems[indx].id = resp.item.id;
-                selectedItems[indx].objectId = resp.item.objectId;
-              }
-            } else {
-              console.log(resp.code);
-            }
-
-          }));
-        });
-      });
-      return $q.all(deletePromises).then(function(){
-        return $q.all(addPromises);
-      });
+      return $q.all(promises);
     };
 
     // wait for server calls to make unit tests.
@@ -424,11 +278,11 @@ angular.module("tagging", [])
 
         if(tagDef.type === "LOOKUP" && type === "LOOKUP") {
           for(var j = 0; j < tagDef.values.length; j++) {
-            res.push({ name: tagDef.name, value: tagDef.values[j] });
+            res.push({ type: tagDef.type, name: tagDef.name, value: tagDef.values[j] });
           }
         }
         if(tagDef.type === "FREEFORM" && type === "FREEFORM") {
-          res.push({ name: tagDef.name, id: tagDef.id});
+          res.push({ type: tagDef.type, name: tagDef.name, id: tagDef.id});
         }
       }
       return res;
@@ -754,6 +608,7 @@ angular.module("tagging", [])
               if(items[i].tags[x].type === "LOOKUP"){
                 for (var y = 0; y < items[i].tags[x].values.length; ++y) {
                   var addLookup = {};
+                  addLookup.type = "LOOKUP";
                   addLookup.name = items[i].tags[x].name;
                   addLookup.value = items[i].tags[x].values[y];
                   if(uniqueLookupValues.length < 1 || uniqueLookupValues.indexOf(addLookup.name + addLookup.value) === -1){
@@ -765,6 +620,7 @@ angular.module("tagging", [])
               }
               if(items[i].tags[x].type === "FREEFORM"){
                 var addFreeform = {};
+                addFreeform.type = "FREEFORM";
                 addFreeform.name = items[i].tags[x].name;
                 addFreeform.value = items[i].tags[x].values[0];
                 if(uniqueFreeformValues.length < 1 || uniqueFreeformValues.indexOf(addFreeform.name) === -1){
@@ -780,7 +636,7 @@ angular.module("tagging", [])
               }
               if(items[i].tags[x].type === "TIMELINE"){
                 if(items[i].tags[x].values[0].timeDefined === undefined){
-                items[i].tags[x].values[0] = JSON.parse(items[i].tags[x].values[0]);
+                  items[i].tags[x].values[0] = JSON.parse(items[i].tags[x].values[0]);
                 }
                 timelineTag = items[i].tags[x];
               }
