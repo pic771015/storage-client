@@ -18,9 +18,8 @@ var env = process.env.NODE_ENV || "dev",
     karma = require("gulp-karma"),
     jshint = require("gulp-jshint"),
     usemin = require("gulp-usemin"),
-    uglify = require('gulp-uglify'),
-    sourcemaps = require('gulp-sourcemaps'),
-    htmlreplace = require("gulp-html-replace"),
+    uglify = require("gulp-uglify"),
+    sourcemaps = require("gulp-sourcemaps"),
     replace = require("gulp-replace"),
     gutil = require("gulp-util"),
     sass = require("gulp-sass"),
@@ -53,6 +52,7 @@ var env = process.env.NODE_ENV || "dev",
       "web/components/ngstorage/ngStorage.min.js",
       "web/components/ng-biscuit/dist/ng-biscuit.min.js",
       "web/components/ng-csv/src/ng-csv/ng-csv.js",
+      "web/components/rv-common-svg/dist/svg.js",
       "web/components/rv-common-header/dist/js/common-header.js",
       "web/components/rv-common-i18n/dist/i18n.js",
       "web/components/rv-loading/loading.js",
@@ -138,7 +138,7 @@ gulp.task("html", ["clean", "lint"], function () {
   .pipe(usemin())
   .pipe(env === "prod" ? replace("rise-common-test", "rise-common") : gutil.noop())
   .pipe(env === "prod" ? replace("rvaviewer-test", "rvashow2") : gutil.noop())
-  .pipe(gulp.dest("dist/"))
+  .pipe(gulp.dest("dist/"));
 });
 
 gulp.task("uglify", ["html"], function() {
