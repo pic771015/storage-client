@@ -13,10 +13,23 @@ angular.module("storageFull", [
     $stateProvider
       .state("tagConfiguration", {
         url: "/tagConfiguration",
-        templateUrl: "partials/tagConfiguration.html"
+        templateUrl: "partials/tagConfiguration.html",
+        resolve: {
+            meta: ['$rootScope', '$stateParams', '$http', function ($rootScope, $stateParams, $http) {
+                return $http.get('data/metatags.json').success (function(data) {
+                    $rootScope.metatag = data["tagConfiguration"];
+                });
+            }]
+        }
       })
       .state("storageMain", {
-        url: "/"
+        url: "/",
+        resolve: {
+            meta: ['$rootScope', '$stateParams', '$http', function ($rootScope, $stateParams, $http) {
+                return $http.get('data/metatags.json').success (function(data) {
+                    $rootScope.metatag = data["storage"];
+                });
+            }]
+        }
       });
-
   }]);
