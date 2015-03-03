@@ -115,6 +115,10 @@ var env = process.env.NODE_ENV || "dev",
 
     iconFiles = [
       "web/*.ico"
+    ],
+
+    dataFiles = [
+        "web/data/**/*"
     ];
 
 gulp.task("clean", function() {
@@ -180,6 +184,11 @@ gulp.task("icons", ["clean"], function() {
     .pipe(gulp.dest("dist"));
 });
 
+gulp.task("data", ["clean"], function() {
+    return gulp.src(dataFiles)
+        .pipe(gulp.dest("dist/data"));
+});
+
 gulp.task("sass", function () {
     return gulp.src(sassFiles)
       .pipe(sass({
@@ -212,7 +221,7 @@ gulp.task("config", function() {
     .pipe(gulp.dest("./web/js/config"));
 });
 
-gulp.task("build", ["clean", "config", "html", "uglify", "view", "files", "img", "css", "fonts", "locales", "icons"]);
+gulp.task("build", ["clean", "config", "html", "uglify", "view", "files", "img", "css", "fonts", "locales", "icons", "data"]);
 
 
 gulp.task("test", function() {
