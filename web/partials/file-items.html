@@ -24,7 +24,7 @@
   <thead>
     <tr>
       <th class="col-sm-5">
-        <input type="checkbox" ng-model="selectAll" ng-change="selectAllCheckboxes()">
+        <input type="checkbox" ng-model="selectAll" ng-change="selectAllCheckboxes(query, filterTags())">
         <a href="" ng-click="orderByAttribute = fileNameOrderFunction; reverseSort = !reverseSort"><span class="add-left" translate="common.file-name" ></span>
           <span ng-show="orderByAttribute==fileNameOrderFunction">
             <span ng-show="reverseSort">
