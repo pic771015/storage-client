@@ -1,49 +1,45 @@
 <div>
-  <div ng-controller="ButtonsController">
-    <div class="app-header add-bottom add-top">
-      <div class="title-block">
-        <h1 translate="storage-client.header"></h1>
-        <div ng-controller="SubscriptionStatusController" class="store-status-2">
-        <div id="subscription-status" subscription-status
-             product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-             ng-model="subscriptionStatus.result" show-store-modal="showStoreModal"></div>
-        </div>
-      </div>  
-      <div class="global-actions">
-        
-        <button class="btn btn-lg btn-primary" type="button" title="{{'storage-client.upload-file' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
-          <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>
-        </button>
-        <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
-          <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
-        </button>
-        <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-sm hidden-md hidden-lg" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-            <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
-        </button>
+  <div class="app-header add-bottom add-top">
+    <div class="title-block">
+      <h1 translate="storage-client.header"></h1>
+      <div ng-controller="SubscriptionStatusController" class="store-status-2">
+      <div id="subscription-status" subscription-status
+           product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+           ng-model="subscriptionStatus.result" show-store-modal="showStoreModal"></div>
       </div>
+    </div>  
+    <div class="global-actions" ng-controller="TopButtonsController">
+      <button class="btn btn-lg btn-primary" type="button" title="{{'storage-client.upload-file' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="uploadButtonClick()" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
+        <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>
+      </button>
+      <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+        <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
+      </button>
+      <button type="button" title="select" ng-if="!storageFull" class="btn btn-success btn-lg hidden-sm hidden-md hidden-lg" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+          <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
+      </button>
     </div>
   </div>
 </div>
 
 <div>
-    <div ng-controller="TagsFilterCtrl">
-        <div class="input-group">
-            <span class="input-group-addon"><i class="fa fa-search"></i></span>
-            <input type="text" class="form-control" placeholder="Search for files or folders" ng-model="query">
-        <span class="input-group-btn">
-          <button class="btn btn-default" type="button" ng-click="isCollapsed = !isCollapsed"><i class="fa fa-filter"></i> Filters</button>
-        </span>
-        </div>
+  <div ng-controller="TagsFilterCtrl">
+    <div class="input-group">
+      <span class="input-group-addon"><i class="fa fa-search"></i></span>
+      <input type="text" class="form-control" placeholder="Search for files or folders" ng-model="query">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="button" ng-click="isCollapsed = !isCollapsed"><i class="fa fa-filter"></i> Filters</button>
+      </span>
+    </div>
 
-        <div collapse="isCollapsed" class="content-box">
-          <div class="content-box-body">
-            <ng-include src="'partials/tagging/filter.html'"></ng-include>
-          </div>
-        </div>
-    <div>
-
-	
-  <div ng-controller="ButtonsController">
+    <div collapse="isCollapsed" class="content-box">
+      <div class="content-box-body">
+        <ng-include src="'partials/tagging/filter.html'"></ng-include>
+      </div>
+    </div>
+  <div>
+  
+  <div ng-controller="FilesButtonsController">
   	<div class="bar-wrapper half-top" id="files-toolbar" ng-hide="fileListStatus.code === 404">
   		<div class="bar">
   			<div class="col-sm-4">
@@ -57,7 +53,7 @@
           <span ng-show="filesDetails.checkedItemsCount > 0">
             <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
           </span>
-          <button type="button" title="select" ng-if="storageModal && !storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+          <button type="button" title="select" ng-if="!storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
             <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
           </button>
   				<button type="button" class="btn btn-link" title="Download" ng-click="downloadButtonClick()" ng-hide="!(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0) || filesDetails.localFiles === true"><i class="fa fa-cloud-download fa-2x"></i></button>
@@ -142,408 +138,3 @@
 </div>
 
 <div ui-view></div>
-<script type="text/ng-template" id="deleteModal.html">
-    <form id="deleteForm">
-        <div class="modal-header">
-            <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
-              <i class="fa fa-times"></i>
-            </button>
-        </div>
-        <div class="modal-body" autofocus="autofocus">
-          <p>{{confirmationMessage}}</p>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">
-              <span translate="common.delete-forever"></span> <i class="fa fa-white fa-check icon-right"></i>
-            </button>
-            <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
-              <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
-            </button>
-        </div>
-    </form>
-</script>
-<script type="text/ng-template" id="newFolderModal.html">
-    <form>
-        <div class="modal-header">
-          <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
-            <i class="fa fa-times"></i>
-          </button>
-          <h2 class="modal-title">{{'storage-client.new-folder' | translate}}</h2>
-        </div>
-        <div class="modal-body" autofocus="autofocus">
-          <div class="form-group">
-            <input id="newFolderInput" type="text" class="form-control" ng-model="folderName" focus-me="{{shouldBeOpen}}" placeholder="Enter Folder Name" ng-focus="duplicateFolderSpecified=false" autofocus="autofocus">
-            <br>
-            <div ng-show="duplicateFolderSpecified">
-              <div class="alert alert-warning" role="alert">{{"storage-client.duplicate-folder" | translate}}</div>
-            </div>
-            <div ng-show="accessDenied && accessDeniedMessage">
-              <div class="alert alert-danger" role="alert">{{accessDeniedMessage}}</div>
-            </div>
-            <div ng-show="accessDenied && !accessDeniedMessage">
-              <div class="alert alert-danger" role="alert">{{"storage-client.access-denied" | translate}}</div>
-            </div>
-            <div ng-show="serverError">
-              <div class="alert alert-danger" role="alert">{{"storage-client.server-error" | translate}} {{respCode}}</div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary btn-fixed-width" ng-click="ok()" ng-disabled="accessDenied || serverError || waitingForResponse">
-              <span translate="common.save"></span> <i class="fa fa-white fa-check icon-right"></i>
-            </button>
-            <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
-              <span translate="common.cancel"></span> <i class="fa fa-white fa-times icon-right"></i>
-            </button>
-        </div>
-    </form>
-</script>
-<script type="text/ng-template" id="copyUrl.html">
-    <form>
-
-        <div class="modal-body" autofocus="autofocus">
-            <input id="okCopyButton" type="submit" value="x" class="close" ng-click="ok()" ng-hide="true"/>
-            <button type="button" class="close" ng-click="cancel()" aria-hidden="true"><i class="fa fa-times"></i></button>
-            <h5 class="ellipsed span12 text-left">Link To "{{copyFile.name}}"</h5>
-            <input type="text" class="ellipsed form-control" id="copyUrlInput" autofocus="autofocus">
-        </div>
-        <div class="modal-footer">
-        </div>
-    </form>
-</script>
-<script type="text/ng-template" id="Tagging.html">
-
-            <form name="timelineForm">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="cancel()" data-dismiss="modal" aria-hidden="true">
-                    <i class="fa fa-times"></i>
-                </button>
-                <h2 class="modal-title">{{'storage-client.tagging' | translate}}</h2>
-            </div>
-            <div class="modal-body" id="MainTagView" ng-show="showMainTagView" autofocus="autofocus">
-                <div>
-                    <div id="lookup">
-                    <button class="btn btn-link btn-remove pull-right" id="remove-all-tags" ng-click="clearAllLookupTags()" ng-disabled="clearLookupDisable">Clear All</button>
-                        <label class="control-label">Lookup</label>
-                        <div id="lookupEditBox" class="content-box-editable add-bottom clickable" ng-click="editLookup()">
-                            <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
-                            <div class="text-muted" ng-show="tagGroups.lookupTags.length === 0" >Add Lookup</div>
-                            <div class="label label-tag" ng-repeat="lookup in tagGroups.lookupTags">
-                                <span class="tag-name">{{ lookup.name }}</span> <span class="tag-value">{{ lookup.value }}</span>
-                            </div>
-                        </div><!-- active-tags -->
-                    </div>
-                    <div id="freeform">
-                        <button class="btn btn-link btn-remove pull-right" ng-click="clearAllFreeFormTags()" ng-disabled="clearFreeformDisable">Clear All</button>
-                        <label class="control-label">Freeform</label>
-                        <div class="content-box-editable add-bottom clickable"  ng-click="editFreeform()">
-                            <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
-                            <div class="text-muted" ng-show="tagGroups.freeformTags.length === 0">Add Freeform</div>
-                            <div class="label label-tag" ng-repeat="freeform in tagGroups.freeformTags">
-                                <span class="tag-name">{{ freeform.name }}</span> <span class="tag-value">{{ freeform.value }}</span>
-                            </div>
-                        </div><!-- active-tags -->
-                    </div>
-                    <div id="timeline">
-                        <button class="btn btn-link btn-remove pull-right" ng-click="clearAllTimelineTags()" ng-disabled="clearTimelineDisable">Clear All</button>
-                        <label class="control-label">Timeline</label>
-                        <div class="content-box-editable add-bottom clickable" ng-click="editTimeline()">
-                            <span class="edit-icon"><i class="fa fa-lg fa-pencil"></i></span>
-                            <div class="text-muted" ng-show="(tagGroups.timelineTag === undefined || tagGroups.timelineTag === null) &&
-                            !(selectedFiles.length > 1 && (tagGroups.timelineTag === undefined || tagGroups.timelineTag === null) && noTimeline === false && timelineTagCount() > 0)">Add Timeline</div>
-                            <div ng-hide="tagGroups.timelineTag === undefined || tagGroups.timelineTag === null" class="label label-tag" style="white-space:normal; margin-right:0">
-                                <div ng-timeline-string ng-model="timelineTagObj"></div> <a href="#" class="remove-tag"></a>
-                            </div>
-                            <div ng-show="(selectedFiles.length > 1 && (tagGroups.timelineTag === undefined || tagGroups.timelineTag === null) && noTimeline === false && timelineTagCount() > 0)"
-                                 class="label label-tag" style="white-space:normal; margin-right:0">
-                                Multiple Timelines Selected <a href="#" class="remove-tag"></a>
-                            </div>
-                        </div><!-- active-tags -->
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body" id="EditLookupTagView"  ng-show="showLookupEditView" autofocus="autofocus">
-                <div ng-include="'partials/tagging/lookup-tags.html'"></div>
-            </div>
-            <div class="modal-body" id="EditFreeformTagView" ng-show="showFreeformEditView" autofocus="autofocus">
-                <div>
-                    <button class="btn btn-link btn-remove pull-right" id="remove-all-freeform-tags-edit" ng-click="clearAllFreeFormTags()">Clear All</button>
-                    <label class="control-label add-bottom">Freeform
-                    </label>
-                </div>
-                <div class="hidden-div" style="display: block;">
-                    <div class="form-group half-bottom" ng-repeat="freeform in selectedFreeformTags">
-                    <label class="control-label" style="text-transform:capitalize;">{{ freeform.name }}</label>
-                    <input type="text" class="form-control" ng-keyup="freeformOnEnter($event.keyCode)" placeholder="Enter {{ freeform.name }}" ng-model="freeform.value">
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body" id="EditTimelineTagView" ng-show="showTimelineEditView" autofocus="autofocus">
-              <label class="control-label add-bottom">Timeline</label>
-                <div class="timeline">
-
-                    <div class="label label-tag half-bottom" style="white-space:normal" ng-timeline-string ng-model="selectedTimeline">
-                    </div>
-
-                    <section>
-                        <label class="control-label half-bottom" for="everyday">
-                            <input type="checkbox" ng-model="selectedTimeline.setDate" ng-true-value="true" ng-false-value="false" name="everyday" ng-click="initDates()"> <strong>Every Day</strong></label>
-                        <div class="form-group row" ng-hide="selectedTimeline.setDate === 'true'">
-                            <div class="col-sm-4">
-                                <label class="control-label">Start Date</label>
-                                <div class="form-group">
-
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="selectedTimeline.startDate" show-weeks="false" is-open="opened1" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" ng-required="editTimelineTagView || selectedTimeline.setDate === 'false'" close-text="Close" />
-                                        <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="openDatePicker($event,'opened1')"><i class="fa fa-calendar"></i></button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div><!--col-sm-6-->
-
-                            <div class="col-sm-4">
-                                <label class="control-label">End Date</label>
-                                <div class="form-group">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" datepicker-popup="{{dateFormat}}" ng-model="selectedTimeline.endDate" show-weeks="false" is-open="opened2" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" close-text="Close" />
-                                        <span class="input-group-btn">
-                                          <button type="button" class="btn btn-default" ng-click="openDatePicker($event,'opened2')"><i class="fa fa-calendar"></i></button>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div><!--col-sm-6-->
-                            <div class="col-sm-12" ng-hide="selectedTimeline.endDate == null">
-                                <label class="control-label" ><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="selectedTimeline.trash"> Move file to Trash after End Date</label>
-                            </div>
-                        </div><!--row-->
-                        <div class="alert alert-danger" ng-show="selectedTimeline.setDate === 'false' &&
-                        (selectedTimeline.startDate.getMonth() > selectedTimeline.endDate.getMonth() ||
-                        selectedTimeline.startDate.getFullYear() > selectedTimeline.endDate.getFullYear() ||
-                        selectedTimeline.startDate.getDate() > selectedTimeline.endDate.getDate())">
-                            {{'storage-client.start-date-before-end-date' | translate}}
-                        </div>
-                    </section>
-
-                    <section>
-                        <label class="control-label half-bottom" for="allDay">
-                            <input type="checkbox" ng-model="selectedTimeline.setTime" ng-true-value="true" ng-false-value="false" name="allDay" ng-click="initTimes()"> <strong>All Day</strong></label>
-                        <div class="row form-group" ng-hide="selectedTimeline.setTime === 'true'">
-                            <div class="col-sm-4">
-                                <label class="control-label">Start Time</label>
-                                <div class="time-picker">
-                                    <timepicker ng-model="selectedTimeline.startTime" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian" mousewheel="false"></timepicker>
-                                </div>
-                            </div><!--col-sm-6-->
-                            <div class="col-sm-4">
-                                <label class="control-label">End Time</label>
-                                <div class="time-picker">
-                                    <timepicker ng-model="selectedTimeline.endTime" hour-step="hstep" minute-step="mstep" show-meridian="ismeridian" mousewheel="false"></timepicker>
-                                </div>
-                            </div><!--col-sm-6-->
-                        </div>
-                        <div class="alert alert-danger" ng-show="selectedTimeline.setTime === 'false' && selectedTimeline.startTime > selectedTimeline.endTime">
-                            {{'storage-client.start-time-before-end-time' | translate}}
-                        </div>
-                    </section>
-
-                    <section>
-
-                        <label class="control-label half-bottom"><strong>Duration</strong></label>
-                        <div class="form-group">
-                            <label ng-repeat="duration in durations" for="{{duration.value}}" class="control-label add-right">
-                                <input type="radio"
-                                       ng-model="selectedTimeline.pud"
-                                       value="{{duration.value}}"
-                                       id="{{duration.value}}"
-                                       name="time"
-                                       ng-click="switchPUD()">
-                                {{duration.text}}
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <input ng-model="selectedTimeline.duration" type="text" class="form-control" style="width:80px" value="60" ng-disabled="selectedTimeline.pud === 'true'" ng-required="editTimelineTagView">
-                            <label class="control-label half-top"><input type="checkbox" ng-model="selectedTimeline.carryon" ng-true-value="true" ng-false-value="false"> Carry On</label>
-                        </div>
-
-                    </section>
-
-                    <section>
-                        <label class="control-label half-bottom" for="everyday">
-                            <input type="checkbox" ng-model="selectedTimeline.timelineRecurrence" name="recurrence" ng-true-value="true" ng-false-value="false" ng-click="defaultRecurrence()"> <strong>Recurrence</strong></label>
-
-                        <div ng-show="selectedTimeline.timelineRecurrence === 'true'">
-
-                            <div class="form-group">
-                                <label ng-repeat="name in names" for="{{name.toLowerCase()}}" class="add-right control-label">
-                                    <input type="radio"
-                                           ng-model="selectedTimeline.recurrenceType"
-                                           value="{{name.toLowerCase()}}"
-                                           id="{{name.toLowerCase()}}"
-                                           name="preset"
-                                           ng-click="resetRecurrences(name.toLowerCase())">
-                                    {{name}}
-                                </label>
-                            </div>
-                            <div class="recurrence-option half-top">
-                                <div ng-show="selectedTimeline.recurrenceType.toLowerCase() === 'daily'">
-                                    <div class="form-group">
-                                        <label class="control-label">Every</label>
-                                        <input type="text" class="form-control input-short" ng-model="selectedTimeline.recurrenceFrequency"
-                                               ng-required="selectedTimeline.timelineRecurrence === 'true'">
-                                        <label class="control-label">Day(s)</label>
-                                    </div><!--form group-->
-                                </div>
-                                <div ng-show="selectedTimeline.recurrenceType.toLowerCase() === 'weekly'">
-                                    <div class="form-group">
-                                        <label class="control-label">Every</label>
-                                        <input type="text" class="form-control input-short" ng-model="selectedTimeline.recurrenceFrequency"
-                                               ng-required="selectedTimeline.timelineRecurrence === 'true'">
-                                        <label class="control-label">Week(s)</label>
-                                    </div>
-                                    <div class="form-group timelineWeekdays">
-                                        <label class="control-label" ng-repeat="dayName in optionsDay">
-                                            <input type="checkbox" value="{{dayName.toLowerCase()}}"
-                                                   ng-checked="selectedTimeline.daySelection.indexOf(dayName.toLowerCase().substring(0,3)) > -1" ng-click="toggleSelection(dayName)">
-                                            {{dayName}}
-                                        </label>
-                                    </div><!--form-group-->
-                                </div>
-                                <div ng-show="selectedTimeline.recurrenceType.toLowerCase() === 'monthly'">
-                                    <div class="form-group">
-                                        <label class="control-label"><input ng-model="selectedTimeline.recurrenceAbsolute" value="true" type="radio"> Day</label>
-                                        <input type="text" class="form-control input input-short" ng-model="selectedTimeline.recurrenceDayOfMonth" ng-disabled="selectedTimeline.recurrenceAbsolute == 'false'">
-                                        <label class="control-label">of Every</label>
-                                        <input type="text" class="form-control input-short" ng-model="selectedTimeline.recurrenceFrequency"
-                                               ng-disabled="selectedTimeline.recurrenceAbsolute == 'false'"
-                                               ng-required="selectedTimeline.timelineRecurrence === 'true'">
-                                        <label class="control-label">Month(s)</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label"><input ng-model="selectedTimeline.recurrenceAbsolute" value="false" type="radio"> The</label>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceWeekOfMonth" ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'">
-                                            <option ng-repeat="option in optionsWeek" value="{{$index}}" ng-selected="{{$index}} === selectedTimeline.recurrenceWeekOfMonth">{{option}}</option>
-                                        </select>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceDayOfWeek" ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'">
-                                            <option ng-repeat="option in optionsDay" value="{{$index}}" ng-selected="{{$index}} === selectedTimeline.recurrenceDayOfWeek">{{option}}</option>
-                                        </select>
-                                        <label class="control-label">of Every</label>
-                                        <input type="text" class="form-control input-short" ng-model="selectedTimeline.recurrenceFrequency"
-                                               ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'"
-                                               ng-required="selectedTimeline.timelineRecurrence === 'true'">
-                                        <label class="control-label">Month(s)</label>
-                                    </div><!--form-group-->
-                                </div>
-
-                                <div ng-show="selectedTimeline.recurrenceType.toLowerCase() == 'yearly'">
-                                    <div class="form-group">
-                                        <label class="control-label"><input type="radio" ng-model="selectedTimeline.recurrenceAbsolute" value="true"> Every</label>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceMonthOfYear" ng-disabled="selectedTimeline.recurrenceAbsolute == 'false'">
-                                            <option ng-repeat="option in optionsMonth" value="{{$index}}" ng-selected="{{$index}} === selectedTimeline.recurrenceMonthOfYear">{{option}}</option>
-                                        </select>
-                                        <input type="text" class="form-control input input-short" ng-model="selectedTimeline.recurrenceDayOfMonth"
-                                               ng-disabled="selectedTimeline.recurrenceAbsolute == 'false'"
-                                               ng-required="selectedTimeline.timelineRecurrence === 'true'">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="control-label"><input type="radio" ng-model="selectedTimeline.recurrenceAbsolute" value="false"> The</label>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceWeekOfMonth" ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'">
-                                            <option ng-repeat="option in optionsWeek" value="{{$index}}" ng-selected="{{$index}} === recurrenceWeekOfMonth">{{option}}</option>
-                                        </select>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceDayOfWeek" ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'">
-                                            <option ng-repeat="option in optionsDay" value="{{$index}}" ng-selected="{{$index}} === recurrenceDayOfWeek">{{option}}</option>
-                                        </select>
-                                        <label class="control-label">of</label>
-                                        <select class="form-control" ng-model="selectedTimeline.recurrenceMonthOfYear" ng-disabled="selectedTimeline.recurrenceAbsolute == 'true'">
-                                            <option ng-repeat="option in optionsMonth" value="{{$index}}" ng-selected="{{$index}} === recurrenceMonthOfYear">{{option}}</option>
-                                        </select>
-                                    </div><!--form-group-->
-                                </div>
-                            </div>
-
-                        </div><!--timeline-recurrence-->
-                    </section>
-                </div><!--timeline-->
-            </div>
-            <div class="modal-footer">
-                <div ng-show="accessDenied && accessDeniedMessage">
-                  <div class="alert alert-danger" role="alert">{{accessDeniedMessage}}</div>
-                </div>
-                <div ng-show="accessDenied && !accessDeniedMessage">
-                    <div class="alert alert-danger text-left" role="alert">{{"storage-client.access-denied" | translate}}</div>
-                </div>
-                <br>
-                <div class="button-wrapper text-right" ng-show="!showMainTagView">
-                    <button class="btn btn-primary btn-fixed-width" ng-disabled="accessDenied || (invalidLookupTag && showLookupEditView) || (changedLookup && showLookupEditView) ||
-                    (selectedTimeline.setDate === 'false' &&
-                        (selectedTimeline.startDate.getMonth() > selectedTimeline.endDate.getMonth() ||
-                        selectedTimeline.startDate.getFullYear() > selectedTimeline.endDate.getFullYear() ||
-                        selectedTimeline.startDate.getDate() > selectedTimeline.endDate.getDate()) && showTimelineEditView) ||
-                        (selectedTimeline.setTime === 'false' && selectedTimeline.startTime > selectedTimeline.endTime && showTimelineEditView) ||
-                    (!selectedTimeline.startDate && selectedTimeline.setDate === 'false') || !timelineForm.$valid || waitForResponse" ng-click="saveChangesFromView()">Apply <i class="fa fa-check"></i></button>
-                    <button class="btn btn-default btn-fixed-width" ng-disabled="waitForResponse"  ng-click="resetView()">Cancel <i class="fa fa-times"></i></button>
-                </div>
-            </div>
-            </form>
-        
-
-</script>
-
-<script id="template/datepicker/day.html" type="text/ng-template">
-  <table role="grid" aria-labelledby="{{uniqueId}}-title" aria-activedescendant="{{activeDateId}}">
-      <thead>
-      <tr>
-          <th><button type="button" class="btn btn-default btn-sm pull-left" ng-click="move(-1)" tabindex="-1"><i class="fa fa-chevron-left"></i></button></th>
-          <th colspan="{{5 + showWeeks}}"><button id="{{uniqueId}}-title" role="heading" aria-live="assertive" aria-atomic="true" type="button" class="btn btn-default btn-sm" ng-click="toggleMode()" tabindex="-1" style="width:100%;"><strong>{{title}}</strong></button></th>
-          <th><button type="button" class="btn btn-default btn-sm pull-right" ng-click="move(1)" tabindex="-1"><i class="fa fa-chevron-right"></i></button></th>
-      </tr>
-      <tr>
-          <th ng-show="showWeeks" class="text-center"></th>
-          <th ng-repeat="label in labels track by $index" class="text-center"><small aria-label="{{label.full}}">{{label.abbr}}</small></th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr ng-repeat="row in rows track by $index">
-          <td ng-show="showWeeks" class="text-center h6"><em>{{ weekNumbers[$index] }}</em></td>
-          <td ng-repeat="dt in row track by dt.date" class="text-center" role="gridcell" id="{{dt.uid}}" aria-disabled="{{!!dt.disabled}}">
-              <button type="button" style="width:100%;" class="btn btn-default btn-sm" ng-class="{'btn-info': dt.selected, active: isActive(dt)}" ng-click="select(dt.date)" ng-disabled="dt.disabled" tabindex="-1"><span ng-class="{'text-muted': dt.secondary, 'text-info': dt.current}">{{dt.label}}</span></button>
-          </td>
-      </tr>
-      </tbody>
-  </table>
-</script>
-
-<script id="template/datepicker/popup.html" type="text/ng-template">
-  <ul class="dropdown-menu date-picker" ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}" ng-keydown="keydown($event)" style="padding:5px;">
-      <li ng-transclude></li>
-  </ul>
-</script>
-
-<script id="template/timepicker/timepicker.html" type="text/ng-template">
-  <table>
-      <tbody>
-      <tr class="text-center">
-          <td><a ng-click="incrementHours()" class="btn btn-link"><span class="fa fa-chevron-up"></span></a></td>
-          <td>&nbsp;</td>
-          <td><a ng-click="incrementMinutes()" class="btn btn-link"><span class="fa fa-chevron-up"></span></a></td>
-          <td ng-show="showMeridian"></td>
-      </tr>
-      <tr>
-          <td style="width:50px;" class="form-group" ng-class="{'has-error': invalidHours}">
-              <input type="text" ng-model="hours" ng-change="updateHours()" class="form-control text-center" ng-mousewheel="incrementHours()" ng-readonly="readonlyInput" maxlength="2">
-          </td>
-          <td>:</td>
-          <td style="width:50px;" class="form-group" ng-class="{'has-error': invalidMinutes}">
-              <input type="text" ng-model="minutes" ng-change="updateMinutes()" class="form-control text-center" ng-readonly="readonlyInput" maxlength="2">
-          </td>
-          <td ng-show="showMeridian"><button type="button" class="btn btn-default text-center" ng-click="toggleMeridian()">{{meridian}}</button></td>
-      </tr>
-      <tr class="text-center">
-          <td><a ng-click="decrementHours()" class="btn btn-link"><span class="fa fa-chevron-down"></span></a></td>
-          <td>&nbsp;</td>
-          <td><a ng-click="decrementMinutes()" class="btn btn-link"><span class="fa fa-chevron-down"></span></a></td>
-          <td ng-show="showMeridian"></td>
-      </tr>
-      </tbody>
-  </table>
-</script>
