@@ -1,9 +1,10 @@
 "use strict";
 
-angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevision.storage.files"])
-.service("localDatastore", ["LocalTagsConfigFiles", "LocalFiles", "$q", "$stateParams", "GAPIRequestService",
-    "FileListService",
-    function(LocalTagsConfigFiles, LocalFiles, $q, $stateParams, requestor, listSvc){
+angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevision.storage.files", "risevision.storage.common"])
+.service("localDatastore",
+  ["LocalTagsConfigFiles", "LocalFiles", "$q", "$stateParams", "GAPIRequestService",
+   "FileListService", "SpinnerService",
+  function(LocalTagsConfigFiles, LocalFiles, $q, $stateParams, requestor, listSvc, spinnerSvc){
     var svc = {};
     var ds = {fileTagEntries: [], tagConfigs: [], filesWithTags: []};
     svc.statusDetails = {code: 200};
@@ -17,30 +18,35 @@ angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevi
       });
       return deferred.promise;
     };
+
     svc.loadLocalData = function(){
-        var code = 0;
-        svc.statusDetails.code = 202;
-        var params = {companyId: $stateParams.companyId};
-        var fileTagListQuery = requestor.executeRequest("storage.files.listbytags", params).then(function(resp){
-          ds.fileTagEntries = (resp.files) ? svc.storageObjectsToFileTags(resp.files) : [];
+      spinnerSvc.start();
+      svc.statusDetails.code = 202;
 
-          code += resp.code;
-        });
+      var code = 0;
+      var params = {companyId: $stateParams.companyId};
+      var fileTagListQuery = requestor.executeRequest("storage.files.listbytags", params).then(function(resp){
+        ds.fileTagEntries = (resp.files) ? svc.storageObjectsToFileTags(resp.files) : [];
+        code += resp.code;
+      });
+      var tagDefListQuery = svc.refreshConfigTags().then(function(resp){
+        code += resp.code;
+      });
 
-        var tagDefListQuery = svc.refreshConfigTags().then(function(resp){
+      return $q.all([fileTagListQuery, tagDefListQuery]).then(function(){
+        spinnerSvc.stop();
 
-          code += resp.code;
-        });
-        return $q.all([fileTagListQuery, tagDefListQuery]).then(function(){
-          svc.statusDetails.code = (code === 400) ? 200 : 500;
-          ds.filesWithTags = angular.copy(listSvc.filesDetails.files);
-          ds.filesWithTags.forEach(function(i){
-            var filteredTagEntries = ds.fileTagEntries.filter(function(elem){
-              return elem.objectId === i.name;
-            });
-            i.tags = filteredTagEntries;
+        svc.statusDetails.code = (code === 400) ? 200 : 500;
+        ds.filesWithTags = angular.copy(listSvc.filesDetails.files);
+        ds.filesWithTags.forEach(function(i){
+          var filteredTagEntries = ds.fileTagEntries.filter(function(elem){
+            return elem.objectId === i.name;
           });
+          i.tags = filteredTagEntries;
         });
+      }, function() {
+        spinnerSvc.stop();
+      });
     };
 
     svc.tagDefUpdate = function(oldName, newName, type, values){
@@ -293,6 +299,5 @@ angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevi
     };
 
     return svc;
-
   }]);
 
