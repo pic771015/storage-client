@@ -36,6 +36,8 @@ function($scope, $modalInstance, listSvc, requestSvc, $stateParams, $rootScope, 
     $scope.duplicateFolderSpecified = false;
     $scope.accessDenied = false;
     $scope.serverError = false;
+    $scope.waitingForResponse = false;
+
     $scope.ok = function() {
         var requestParams;
         if (!$scope.folderName) {$scope.folderName = "";}
@@ -51,9 +53,11 @@ function($scope, $modalInstance, listSvc, requestSvc, $stateParams, $rootScope, 
             , "folder": decodeURIComponent($stateParams.folderPath || "") +
           $scope.folderName
           };
+          $scope.waitingForResponse = true;
           requestSvc.executeRequest("storage.createFolder", requestParams)
             .then(function (resp) {
               console.log(resp);
+              $scope.waitingForResponse = false;
               if (resp.code === 200) {
                 $rootScope.$emit("refreshSubscriptionStatus", "trial-available");
                 listSvc.refreshFilesList();
@@ -408,7 +412,7 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     return activeOps;
   }
 }])
-.directive("focusMe", function($timeout) {
+.directive("focusMe", ["$timeout", function($timeout) {
     return {
         scope: { trigger: "@focusMe" },
         link: function(scope, element) {
@@ -419,4 +423,4 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
             });
         }
     };
-});
+}]);

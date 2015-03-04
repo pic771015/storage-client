@@ -13,6 +13,7 @@
     "gulp-clean": "~0.2.4",
     "gulp-concat": "~2.2.0",
     "gulp-connect": "~2.0.5",
+    "gulp-express": "~0.1.13",
     "gulp-html-replace": "git://github.com/settinghead/gulp-html-replace.git",
     "gulp-imagemin": "~0.1.5",
     "gulp-jshint": "~1.9.2",
@@ -39,7 +40,10 @@
     "karma-phantomjs-launcher": "~0.1.4",
     "karma-spec-reporter": "~0.0.12",
     "protractor": "~0.24.0",
-    "tiny-lr": "~0.0.5"
+    "tiny-lr": "~0.0.5",
+
+    "express": "4.11.1",
+    "serve-static": "1.8.1"
   },
   "scripts": {
     "test": "gulp test-ci",

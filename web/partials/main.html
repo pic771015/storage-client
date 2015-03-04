@@ -189,7 +189,7 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary btn-fixed-width" ng-click="ok()" ng-disabled="accessDenied || serverError">
+            <button class="btn btn-primary btn-fixed-width" ng-click="ok()" ng-disabled="accessDenied || serverError || waitingForResponse">
               <span translate="common.save"></span> <i class="fa fa-white fa-check icon-right"></i>
             </button>
             <button class="btn btn-default btn-fixed-width" ng-click="cancel()">

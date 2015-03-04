@@ -170,7 +170,7 @@ taggingSvc,  localData) {
 
     if ($scope.fileIsFolder(file)) {
       listSvc.resetSelections();
-      
+
       if ($scope.fileIsCurrentFolder(file)) {
         var folderPath = $scope.currentDecodedFolder.split("/");
         folderPath = folderPath.length > 2 ?
