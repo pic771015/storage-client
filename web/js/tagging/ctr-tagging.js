@@ -336,8 +336,9 @@ angular.module("risevision.storage.tagging")
 
   $scope.editLookup = function(){
     $scope.waitForResponse = false;
-    taggingSvc.selected.lookupTags.forEach(function(i){
-      if(localData.availableNameValuePairs().indexOf(i.name + i.value) === -1){
+    taggingSvc.selected.lookupTags.forEach(function(tag){
+      if(localData.availableNameValuePairs().indexOf(tag.name + tag.value) === -1){
+        tag.invalid = true;
         $scope.invalidLookupTag = true;
       }
     });
