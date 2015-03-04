@@ -109,6 +109,12 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
       var parentFolderFound = false;
 
       resp.files = resp.files || [];
+      resp.files.forEach(function(val) {
+        if (val.name === parentFolder) {
+          delete val.size;
+          delete val.updated;
+        }
+      });
 
       if(parentFolder.indexOf(TRASH) === 0) {
         for(var i = 0; i < resp.files.length; i++) {
