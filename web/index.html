@@ -61,7 +61,7 @@
           </div>
 
           <div class="storage-modal">
-            <div class="container">
+            <div class="container" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
               <div ui-view></div>
             </div>
           </div>
@@ -132,6 +132,8 @@
     <script type="text/javascript" src="js/svc-local-datastore.js"></script>
     <script type="text/javascript" src="js/ctr-tag-settings.js"></script>
     <script type="text/javascript" src="js/dtv-timeline.js"></script>
+    <script type="text/javascript" src="js/ctr-container.js"></script>
+    <script type="text/javascript" src="js/svc-callout-closing-service.js"></script>
     <!-- endbuild -->
   </body>
 </html>
