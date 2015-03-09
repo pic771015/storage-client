@@ -2,7 +2,7 @@
 <div class="alert alert-info alert-dismissable" ng-show="statusDetails.code===202 && tagStatusDetails.code === 200">
   <span translate="storage-client.loading-files"></span>
 </div>
-<div id="serverCallError" class="alert alert-danger" ng-show="tagStatusDetails.code === 202 || tagStatusDetails.code === 500">
+<div id="serverCallError" class="alert alert-danger" ng-show="tagStatusDetails.code === 500">
   <span> There was an error retrieving tags, please refresh and try again.</span>
 </div>
 <div class="alert alert-danger" ng-show="statusDetails.code===403">
