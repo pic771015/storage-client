@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("storageFull")
+angular.module("medialibrary")
   .directive("analytics", function() {
     return {
       restrict: "E",
