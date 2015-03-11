@@ -109,27 +109,21 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
       var parentFolderFound = false;
 
       resp.files = resp.files || [];
-      resp.files.forEach(function(val) {
-        if (val.name === parentFolder) {
-          delete val.size;
-          delete val.updated;
+
+      for(var i = 0; i < resp.files.length; i++) {
+        var file = resp.files[i];
+
+        if(file.name === parentFolder) {
+          parentFolderFound = true;
+          delete file.size;
+          delete file.updated;
+          break;
         }
-      });
-
-      if(parentFolder.indexOf(TRASH) === 0) {
-        for(var i = 0; i < resp.files.length; i++) {
-          var file = resp.files[i];
-
-          if(file.name === parentFolder) {
-            parentFolderFound = true;
-            break;
-          }
-        }
-
-        if(!parentFolderFound) {
-          resp.files.unshift({ name: parentFolder, size: "", updated: null });
-        }          
       }
+
+      if(!parentFolderFound && parentFolder.indexOf(TRASH) === 0) {
+        resp.files.unshift({ name: parentFolder, size: "", updated: null });
+      }          
 
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
