@@ -28,7 +28,6 @@ describe("FileListCtrl", function() {
                                    { "name": "test/file3", "size": 8 },
                                    { "name": "test/", "size": 0 }]
                            ,localFiles: false
-                           ,totalBytes: 16
                            ,checkedCount: 0
                            ,folderCheckedCount: 0 };
 

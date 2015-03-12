@@ -31,11 +31,13 @@ angular.module("medialibrary")
 }
 ])
 .controller("NewFolderCtrl", ["$scope","$modalInstance", "FileListService","GAPIRequestService","$stateParams",
-    "$rootScope",
-function($scope, $modalInstance, listSvc, requestSvc, $stateParams, $rootScope) {
+    "$rootScope", "$translate",
+function($scope, $modalInstance, listSvc, requestSvc, $stateParams, $rootScope, $translate) {
     $scope.duplicateFolderSpecified = false;
     $scope.accessDenied = false;
     $scope.serverError = false;
+    $scope.waitingForResponse = false;
+
     $scope.ok = function() {
         var requestParams;
         if (!$scope.folderName) {$scope.folderName = "";}
@@ -51,13 +53,20 @@ function($scope, $modalInstance, listSvc, requestSvc, $stateParams, $rootScope) 
             , "folder": decodeURIComponent($stateParams.folderPath || "") +
           $scope.folderName
           };
+          $scope.waitingForResponse = true;
           requestSvc.executeRequest("storage.createFolder", requestParams)
             .then(function (resp) {
               console.log(resp);
+              $scope.waitingForResponse = false;
               if (resp.code === 200) {
                 $rootScope.$emit("refreshSubscriptionStatus", "trial-available");
                 listSvc.refreshFilesList();
                 $modalInstance.close($scope.folderName);
+              } else if (resp.code === 403 && resp.message.indexOf("restricted-role") === -1) {
+                $translate("storage-client." + resp.message, { username: resp.userEmail }).then(function(msg) {
+                  $scope.accessDenied = true;
+                  $scope.accessDeniedMessage = msg;
+                });
               } else if (resp.code === 403) {
                 $scope.accessDenied = true;
               } else {
@@ -314,14 +323,14 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
           if (!resp.result) {
             $scope.statusDetails.code = resp.code;
 
-            if(resp.code === 403){
+            if(resp.code === 403 && resp.message.indexOf("restricted-role") >= 0){
               $translate("storage-client.access-denied").then(function(msg) {
                 $scope.statusDetails.message = msg;
               });
             } else {
-            $translate("storage-client." + resp.message, { username: resp.userEmail }).then(function(msg) {
-              $scope.statusDetails.message = msg;
-            });
+              $translate("storage-client." + resp.message, { username: resp.userEmail }).then(function(msg) {
+                $scope.statusDetails.message = msg;
+              });
             }
             selectedFiles.forEach(function(file) {
               file.actionFailed = true;
@@ -403,7 +412,7 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     return activeOps;
   }
 }])
-.directive("focusMe", function($timeout) {
+.directive("focusMe", ["$timeout", function($timeout) {
     return {
         scope: { trigger: "@focusMe" },
         link: function(scope, element) {
@@ -414,4 +423,4 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
             });
         }
     };
-});
+}]);

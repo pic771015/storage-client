@@ -5,11 +5,11 @@ angular.module("medialibrary")
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
 "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
 "$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate",
-  "FULLSCREEN","TaggingService","localDatastore",
+  "FULLSCREEN","TaggingService","localDatastore", "calloutClosingService",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
 $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN,
-taggingSvc,  localData) {
+taggingSvc,  localData, calloutClosingService) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var trashLabel;
 
@@ -34,6 +34,7 @@ taggingSvc,  localData) {
 	$scope.isTrashFolder = function(){
 		return $stateParams.folderPath === "--TRASH--/";
 	};
+
 
   $scope.login = function() {
     OAuthAuthorizationService.authorize().then(function() {
@@ -170,7 +171,7 @@ taggingSvc,  localData) {
 
     if ($scope.fileIsFolder(file)) {
       listSvc.resetSelections();
-      
+
       if ($scope.fileIsCurrentFolder(file)) {
         var folderPath = $scope.currentDecodedFolder.split("/");
         folderPath = folderPath.length > 2 ?
@@ -182,8 +183,15 @@ taggingSvc,  localData) {
                   {folderPath: file.name, companyId: $stateParams.companyId});
       }
     } else {
-      $window.parent.postMessage([fileUrl], "*");
-      gadgets.rpc.call("", "rscmd_saveSettings", null, data);
+      if (file.isThrottled) {
+       file.showThrottledCallout = true;
+       calloutClosingService.add(file);
+       return;
+      }
+      if (!$scope.storageFull) {
+        $window.parent.postMessage([fileUrl], "*");
+        gadgets.rpc.call("", "rscmd_saveSettings", null, data);
+      }
     }
   });
 

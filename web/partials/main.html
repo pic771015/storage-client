@@ -177,7 +177,10 @@
             <div ng-show="duplicateFolderSpecified">
               <div class="alert alert-warning" role="alert">{{"storage-client.duplicate-folder" | translate}}</div>
             </div>
-            <div ng-show="accessDenied">
+            <div ng-show="accessDenied && accessDeniedMessage">
+              <div class="alert alert-danger" role="alert">{{accessDeniedMessage}}</div>
+            </div>
+            <div ng-show="accessDenied && !accessDeniedMessage">
               <div class="alert alert-danger" role="alert">{{"storage-client.access-denied" | translate}}</div>
             </div>
             <div ng-show="serverError">
@@ -186,7 +189,7 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary btn-fixed-width" ng-click="ok()" ng-disabled="accessDenied || serverError">
+            <button class="btn btn-primary btn-fixed-width" ng-click="ok()" ng-disabled="accessDenied || serverError || waitingForResponse">
               <span translate="common.save"></span> <i class="fa fa-white fa-check icon-right"></i>
             </button>
             <button class="btn btn-default btn-fixed-width" ng-click="cancel()">
@@ -463,7 +466,10 @@
                 </div><!--timeline-->
             </div>
             <div class="modal-footer">
-                <div ng-show="accessDenied">
+                <div ng-show="accessDenied && accessDeniedMessage">
+                  <div class="alert alert-danger" role="alert">{{accessDeniedMessage}}</div>
+                </div>
+                <div ng-show="accessDenied && !accessDeniedMessage">
                     <div class="alert alert-danger text-left" role="alert">{{"storage-client.access-denied" | translate}}</div>
                 </div>
                 <br>

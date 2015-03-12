@@ -356,7 +356,7 @@ angular.module("tagging", [])
         requestor.executeRequest("storage.tagdef.delete", params).then(function (resp) {
           if(resp.code === 200){
             localData.refreshConfigTags().then(function(){
-              deferred.resolve();
+              deferred.resolve(resp);
             });
           } else {
             deferred.resolve(resp);
@@ -377,7 +377,7 @@ angular.module("tagging", [])
         requestor.executeRequest("storage.tagdef.put", params).then(function (resp) {
           if(resp.code === 200){
             localData.refreshConfigTags().then(function(){
-              deferred.resolve();
+              deferred.resolve(resp);
             });
           } else {
             deferred.resolve(resp);

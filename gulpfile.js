@@ -28,6 +28,8 @@ var env = process.env.NODE_ENV || "dev",
     clean = require("gulp-clean"),
     rename = require("gulp-rename"),
     connect = require("gulp-connect"),
+    express = require("gulp-express"),
+    path = require("path"),
     protractor = require("gulp-protractor").protractor,
     webdriver_update = require("gulp-protractor").webdriver_update,
     httpServer,
@@ -65,7 +67,7 @@ var env = process.env.NODE_ENV || "dev",
       "web/js/svc-local-datastore.js",
       "web/js/config/config.js",
       "web/js/config/locales_config.js",
-      "web/js/gapi-initial-onload.js",
+      "web/js/gapi-fullscreen.js",
       "web/js/*.js",
       "web/js/*/*.js",
       "web/js/**/*.js",
@@ -258,21 +260,11 @@ gulp.task("watch-dist", function() {
 });
 
 gulp.task("server", ["sass", "watch-dev"], function() {
-  httpServer = connect.server({
-    root: "web",
-    port: 8000,
-    livereload: true
-  });
-  return httpServer;
+  express.run([path.join(__dirname, "server.js")], { env: { port: 8000, root: "/web" }});
 });
 
 gulp.task("server-dist", function() {
-  httpServer = connect.server({
-    root: "dist",
-    port: 8000,
-    livereload: true
-  });
-  return httpServer;
+  express.run([path.join(__dirname, "server.js")], { env: { port: 8000, root: "/dist" }});
 });
 
 gulp.task("webdriver_update", webdriver_update);

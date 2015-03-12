@@ -5,7 +5,6 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
   var svc = {};
   svc.filesDetails = {files: []
                      ,localFiles: false
-                     ,totalBytes: 0
                      ,checkedCount: 0
                      ,folderCheckedCount: 0
                      ,checkedItemsCount: 0};
@@ -67,8 +66,6 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
         oldFiles.splice(i, 1);
       }
     }
-
-    svc.filesDetails.totalBytes -= removedSize;
   };
 
   svc.refreshFilesList = function () {
@@ -113,33 +110,26 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
 
       resp.files = resp.files || [];
 
-      if(parentFolder.indexOf(TRASH) === 0) {
-        for(var i = 0; i < resp.files.length; i++) {
-          var file = resp.files[i];
+      for(var i = 0; i < resp.files.length; i++) {
+        var file = resp.files[i];
 
-          if(file.name === parentFolder) {
-            parentFolderFound = true;
-            break;
-          }
+        if(file.name === parentFolder) {
+          parentFolderFound = true;
+          delete file.size;
+          delete file.updated;
+          break;
         }
-
-        if(!parentFolderFound) {
-          resp.files.unshift({ name: parentFolder, size: 0, updated: null });
-        }          
       }
 
-      svc.filesDetails.totalBytes = resp.files.reduce(function(prev, next) {
-        return prev + parseInt(next.size);
-      }, 0);
+      if(!parentFolderFound && parentFolder.indexOf(TRASH) === 0) {
+        resp.files.unshift({ name: parentFolder, size: "", updated: null });
+      }          
 
-      console.log(svc.filesDetails.totalBytes + " bytes in " +
-      resp.files.length + " files");
-      
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
 
       if(!$stateParams.folderPath || !parentFolder || parentFolder === "/") {
-        svc.filesDetails.files.splice(1, 0, { name: TRASH, size: 0, updated: null });
+        svc.filesDetails.files.splice(1, 0, { name: TRASH, size: "", updated: null });
       }
         
       return resp;

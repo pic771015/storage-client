@@ -62,6 +62,9 @@
     <script type="text/javascript" src="js/svc-local-datastore.js"></script>
     <script type="text/javascript" src="js/ctr-tag-settings.js"></script>
     <script type="text/javascript" src="js/dtv-timeline.js"></script>
+    <script type="text/javascript" src="js/ctr-container.js"></script>
+    <script type="text/javascript" src="js/svc-callout-closing-service.js"></script>
+
 		<!-- endbuild -->
 
 	<script type="text/javascript" src="//rvaviewer-test.appspot.com/gadgets/gadgets.min.js"></script>
@@ -70,7 +73,7 @@
 <body class="storage-modal">
 	<div class="widget-overlay" ng-controller="ModalWindowController"
                                     ng-click="closeButtonClick()"></div>
-		<div class="widget-wrapper container modal-content">
+		<div class="widget-wrapper container modal-content" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
 			<div ng-controller="ModalWindowController" class="modal-header"  style="margin-bottom: 10px">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
 					<i class="fa fa-times"></i>
