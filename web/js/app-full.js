@@ -45,37 +45,19 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
 
   if(window.location.href.indexOf("/files") === -1) {
     $urlRouterProvider.otherwise("/");
-<<<<<<< HEAD
-    $stateProvider
-      .state("tagConfiguration", {
-        url: "/tagConfiguration",
-        templateUrl: "partials/tagConfiguration.html",
-        resolve: {
-            meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
-                return $http.get("data/metatags.json").success (function(data) {
-                    $rootScope.metatag = data.tagConfiguration;
-                });
-            }]
-        }
-      })
-      .state("storageMain", {
-        url: "/",
-        resolve: {
-            meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
-                return $http.get("data/metatags.json").success (function(data) {
-                    $rootScope.metatag = data.storage;
-                });
-            }]
-        }
-      });
-  }]);
-=======
   }
 
   $stateProvider
   .state("main", {
     url: "/files",
-    templateUrl: "partials/main.html"
+    templateUrl: "partials/main.html",
+    resolve: {
+        meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
+            return $http.get("data/metatags.json").success (function(data) {
+                $rootScope.metatag = data.storage;
+            });
+        }]
+    }
   })
   .state("main.local", {
     url: "/local",
@@ -91,8 +73,14 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
   })
   .state("tagConfiguration", {
     url: "/tagConfiguration/:companyId",
-    templateUrl: "partials/tagConfiguration.html"
+    templateUrl: "partials/tagConfiguration.html",
+    resolve: {
+        meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
+            return $http.get("data/metatags.json").success (function(data) {
+                $rootScope.metatag = data.tagConfiguration;
+            });
+        }]
+    }
   });
 }])
 ;
->>>>>>> master
