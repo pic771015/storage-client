@@ -48,6 +48,17 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
   }
 
   $stateProvider
+  .state("initial", {
+      url: "/",
+      template: "<div ui-view></div>",
+      resolve: {
+          meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
+              return $http.get("data/metatags.json").success (function(data) {
+                  $rootScope.metatag = data.storage;
+              });
+          }]
+      }
+  })
   .state("main", {
     url: "/files",
     templateUrl: "partials/main.html",
