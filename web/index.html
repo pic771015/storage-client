@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="medialibrary" ng-strict-di itemscope itemtype="http://schema.org/Article">
+<html ng-app="medialibrary" ng-strict-di itemscope itemtype="http://schema.org/Product">
   <head>
     <base href="/">
     
@@ -24,7 +24,7 @@
 
     <!-- Open Graph data -->
     <meta property="og:title" content="{{metatag.name}}" />
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content="product" />
     <meta property="og:url" content="{{metatag.url}}" />
     <meta property="og:image" content="{{metatag.image}}" />
     <meta property="og:description" content="{{metatag.description}}" />
@@ -39,7 +39,7 @@
 
   <body class="storage-full">
 
-    <div ng-app="medialibrary" ng-strict-di>
+    <div>
       <analytics analytics-account-id="'UA-82239-1'"></analytics>
 
       <div ng-controller="FullScreenController">
