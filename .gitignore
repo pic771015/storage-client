@@ -1,8 +1,10 @@
 node_modules
 *.log
+*.png
 dist-e2e
 test_reports
 test/e2e/*.png
+storage-client.iml
 web/js/config/config.js
 web/js/config/locales_config.js
 dist/

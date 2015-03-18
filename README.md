@@ -138,8 +138,12 @@ gulp test-ci
 
 To run E2E testing, do
 ```bash
-gulp test-e2e
+npm run e2e
 ```
+
+Running e2e tests requires having an environment variable named JENKINS_PASS with the correct password for jenkins@risevision.com
+
+To run e2e tests locally, you need storage-server and storage-client running. An environment variable named LOCAL is needed, and it's value should be *local*.
 
 ## Submitting Issues 
 

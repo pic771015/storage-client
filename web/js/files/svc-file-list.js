@@ -1,5 +1,6 @@
 "use strict";
-angular.module("gapi-file", ["gapi", "medialibraryServices","ui.router"])
+angular.module("risevision.storage.files", 
+  ["risevision.storage.gapi", "risevision.storage.services", "risevision.storage.throttle", "risevision.storage.oauth", "risevision.common.config", "risevision.common.i18n", "ui.router"])
 .factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope",
 function (LocalFiles, requestor, $stateParams, $rootScope) {
   var svc = {};
