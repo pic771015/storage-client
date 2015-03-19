@@ -9,7 +9,6 @@ angular.module("risevision.storage", [
   "risevision.common.header",
   "risevision.common.loading",
   "risevision.common.i18n",
-  "risevision.storage.bandwidth",
   "risevision.storage.buttons.top",
   "risevision.storage.buttons.files",
   "risevision.storage.cookie",
