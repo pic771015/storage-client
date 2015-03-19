@@ -1,7 +1,6 @@
 "use strict";
 
 angular.module("risevision.storage", [
-  "angularSpinner",
   "ui.router",
   "ui.router.util",
   "ui.bootstrap",
