@@ -5,7 +5,6 @@ angular.module("risevision.storage", [
   "ui.bootstrap",
   "risevision.widget.common.subscription-status",
   "risevision.common.i18n",
-  "risevision.storage.bandwidth",
   "risevision.storage.buttons.top",
   "risevision.storage.buttons.files",
   "risevision.storage.cookie",
