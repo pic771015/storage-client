@@ -53,7 +53,8 @@
     "dist": "gulp server-dist",
     "ci-build": "gulp config && gulp test-ci && gulp build",
     "setenv": "NODE_ENV=$(select env in dev local prod;do echo $env;break;done) gulp config",
-    "e2e": "node_modules/casperjs/bin/casperjs test test/e2e/main-test.js $LOCAL --password=$JENKINS_PASS"
+    "pree2e": "gsutil rm -f gs://risemedialibrary-a6397169-ad53-4163-9e08-da3e53f3a413/**; rm -rf e2e-log; mkdir e2e-log;",
+    "e2e": "node_modules/casperjs/bin/casperjs --web-security=no test test/e2e/main-test.js $LOCAL --password=$JENKINS_PASS 2>&1 |tee e2e-log/casper-log.txt"
   },
   "author": "Rise",
   "license": "ISC"
