@@ -2,8 +2,8 @@
 
 "use strict";
 
-var displayStorageMain = null;
-var displayTagConfigurationMain = null;
+var displayStorageMain = function() {};
+var displayTagConfigurationMain = function() {};
 
 angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
 .controller("FullScreenController", ["$scope", "$rootScope", "$http", "$location", "$timeout", "userState", "$state", "SpinnerService",
@@ -75,18 +75,14 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
 
         filesPath = filesPath ? filesPath[1] : "";
 
-        console.log("companyId", companyId);
-        console.log("filesPath", filesPath);
-
         if(filesPath.indexOf("cid=") >= 0) {
-          filesPath = "";
           $state.go("main.company-root", { companyId: companyId });
         }
         else {
           $state.go("main.company-folders", { folderPath: filesPath, companyId: companyId });
         }
-
         
+        $rootScope.$emit("storage-client:company-id-changed", companyId);
         spinnerSvc.stop();
       }
     });
