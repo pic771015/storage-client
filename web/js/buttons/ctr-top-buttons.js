@@ -29,10 +29,6 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     $scope.deleteButtonClick();
   });
 
-  $scope.uploadButtonClick = function() {
-    $("#file").click();
-  };
-
   $scope.newFolderButtonClick = function(size) {
     $scope.shouldBeOpen = true;
 
