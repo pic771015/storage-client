@@ -1,0 +1,69 @@
+<div ng-controller="TagSettingsCtrl">
+  <div class="app-header add-top add-bottom">
+    <div class="title-block">
+      <h1>Tags</h1>
+    </div>
+    <div class="global-actions">
+      <button class="btn btn-lg btn-primary" ng-show="showMainView" ng-click="addTags()"><i class="fa fa-plus"></i> Add Tag</button>
+    </div>
+  </div>
+  <div id="mainTagSettings" ng-show="showMainView">
+    <div class="alert alert-info alert-dismissable" ng-show="tagStatusDetails.code !== 200">
+    <span translate="storage-client.loading-files"></span>
+    </div>
+    <div ng-show="tagStatusDetails.code === 200">
+      <label class="control-label">Lookup Tags</label>
+      <div class="content-box">
+        <table class="table-2 table-hover">
+          <thead>
+          <tr>
+            <th class="col-xs-12 col-sm-4">Name</th>
+            <th class="hidden-xs col-sm-8">Values</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="clickable-row" ng-click="editTags(lookup)" ng-repeat="lookup in lookupTags">
+            <td class="col-xs-12 col-sm-4">
+              <div style="text-overflow: ellipsis;" title="{{lookup.name}}" class="ellipsis ellipsis-sm nowrap"><strong>{{lookup.name}}</strong></div>
+            </td>
+            <td class="hidden-xs col-sm-8">
+              <div style="text-overflow: ellipsis;" title="{{lookup.values.join(', ').toString()}}"
+                 class="ellipsis ellipsis-lg nowrap">{{lookup.values.join(', ').toString()}}</div>
+            </td>
+          </tr>
+          <tr ng-show="lookupTags.length === 0">
+            <td colspan="2" class="text-center"><span>You haven't added any lookup tags</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <label class="control-label add-top">Freeform Tags</label>
+      <div class="content-box">
+        <table class="table-2 table-hover">
+          <thead>
+          <tr>
+            <th class="col-xs-1">Name</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="clickable-row" ng-repeat="freeform in freeformTags" ng-click="editTags(freeform)">
+            <td class="col-xs-1">
+              <div style="text-overflow: ellipsis;" title="{{freeform.name}}" class="ellipsis ellipsis-sm nowrap"><strong>{{freeform.name}}</strong></div>
+            </td>
+          </tr>
+          <tr ng-show="freeformTags.length === 0">
+            <td class="text-center"><span>You haven't added any freeform tags</span></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="addTagSettings" ng-show="showAddView">
+    <div ng-include="'partials/tagging/edit-tag-setting.html'"></div>
+  </div>
+  <div id="editTagSettings" ng-show="showEditView">
+    <div ng-include="'partials/tagging/edit-tag-setting.html'"></div>
+  </div>
+</div>

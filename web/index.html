@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="medialibrary" ng-strict-di itemscope itemtype="http://schema.org/Product">
+<html ng-app="risevision.storage" ng-strict-di itemscope itemtype="http://schema.org/Product">
   <head>
     <base href="/">
     
@@ -60,18 +60,18 @@
                 <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
               </span>
             </div>
-  
-            <div>
-              <span us-spinner="{ radius:30, width:8, length: 16 }" spinner-key="spn-stg-full"></span>
-            </div>
           </div>
-
-          <div class="storage-modal">
+          
+          <div class="storage-modal" ng-show="userSignedIn">
             <div class="container" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
               <div ui-view></div>
             </div>
           </div>
         </div>
+      </div>
+
+      <div>
+        <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
       </div>
     </div>
 
@@ -110,37 +110,38 @@
 
     <script type="text/javascript" src="js/config/config.js"></script>
 
-    <script type="text/javascript" src="js/gapi-fullscreen.js"></script>
-    <script type="text/javascript" src="js/svc-cookie-tester.js"></script>
-    <script type="text/javascript" src="js/ctr-cookie-tester.js"></script>
-    <script type="text/javascript" src="js/svc-gapi-auth.js"></script>
-    <script type="text/javascript" src="js/services.js"></script>
+    <script type="text/javascript" src="js/gapi/gapi-fullscreen.js"></script>
+    <script type="text/javascript" src="js/gapi/svc-gapi-auth.js"></script>
+    <script type="text/javascript" src="js/cookies/svc-cookie-tester.js"></script>
+    <script type="text/javascript" src="js/cookies/ctr-cookie-tester.js"></script>
+    <script type="text/javascript" src="js/common/services.js"></script>
+    <script type="text/javascript" src="js/common/filters.js"></script>
+    <script type="text/javascript" src="js/common/directives.js"></script>
+    <script type="text/javascript" src="js/common/svc-spinner.js"></script>
 
-    <script type="text/javascript" src="js/app-full.js"></script>
-    <script type="text/javascript" src="js/ctr-fullscreen.js"></script>
-    <script type="text/javascript" src="js/dtv-analytics.js"></script>
-    <script type="text/javascript" src="js/svc-download.js"></script>
-    <script type="text/javascript" src="js/ctr-buttons.js"></script>
-    <script type="text/javascript" src="js/svc-oauth-status.js"></script>
-    <script type="text/javascript" src="js/svc-upload-request.js"></script>
-    <script type="text/javascript" src="js/ctr-files.js"></script>
-    <script type="text/javascript" src="js/svc-bandwidth.js"></script>
-    <script type="text/javascript" src="js/ctr-bandwidth.js"></script>
-    <script type="text/javascript" src="js/ctr-upload.js"></script>
-    <script type="text/javascript" src="js/ctr-gapi-client.js"></script>
-    <script type="text/javascript" src="js/ctr-subscription.js"></script>
-    <script type="text/javascript" src="js/filters.js"></script>
+    <script type="text/javascript" src="js/fullscreen/app-full.js"></script>
+    <script type="text/javascript" src="js/fullscreen/ctr-fullscreen.js"></script>
+    <script type="text/javascript" src="js/throttle/svc-callout-closing-service.js"></script>
+    <script type="text/javascript" src="js/throttle/ctr-container.js"></script>
+    <script type="text/javascript" src="js/oauth/svc-oauth-status.js"></script>
+    <script type="text/javascript" src="js/download/svc-download.js"></script>
+    <script type="text/javascript" src="js/buttons/ctr-top-buttons.js"></script>
+    <script type="text/javascript" src="js/buttons/ctr-files-buttons.js"></script>
+    <script type="text/javascript" src="js/upload/svc-upload-request.js"></script>
+    <script type="text/javascript" src="js/upload/svc-file-upload.js"></script>
+    <script type="text/javascript" src="js/upload/ctr-upload.js"></script>
     <script type="text/javascript" src="js/files/svc-file-list.js"></script>
-    <script type="text/javascript" src="js/files/svc-file-upload.js"></script>
-    <script type="text/javascript" src="js/svc-gapi-requestor.js"></script>
-    <script type="text/javascript" src="js/svc-public-read.js"></script>
-    <script type="text/javascript" src="js/svc-tagging.js"></script>
-    <script type="text/javascript" src="js/ctr-tagging.js"></script>
-    <script type="text/javascript" src="js/svc-local-datastore.js"></script>
-    <script type="text/javascript" src="js/ctr-tag-settings.js"></script>
-    <script type="text/javascript" src="js/dtv-timeline.js"></script>
-    <script type="text/javascript" src="js/ctr-container.js"></script>
-    <script type="text/javascript" src="js/svc-callout-closing-service.js"></script>
+    <script type="text/javascript" src="js/files/ctr-files.js"></script>
+    <script type="text/javascript" src="js/files/ctr-new-folder.js"></script>
+    <script type="text/javascript" src="js/gapi/ctr-gapi-client.js"></script>
+    <script type="text/javascript" src="js/gapi/svc-gapi-requestor.js"></script>
+    <script type="text/javascript" src="js/subscription/ctr-subscription.js"></script>
+    <script type="text/javascript" src="js/publicread/svc-public-read.js"></script>
+    <script type="text/javascript" src="js/tagging/svc-local-datastore.js"></script>
+    <script type="text/javascript" src="js/tagging/svc-tagging.js"></script>
+    <script type="text/javascript" src="js/tagging/dtv-timeline.js"></script>
+    <script type="text/javascript" src="js/tagging/ctr-tag-settings.js"></script>
+    <script type="text/javascript" src="js/tagging/ctr-tagging.js"></script>
     <!-- endbuild -->
   </body>
 </html>

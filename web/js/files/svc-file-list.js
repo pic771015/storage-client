@@ -1,8 +1,12 @@
 "use strict";
-angular.module("gapi-file", ["gapi", "medialibraryServices","ui.router"])
-.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope",
-function (LocalFiles, requestor, $stateParams, $rootScope) {
+angular.module("risevision.storage.files", 
+  ["risevision.storage.gapi", "risevision.storage.common", "risevision.storage.services", 
+   "risevision.storage.throttle", "risevision.storage.oauth", "risevision.common.config", 
+   "risevision.common.i18n", "ui.router"])
+.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope", "SpinnerService",
+function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
   var svc = {};
+
   svc.filesDetails = {files: []
                      ,localFiles: false
                      ,checkedCount: 0
@@ -88,19 +92,25 @@ function (LocalFiles, requestor, $stateParams, $rootScope) {
     }
 
     svc.filesDetails.localFiles = false;
+    spinnerSvc.start();
+
     return requestor.executeRequest("storage.files.get", params)
     .then(function (resp) {
-        if(svc.checkedTagging){
-          resp.files.forEach(function(i){
-            if(svc.taggingCheckedItems.indexOf(i.name) > -1){
-              i.isChecked = true;
-            }
-            else {
-              i.isChecked = false;
-            }
-          });
-        }
+      if(svc.checkedTagging){
+        resp.files.forEach(function(i){
+          if(svc.taggingCheckedItems.indexOf(i.name) > -1){
+            i.isChecked = true;
+          }
+          else {
+            i.isChecked = false;
+          }
+        });
+      }
+
+      spinnerSvc.stop();
       return processFilesResponse(resp);
+    }, function() {
+      spinnerSvc.stop();
     });
 
     function processFilesResponse(resp) {

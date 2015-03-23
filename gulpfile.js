@@ -11,8 +11,6 @@
 // Include gulp
 
 var env = process.env.NODE_ENV || "dev",
-    E2E_PORT = { "dev" : 8001, "prod" : 8002, "stage" : 8003 },
-    e2ePort = process.env.E2E_PORT || E2E_PORT[env] || 8001,
     gulp = require("gulp"),
     // Include Our Plugins
     karma = require("gulp-karma"),
@@ -27,53 +25,73 @@ var env = process.env.NODE_ENV || "dev",
     concat = require("gulp-concat"),
     clean = require("gulp-clean"),
     rename = require("gulp-rename"),
-    connect = require("gulp-connect"),
     express = require("gulp-express"),
     path = require("path"),
-    protractor = require("gulp-protractor").protractor,
-    webdriver_update = require("gulp-protractor").webdriver_update,
-    httpServer,
 
     //Test files
     testFiles = [
       "web/components/jQuery/dist/jquery.js",
       "web/components/q/q.js",
+      "web/components/underscore/underscore.js",
+      "web/components/spin.js/spin.js",
       "web/components/angular/angular.js",
       "web/components/angular-bootstrap/ui-bootstrap-tpls.js",
       "web/components/angular-ui-router/release/angular-ui-router.js",
       "web/components/angular-resource/angular-resource.js",
-      "web/components/angular-mocks/angular-mocks.js",
+      "web/components/angular-sanitize/angular-sanitize.js",
       "web/components/angular-translate/angular-translate.js",
-      "web/components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
-      "web/components/angular-local-storage/dist/angular-local-storage.js",
-      "web/components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js",
-      "web/components/spin.js/spin.js",
       "web/components/angular-sanitize/angular-sanitize.min.js",
       "web/components/angular-spinner/angular-spinner.js",
       "web/components/angular-touch/angular-touch.min.js",
+      "web/components/angular-local-storage/dist/angular-local-storage.js",
+      "web/js/config/locales_local.js",
+      "web/components/rv-common-i18n/dist/i18n.js",
       "web/components/ngstorage/ngStorage.min.js",
       "web/components/ng-biscuit/dist/ng-biscuit.min.js",
       "web/components/ng-csv/src/ng-csv/ng-csv.js",
       "web/components/rv-common-svg/dist/svg.js",
       "web/components/rv-common-header/dist/js/common-header.js",
-      "web/components/rv-common-i18n/dist/i18n.js",
       "web/components/rv-loading/loading.js",
-	    "web/components/angular-local-storage/dist/angular-local-storage.js",
       "web/components/checklist-model/checklist-model.js",
+      "web/components/rv-widget-settings-ui-core/dist/widget-settings-ui-core.js",
       "web/components/rv-subscription-status/dist/js/subscription-status.js",
-      "web/js/svc-cookie-tester.js",
-      "web/js/svc-tagging.js",
-      "web/js/ctr-tagging.js",
-      "web/js/svc-local-datastore.js",
-      "web/js/config/config.js",
-      "web/js/config/locales_config.js",
-      "web/js/gapi-fullscreen.js",
-      "web/js/*.js",
-      "web/js/*/*.js",
-      "web/js/**/*.js",
-      "web/js/**/**/*.js",
-      "test/fixtures/*.js",
-      "test/**/*spec.js"
+      "web/components/angular-mocks/angular-mocks.js",
+
+      "web/js/config/local.js",
+      "web/js/common/services.js",
+      "web/js/common/filters.js",
+      "web/js/common/directives.js",
+      "web/js/common/svc-spinner.js",
+      "web/js/cookies/svc-cookie-tester.js",
+      "web/js/cookies/ctr-cookie-tester.js",
+      "web/js/gapi/gapi-initial-onload.js",
+      "web/js/gapi/svc-gapi-auth.js",
+      "web/js/gapi/svc-gapi-requestor.js",
+      "web/js/gapi/ctr-gapi-client.js",
+      "web/js/throttle/svc-callout-closing-service.js",
+      "web/js/throttle/ctr-container.js",
+      "web/js/fullscreen/ctr-fullscreen.js",
+      "web/js/modal/ctr-modal.js",
+      "web/js/oauth/svc-oauth-status.js",
+      "web/js/download/svc-download.js",
+      "web/js/buttons/ctr-top-buttons.js",
+      "web/js/buttons/ctr-files-buttons.js",
+      "web/js/upload/svc-upload-request.js",
+      "web/js/upload/svc-file-upload.js",
+      "web/js/upload/ctr-upload.js",
+      "web/js/files/svc-file-list.js",
+      "web/js/files/ctr-files.js",
+      "web/js/files/ctr-new-folder.js",
+      "web/js/subscription/ctr-subscription.js",
+      "web/js/publicread/svc-public-read.js",
+      "web/js/tagging/svc-local-datastore.js",
+      "web/js/tagging/svc-tagging.js",
+      "web/js/tagging/ctr-tagging.js",
+      "web/js/tagging/ctr-tag-settings.js",
+      "web/js/tagging/dtv-timeline.js",
+      "web/js/fullscreen/app-full.js",
+
+      "web/js/**/*-test.js"
     ],
 
     appJSFiles = [
@@ -265,32 +283,6 @@ gulp.task("server", ["sass", "watch-dev"], function() {
 
 gulp.task("server-dist", function() {
   express.run([path.join(__dirname, "server.js")], { env: { port: 8000, root: "/dist" }});
-});
-
-gulp.task("webdriver_update", webdriver_update);
-
-gulp.task("e2e-server", ["build-e2e"], function() {
-  httpServer = connect.server({
-    root: "dist-e2e",
-    port: e2ePort,
-    livereload: false
-  });
-  return httpServer;
-});
-
-gulp.task("protractor", ["webdriver_update", "e2e-server"], function () {
-  return gulp.src(["./test/e2e/*.js"])
-    .pipe(protractor({
-        configFile: "./test/protractor.conf.js",
-        args: ["--baseUrl", "http://127.0.0.1:" + e2ePort + "/index.html"]
-    }))
-    .on("error", function (e) { console.log(e); throw e; })
-    .on("end", function () {
-      connect.serverClose();
-    });
-});
-
-gulp.task("test-e2e", ["protractor"], function() {
 });
 
 gulp.task("default", [], function () {
