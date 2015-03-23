@@ -8,3 +8,5 @@ storage-client.iml
 web/js/config/config.js
 web/js/config/locales_config.js
 dist/
+.idea
+*.iml
