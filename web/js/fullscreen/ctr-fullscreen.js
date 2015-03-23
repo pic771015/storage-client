@@ -25,9 +25,7 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
     }
 
     $scope.userSignedIn = true;
-    
-    // Avoid having all CH auth parameters visible
-    $location.path("/");
+
   });
 
   $scope.$on("risevision.user.signedOut", function () {
