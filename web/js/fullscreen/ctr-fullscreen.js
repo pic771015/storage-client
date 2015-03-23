@@ -6,8 +6,8 @@ var displayStorageMain = null;
 var displayTagConfigurationMain = null;
 
 angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
-.controller("FullScreenController", ["$scope", "$location", "$timeout", "userState", "$state", "SpinnerService",
-    function($scope, $location, $timeout, userState, $state, spinnerSvc) {
+.controller("FullScreenController", ["$scope", "$rootScope", "$http", "$location", "$timeout", "userState", "$state", "SpinnerService",
+    function($scope, $rootScope, $http, $location, $timeout, userState, $state, spinnerSvc) {
   $scope.userState = userState;
   $scope.navOptions = [{
     title: "Platform",
@@ -19,15 +19,17 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
     target: "_blank"
   }];
 
+  $http.get("data/metatags.json").success (function(data) {
+    $rootScope.metatag = data.storage;
+  });
+
   $scope.$on("risevision.user.authorized", function () {
     if(!$scope.userSignedIn) {
       spinnerSvc.start();
     }
 
     $scope.userSignedIn = true;
-    
-    // Avoid having all CH auth parameters visible
-    $location.path("/");
+
   });
 
   $scope.$on("risevision.user.signedOut", function () {
@@ -72,7 +74,18 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
         var filesPath = loc.match(/.*\/files\/.{36}\/(.*)/);
 
         filesPath = filesPath ? filesPath[1] : "";
-        $state.go("main.company-folders", { folderPath: filesPath, companyId: companyId });
+
+        console.log("companyId", companyId);
+        console.log("filesPath", filesPath);
+
+        if(filesPath.indexOf("cid=") >= 0) {
+          filesPath = "";
+          $state.go("main.company-root", { companyId: companyId });
+        }
+        else {
+          $state.go("main.company-folders", { folderPath: filesPath, companyId: companyId });
+        }
+
         
         spinnerSvc.stop();
       }
