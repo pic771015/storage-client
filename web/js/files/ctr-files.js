@@ -3,13 +3,13 @@
 angular.module("risevision.storage.files")
 .controller("FileListCtrl",
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
-"OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
-"$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate",
-  "FULLSCREEN","TaggingService","localDatastore", "calloutClosingService",
+ "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
+ "$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate",
+ "FULLSCREEN","TaggingService","localDatastore", "calloutClosingService", "filterFilter",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
 $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN,
-taggingSvc,  localData, calloutClosingService) {
+taggingSvc,  localData, calloutClosingService, filterFilter) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var trashLabel;
 
@@ -93,24 +93,31 @@ taggingSvc,  localData, calloutClosingService) {
 
   };
 
-  $scope.selectAllCheckboxes = function() {
+  $scope.selectAllCheckboxes = function(query, filterTags) {
+    var filteredFiles = filterFilter($scope.filesDetails.files, query);
+
+    filteredFiles = filterFilter(filteredFiles, filterTags);
+
     $scope.filesDetails.checkedCount = 0;
     $scope.filesDetails.folderCheckedCount = 0;
     $scope.filesDetails.checkedItemsCount = 0;
     for ( var i = 0; i < $scope.filesDetails.files.length; ++i ) {
-      if ($scope.fileIsCurrentFolder($scope.filesDetails.files[i]) || 
-          $scope.fileIsTrash($scope.filesDetails.files[i])) {
+      var file = $scope.filesDetails.files[i];
+
+      if ($scope.fileIsCurrentFolder(file) || 
+          $scope.fileIsTrash(file)) {
         continue;
       }
 
-      $scope.filesDetails.files[i].isChecked = $scope.selectAll;
-      if ($scope.filesDetails.files[i].name.substr(-1) !== "/") {
-        $scope.filesDetails.checkedCount += $scope.selectAll ? 1 : 0;
+      file.isChecked = $scope.selectAll && filteredFiles.indexOf(file) >= 0;
+
+      if (file.name.substr(-1) !== "/") {
+        $scope.filesDetails.checkedCount += file.isChecked ? 1 : 0;
       } else {
-        $scope.filesDetails.folderCheckedCount += $scope.selectAll ? 1 : 0;
+        $scope.filesDetails.folderCheckedCount += file.isChecked ? 1 : 0;
       }
 
-      $scope.filesDetails.checkedItemsCount += $scope.selectAll ? 1 : -1;
+      $scope.filesDetails.checkedItemsCount += file.isChecked ? 1 : 0;
     }
   };
 
