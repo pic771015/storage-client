@@ -4,21 +4,26 @@
     <label class="control-label add-bottom">Lookup</label>
 </div>
 <div class="editable-tags">
-    <div class="content-box-editable">
+    <div id="selectedLookupTags" class="content-box-editable">
         <div ng-show="selectedLookupTags.length === 0" class="text-muted">Select Tags From List</div>
-        <div class="label label-tag" ng-class="{'invalid': lookup.invalid}" ng-repeat="lookup in selectedLookupTags" ng-click="removeFromSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}"><span class="tag-name">{{ lookup.name }}</span> <span class="text-danger tag-value">{{ lookup.value }}</span> <i class="fa fa-minus-circle"></i>
-    </div>
+        <div class="label label-tag" ng-class="{'invalid': lookup.invalid}" ng-repeat="lookup in selectedLookupTags" ng-click="removeFromSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}">
+          <span class="tag-name">{{ lookup.name }}</span>
+          <span class="text-danger tag-value">{{ lookup.value }}</span>
+          <i class="fa fa-minus-circle"></i>
+        </div>
     </div>
 </div>
 <div>
- 
- <div class="input-group">
-    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-    <input type="text" placeholder="Search Lookup Tags" class="form-control" ng-model="tagQuery" ng-keyup="lookupOnEnter($event.keyCode, availableLookupTags, tagQuery)">
- </div>
+    <div class="input-group">
+       <span class="input-group-addon"><i class="fa fa-search"></i></span>
+       <input type="text" placeholder="Search Lookup Tags" class="form-control" ng-model="tagQuery" ng-keyup="lookupOnEnter($event.keyCode, availableLookupTags, tagQuery)">
+    </div>
 
-<div class="content-box-editable half-top">
-    <div class="label label-tag" ng-repeat="lookup in availableLookupTags | filter:tagQuery" ng-click="addToSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}"><span class="tag-name">{{ lookup.name }}</span> <span class="tag-value">{{ lookup.value }}</span> <i class="fa fa-plus-circle"></i>
+    <div id="availableLookupTags" class="content-box-editable half-top">
+        <div class="label label-tag" ng-repeat="lookup in availableLookupTags | filter:tagQuery" ng-click="addToSelectedLookupTag(lookup)" title="{{lookup.name + ': ' + lookup.value }}">
+          <span class="tag-name">{{ lookup.name }}</span>
+          <span class="tag-value">{{ lookup.value }}</span>
+          <i class="fa fa-plus-circle"></i>
         </div>
     </div><!-- content-box -->
 </div><!-- hidden-div -->

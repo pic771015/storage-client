@@ -243,11 +243,13 @@ angular.module("risevision.storage.tagging")
     var filesWithTags = localData.getFilesWithTags().filter(function(i){
       return fileNames.indexOf(i.name) > -1;
     });
-      taggingSvc.refreshSelection (filesWithTags, taggingSvc.command);
 
-      $scope.tagGroups = taggingSvc.tagGroups;
-      $scope.availableLookupTags = taggingSvc.available.lookupTags;
-      $scope.selectedFreeformTags = taggingSvc.selected.freeformTags;
+    taggingSvc.refreshSelection (filesWithTags, taggingSvc.command);
+    
+    $scope.tagGroups = taggingSvc.tagGroups;
+    $scope.availableLookupTags = taggingSvc.available.lookupTags;
+    $scope.selectedLookupTags = taggingSvc.selected.lookupTags;
+    $scope.selectedFreeformTags = taggingSvc.selected.freeformTags;
   };
 
   $scope.clearAllInvalidLookupTags = function(){
@@ -281,7 +283,7 @@ angular.module("risevision.storage.tagging")
     if(keyCode === 13 && $scope.showLookupEditView){
       var filteredList = list.filter(function(i){
         var combinedString = i.name + i.value;
-        return combinedString.indexOf(tagQuery) > -1;
+        return !tagQuery || combinedString.indexOf(tagQuery) > -1;
       });
 
       if(filteredList.length === 1){
@@ -335,20 +337,33 @@ angular.module("risevision.storage.tagging")
   };
 
   $scope.editLookup = function(){
-    $scope.waitForResponse = false;
-    taggingSvc.selected.lookupTags.forEach(function(tag){
-      if(localData.availableNameValuePairs().indexOf(tag.name + tag.value) === -1){
-        tag.invalid = true;
-        $scope.invalidLookupTag = true;
-      }
-    });
-    $scope.changedLookup = taggingSvc.tagGroups.lookupTags.length === taggingSvc.selected.lookupTags.length &&
-    taggingSvc.tagGroups.lookupTags.every(function(v,i){ return v.name === taggingSvc.selected.lookupTags[i].name &&
-      v.value === taggingSvc.selected.lookupTags[i].value;});
+    localData.refreshConfigTags().then(function() {
+      $scope.refreshChanges();
+      var availableNameValuePairs = localData.availableNameValuePairs();
 
-    $scope.selectedLookupTags = taggingSvc.selected.lookupTags;
-    $scope.showMainTagView = false;
-    $scope.showLookupEditView = true;
+      $scope.waitForResponse = false;
+
+      taggingSvc.selected.lookupTags.forEach(function(tag){
+        if(availableNameValuePairs.indexOf(tag.name + tag.value) === -1){
+          tag.invalid = true;
+          $scope.invalidLookupTag = true;
+        }
+        else {
+          tag.invalid = false;
+        }
+      });
+
+      $scope.changedLookup =
+        taggingSvc.tagGroups.lookupTags.length === taggingSvc.selected.lookupTags.length &&
+        taggingSvc.tagGroups.lookupTags.every(function(v,i) {
+          return v.name === taggingSvc.selected.lookupTags[i].name &&
+                 v.value === taggingSvc.selected.lookupTags[i].value;
+        });
+  
+      $scope.selectedLookupTags = taggingSvc.selected.lookupTags;
+      $scope.showMainTagView = false;
+      $scope.showLookupEditView = true;
+    });
   };
 
   $scope.editTimeline = function(){
@@ -363,16 +378,20 @@ angular.module("risevision.storage.tagging")
   };
 
   $scope.editFreeform = function(){
-    $scope.waitForResponse = false;
-    $scope.showMainTagView = false;
-    $scope.showFreeformEditView = true;
+    localData.refreshConfigTags().then(function() {
+      $scope.refreshChanges();
+
+      $scope.waitForResponse = false;
+      $scope.showMainTagView = false;
+      $scope.showFreeformEditView = true;
+    });
   };
 
   $scope.resetView = function(){
     taggingSvc.errorHandle = false;
     $scope.accessDenied = taggingSvc.errorHandle;
     $scope.waitForResponse = false;
-    $scope.tagQuery = null;
+    $scope.tagQuery = "";
     $scope.refreshChanges();
     $scope.showMainTagView = true;
     $scope.showLookupEditView = false;

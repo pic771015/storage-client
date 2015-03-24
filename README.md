@@ -148,6 +148,8 @@ LOCAL=--local E2E_USER=me@sample.com E2E_PASS=mypass npm run e2e
 
 Note that e2e testing requires [Chromedriver](http://chromedriver.storage.googleapis.com/index.html) available in your path.
 
+In case of running the tests on Windows, it's important to have the directory **e2e-downloads/storage-client** created inside the default download directory of Chrome/Chromium. The environment variable HOME needs to be defined and it should point to that directory.
+
 ## Submitting Issues 
 
 Issues should be reported in the github issue list at https://github.com/Rise-Vision/storage-client/issues  

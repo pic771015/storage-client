@@ -143,7 +143,7 @@ angular.module("risevision.storage.tagging")
 
       if(type === "FREEFORM"){
         svc.updateFreeformTags(namesOfFiles, selectedItems, type).then(function(resp){
-          if(resp !== undefined && resp[0].code === 200){
+          if(resp && resp.length > 0 && resp[0].code === 200){
             selectedItems = cleanEmptyFreeformTags(selectedItems);
             localData.updateTags(namesOfFiles, type, selectedItems);
           } else {
@@ -155,8 +155,7 @@ angular.module("risevision.storage.tagging")
       }
       else if(type === "LOOKUP"){
         svc.updateLookupTags(namesOfFiles, selectedItems, type).then(function(resp){
-          console.log(resp);
-          if(resp !== undefined && resp[0].code === 200){
+          if(resp && resp.length > 0 && resp[0].code === 200){
             selectedItems = (selectedItems === null) ? [] : selectedItems;
             localData.updateTags(namesOfFiles, type, selectedItems);
           } else {
@@ -168,7 +167,7 @@ angular.module("risevision.storage.tagging")
       }
       else if(type === "TIMELINE"){
         svc.updateTimelineTag(namesOfFiles, selectedItems, type).then(function(resp){
-          if(resp !== undefined && resp[0].code === 200) {
+          if(resp && resp.length > 0 && resp[0].code === 200) {
             resp.forEach(function(so) {
               var timeline = localData.fileTagFromStorageTag(so.item, { type: "TIMELINE", name: "TIMELINE"}, selectedItems);
               localData.updateTimelineTag(timeline);
@@ -348,8 +347,7 @@ angular.module("risevision.storage.tagging")
         return i.id === selectedTag.id;
       });
       var params;
-      if((oldName !== "" && oldName !== selectedTag.name) ||
-        selectedTag.name === ""){
+      if((oldName !== "" && oldName !== selectedTag.name) || selectedTag.name === ""){
         params = {};
 
         params.id = tagDefFound[0].id;
@@ -542,24 +540,24 @@ angular.module("risevision.storage.tagging")
     };
 
     //unit tested
-      svc.refreshSelection = function(items, command) {
-        if(command === "union"){
-          //svc.selectedItems = items;
-          var selectedFiles = getSelectedFiles(items);
-          svc.selected.files = selectedFiles;
-          svc.command = command;
-          svc.tagGroups = unionTagGroups(selectedFiles);
-          svc.selected.lookupTags = angular.copy(svc.tagGroups.lookupTags);
-          svc.refreshConfigTags();
-          svc.available.lookupTags = svc.getAvailableLookupTags(svc.configTags.lookupTags, svc.tagGroups.lookupTags);
-          svc.selected.freeformTags = angular.copy(svc.tagGroups.freeformTags)
-            .concat(getAvailableFreeformTags(angular.copy(svc.configTags.freeformTags),svc.tagGroups.freeformTags));
-        }
+    svc.refreshSelection = function(items, command) {
+      if(command === "union"){
+        //svc.selectedItems = items;
+        var selectedFiles = getSelectedFiles(items);
+        svc.selected.files = selectedFiles;
+        svc.command = command;
+        svc.tagGroups = unionTagGroups(selectedFiles);
+        svc.selected.lookupTags = angular.copy(svc.tagGroups.lookupTags);
+        svc.refreshConfigTags();
+        svc.available.lookupTags = svc.getAvailableLookupTags(svc.configTags.lookupTags, svc.tagGroups.lookupTags);
+        svc.selected.freeformTags = angular.copy(svc.tagGroups.freeformTags)
+          .concat(getAvailableFreeformTags(angular.copy(svc.configTags.freeformTags),svc.tagGroups.freeformTags));
+      }
+
       if(items.length === 1){
         svc.selected.timelineTag = angular.copy(svc.tagGroups.timelineTag);
       }
     };
-
 
     return svc;
     //Helper functions
