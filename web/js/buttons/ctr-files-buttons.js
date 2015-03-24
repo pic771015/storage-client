@@ -51,6 +51,10 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     $scope.leavePageMessage = value;
   });
 
+  $rootScope.$on("storage-client:company-id-changed", function(event, companyId) {
+    bucketName = "risemedialibrary-" + companyId;
+  });
+
   $window.addEventListener("beforeunload", function(e) {
     if(getActivePendingOperations().length > 0) {
       (e || window.event).returnValue = $scope.leavePageMessage;
