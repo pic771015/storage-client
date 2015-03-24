@@ -17,12 +17,36 @@
         <table class="table-2 table-hover">
           <thead>
           <tr>
-            <th class="col-xs-12 col-sm-4">Name</th>
-            <th class="hidden-xs col-sm-8">Values</th>
+            <th class="col-xs-12 col-sm-4">
+              <a href="" ng-click="orderByAttributeLookup = tagNameOrderFunction; reverseSortLookup = !reverseSortLookup">
+                <span>Name</span>
+                <span ng-show="orderByAttributeLookup===tagNameOrderFunction">
+                  <span ng-show="reverseSortLookup">
+                    <i class="fa fa-long-arrow-up"></i>
+                  </span>
+                  <span ng-show="!reverseSortLookup">
+                    <i class="fa fa-long-arrow-down"></i>
+                  </span>
+                </span>
+              </a>
+            </th>
+            <th class="hidden-xs col-sm-8">
+              <a href="" ng-click="orderByAttributeLookup = tagValuesOrderFunction; reverseSortLookup = !reverseSortLookup">
+                <span>Values</span>
+                <span ng-show="orderByAttributeLookup===tagValuesOrderFunction">
+                  <span ng-show="reverseSortLookup">
+                    <i class="fa fa-long-arrow-up"></i>
+                  </span>
+                  <span ng-show="!reverseSortLookup">
+                    <i class="fa fa-long-arrow-down"></i>
+                  </span>
+                </span>
+              </a>
+            </th>
           </tr>
           </thead>
           <tbody>
-          <tr class="clickable-row" ng-click="editTags(lookup)" ng-repeat="lookup in lookupTags">
+          <tr class="clickable-row" ng-click="editTags(lookup)" ng-repeat="lookup in lookupTags | orderBy:orderByAttributeLookup:reverseSortLookup">
             <td class="col-xs-12 col-sm-4">
               <div style="text-overflow: ellipsis;" title="{{lookup.name}}" class="ellipsis ellipsis-sm nowrap"><strong>{{lookup.name}}</strong></div>
             </td>
@@ -43,11 +67,23 @@
         <table class="table-2 table-hover">
           <thead>
           <tr>
-            <th class="col-xs-1">Name</th>
+            <th>
+              <a href="" ng-click="orderByAttributeFreeform = tagNameOrderFunction; reverseSortFreeform = !reverseSortFreeform">
+                <span>Name</span>
+                <span ng-show="orderByAttributeFreeform===tagNameOrderFunction">
+                  <span ng-show="reverseSortFreeform">
+                    <i class="fa fa-long-arrow-up"></i>
+                  </span>
+                  <span ng-show="!reverseSortFreeform">
+                    <i class="fa fa-long-arrow-down"></i>
+                  </span>
+                </span>
+              </a>
+            </th>
           </tr>
           </thead>
           <tbody>
-          <tr class="clickable-row" ng-repeat="freeform in freeformTags" ng-click="editTags(freeform)">
+          <tr class="clickable-row" ng-repeat="freeform in freeformTags | orderBy:orderByAttributeFreeform:reverseSortFreeform" ng-click="editTags(freeform)">
             <td class="col-xs-1">
               <div style="text-overflow: ellipsis;" title="{{freeform.name}}" class="ellipsis ellipsis-sm nowrap"><strong>{{freeform.name}}</strong></div>
             </td>
