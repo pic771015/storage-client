@@ -52,22 +52,32 @@ describe("Services: Download", function() {
   it("should not download on 0 length array", function() {
     var dlSvc = getService("DownloadService");
     var $timeout = getService("$timeout");
-    var $window = getService("$window");
+
+    dlSvc.filesDownloaded = 0;
+    dlSvc.downloadURL = function() {
+      dlSvc.filesDownloaded++;
+    };
+    
     dlSvc.downloadFiles([]);
     $timeout.flush();
-    expect($window.filesDownloaded.length).to.equal(0);
+    expect(dlSvc.filesDownloaded).to.equal(0);
   });
 
   it("should download 2 files given two files and a folder", function() {
     var dlSvc = getService("DownloadService");
     var $timeout = getService("$timeout");
-    var $window = getService("$window");
+
+    dlSvc.filesDownloaded = 0;
+    dlSvc.downloadURL = function() {
+      dlSvc.filesDownloaded++;
+    };
+
     dlSvc.downloadFiles([{name: "t1"},{name: "t2"},{name: "t1/"}]);
     $timeout.flush();
-    expect($window.filesDownloaded.length).to.equal(1);
+    expect(dlSvc.filesDownloaded).to.equal(1);
     $timeout.flush();
-    expect($window.filesDownloaded.length).to.equal(2);
+    expect(dlSvc.filesDownloaded).to.equal(2);
     $timeout.flush();
-    expect($window.filesDownloaded.length).to.equal(2);
+    expect(dlSvc.filesDownloaded).to.equal(2);
   });
 });
