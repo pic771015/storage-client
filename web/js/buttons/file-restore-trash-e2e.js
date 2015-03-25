@@ -1,39 +1,24 @@
 "use strict";
 
-module.exports = function(casper) {
-  var foundFile = false;
+module.exports = function(casper, pass, fail) {
+  casper.thenClick("a[title='Trash']");
 
-  // Marks the first file if found as selected
-  casper.then(function() {
-    this.evaluate(function () {
-      var trs = document.querySelectorAll("#filesTable tbody tr");
+  casper.waitForUrl(/--TRASH/, null, fail("Could not get trash"));
 
-      for (var i = 0; i < trs.length; i++) {
-        if (trs[i].children[1].children[0].children[0].classList.contains("fa-file") &&
-          trs[i].children[1].children[0].textContent !== " /Previous Folder") {
-          trs[i].children[0].children[0].click();
-          break;
-        }
-      }
-    });
-    
-    if (foundFile) {
-      // Checks if file is found that you can restore it from trash
-      casper.then(function () {
-        casper.test.assertVisible("button[title='Restore From Trash']");
-        this.click("button[ng-click='restoreButtonClick()']");
-        casper.test.assert(true, "restore button clicked");
-      });
+  casper.waitUntilVisible("a[title='test1']", null,
+  fail("Trash folder should not be empty"));
 
-      // Waits for the moving to restoring message to show
-      casper.waitUntilVisible(".panel-info", function () {
-        casper.test.assert(true, "file is being restored");
-      });
+  casper.thenClick("#filesTable tbody tr:last-of-type input");
 
-      // Waits for the moving to trash info message to hide
-      casper.waitWhileVisible(".panel-info", function () {
-        casper.test.assert(true, "file successfully restored");
-      });
-    }
-  });
+  casper.thenClick("button[ng-click='restoreButtonClick()']");
+
+  casper.waitForResource(/trash.*--TRASH--%2Ftest1/,
+  pass("file was restored"),
+  fail("file was not restored"));
+
+  casper.thenClick("#filesTable tbody tr a");
+
+  casper.waitUntilVisible("a[title='test1']",
+  pass("returned from trash folder"),
+  fail("expected file listing on return home"));
 };
