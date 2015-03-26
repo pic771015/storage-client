@@ -42,21 +42,23 @@ casper.test.begin("Connecting to " + url, function suite(test) {
   if(!PROD) {
     casper.then(function localAppengineDevserverLogin() {
       casper.open(localServerLoginUrl).then(function() {
-        this.evaluate(function(user) {
+        casper.waitForSelector("#email",
+        pass("accessing local server login page"),
+        fail("could not access local server login"));
+
+        casper.thenEvaluate(function(user) {
           document.querySelector("#email").value = user || "jenkins@risevision.com";
+          document.querySelector("label[for='isAdmin']").click();
           document.querySelector("#btn-login").click();
         }, casper.cli.options.user);
+
+        casper.waitForUrl(localServerLoginUrlRoot,
+        pass("local login processed"), fail("local login not processed"));
       });
-
-      casper.test.assert(true, "displayed local login");
-    });
-
-    casper.waitForUrl(localServerLoginUrlRoot, function() {
-      casper.test.assert(true, "processed local login");
     });
   }
 
-  casper.then(function() {
+  casper.then(function accessLocalOrProdStorageClient() {
     casper.open(url, { headers: customHeaders }).then(function(resp) {
       casper.echo("Response " + resp.status + " " + resp.statusText + " from " + resp.url);
       casper.viewport(1024, 768);
@@ -71,8 +73,15 @@ casper.test.begin("Connecting to " + url, function suite(test) {
 
   require("google-login.js")(casper, pass, fail);
 
-  casper.waitForSelector("a[title='Trash']",
-  pass("file listing loaded"), fail("file listing failed"));
+  casper.waitFor(function() {
+    return casper.evaluate(function() {
+      var el = document.getElementById("submit_approve_access");
+      if (el) {el.click();}
+
+      if (document.querySelector("a[title='Trash']")) {return true;}
+      return false;
+    });
+  }, pass("file listing loaded"), fail("file listing failed"));
 
   require("../../web/js/buttons/folder-create-e2e.js")(casper, pass, fail);
   require("main-upload-test-file.js")(casper, pass, fail);
