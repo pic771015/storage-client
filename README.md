@@ -136,14 +136,15 @@ To run unit test for a single run, do
 gulp test-ci
 ```
 
-To run E2E testing, do
+To run E2E testing, you'll need to supply a login password in an environment variable.
 ```bash
-npm run e2e
+JENKINS_PASS=mypass npm run e2e
 ```
 
-Running e2e tests requires having an environment variable named JENKINS_PASS with the correct password for jenkins@risevision.com
-
-To run e2e tests locally, you need storage-server and storage-client running. An environment variable named LOCAL is needed, and it's value should be *local*.
+To run e2e tests against a local client, you need storage-server and storage-client running. An environment variable named LOCAL is needed, and it's value should be *--local*.
+```bash
+LOCAL=--local JENKINS_PASS=mypass npm run e2e
+```
 
 ## Submitting Issues 
 
