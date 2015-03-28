@@ -2,29 +2,10 @@
 
 var webdriver = require("selenium-webdriver"),
     fs = require("fs"),
+    args = require("./bootstrap-args.js"),
     chrome = require("selenium-webdriver/chrome"),
     chromeOptions = new chrome.Options(),
-    UNCAUGHT_EXCEPTION = webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION,
-    LOCAL = process.argv.some(function(el) {return el === "--local";}),
-    USER = process.argv.filter(function(el) {
-      return el.indexOf("--user") === 0;
-    })[0],
-    PASSWORD = process.argv.filter(function(el) {
-      return el.indexOf("--password") === 0;
-    })[0];
-
-if (PASSWORD === undefined) {
-  console.log("--password not specified");
-  process.exit(1);
-}
-
-if (USER === undefined) {
-  console.log("--user not specified");
-  process.exit(1);
-}
-
-PASSWORD = PASSWORD.split("=")[1];
-USER = USER.split("=")[1];
+    UNCAUGHT_EXCEPTION = webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION;
 
 chromeOptions.setChromeBinaryPath("/usr/bin/chromium");
 chromeOptions.addArguments("web-security=no");
@@ -34,27 +15,33 @@ var driver = new webdriver.Builder()
   .setChromeOptions(chromeOptions)
   .build();
 
-var logAndSnap = function(msg) {
-  return function() {
-    driver.takeScreenshot().then(function(data) {
-      var base64Data = data.replace(/^data:image\/png;base64,/,"");
-      fs.writeFile(msg.replace(/ /g, "-") + ".png", base64Data, "base64",
-      function(err) {
-        if(err) {console.log(err);}
-      });
-    });
-    console.log(msg);
-  };
-};
+var helpers = require("./bootstrap-helpers.js")(driver, fs);
 
 driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
-  logAndSnap("uncaught exception")();
+  helpers.logAndSnap("uncaught exception")();
   console.log(e.toString());
   console.log(webdriver.stacktrace.getStack(e));
   driver.quit().then(function() {process.exit(1);});
 });
 
-require("./storage-sign-in.js")(driver, LOCAL, USER, PASSWORD);
+require("./storage-sign-in.js")(driver, args.LOCAL, args.USER, args.PASSWORD);
+helpers.waitForSpinner();
 
-driver.controlFlow().execute(logAndSnap("done"));
+var filePaths = 
+[
+"../../web/js/buttons/folder-create-e2e.js"
+//"./main-upload-test-file.js",
+//"../../web/js/tagging/tagging-file-normal-e2e.js",
+//"../../web/js/buttons/file-trash-e2e.js",
+//"../../web/js/buttons/file-restore-trash-e2e.js",
+//"../../web/js/buttons/folder-move-trash-e2e.js",
+//"../../web/js/buttons/folder-delete-e2e.js",
+//"../../web/js/modal/modal-e2e.js"
+];
+
+filePaths.forEach(function(path) {
+  helpers.includeTestFile(path);
+});
+
+driver.controlFlow().execute(helpers.logAndSnap("done"));
 driver.quit();

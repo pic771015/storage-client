@@ -28,6 +28,7 @@ module.exports = function(driver, LOCAL, USER, PASSWORD) {
   driver.findElement(signInLocator).click();
 
   driver.wait(until.elementLocated(emailLocator), 2000, "wait for email field");
+  driver.sleep(500);
   driver.findElement(emailLocator).sendKeys(USER);
   driver.findElement(passwordLocator).sendKeys(PASSWORD);
   driver.findElement(googleSignInLocator).click();
