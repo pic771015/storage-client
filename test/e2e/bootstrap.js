@@ -9,6 +9,12 @@ var webdriver = require("selenium-webdriver"),
 
 chromeOptions.setChromeBinaryPath("/usr/bin/chromium");
 chromeOptions.addArguments("web-security=no");
+chromeOptions.setUserPreferences(
+{"download": 
+  {"default_directory": process.env.HOME + "/e2e-downloads/storage-client",
+   "type": 1,
+   "prompt_for_download": false}
+});
 
 var driver = new webdriver.Builder()
   .forBrowser("chrome")
@@ -29,8 +35,8 @@ helpers.waitForSpinner();
 
 var filePaths = 
 [
-"../../web/js/buttons/folder-create-e2e.js"
-//"./main-upload-test-file.js",
+"../../web/js/buttons/folder-create-e2e.js",
+"./upload-download.js"
 //"../../web/js/tagging/tagging-file-normal-e2e.js",
 //"../../web/js/buttons/file-trash-e2e.js",
 //"../../web/js/buttons/file-restore-trash-e2e.js",
