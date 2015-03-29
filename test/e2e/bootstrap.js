@@ -36,8 +36,8 @@ helpers.waitForSpinner();
 var filePaths = 
 [
 "../../web/js/buttons/folder-create-e2e.js",
-"./upload-download.js"
-//"../../web/js/tagging/tagging-file-normal-e2e.js",
+"./upload-download.js",
+"../../web/js/tagging/tagging-modal-popup.js"
 //"../../web/js/buttons/file-trash-e2e.js",
 //"../../web/js/buttons/file-restore-trash-e2e.js",
 //"../../web/js/buttons/folder-move-trash-e2e.js",
