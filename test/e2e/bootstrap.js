@@ -51,6 +51,7 @@ helpers.waitForSpinner("storage-sign-in");
 
 var filePaths = 
 [
+"../../web/js/subscription/subscription-e2e.js",
 "../../web/js/buttons/folder-create-e2e.js",
 "./upload-download.js",
 "../../web/js/tagging/tagging-modal-popup.js",

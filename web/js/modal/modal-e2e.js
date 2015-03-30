@@ -1,7 +1,6 @@
 "use strict";
 
 var until = require("selenium-webdriver").until,
-webdriver = require("selenium-webdriver"),
 
 rvaPresentationUrl = "http://rva.risevision.com/#PRESENTATIONS/company=a6397169-ad53-4163-9e08-da3e53f3a413",
 expectedUrlFromStorageModal = "https://storage.googleapis.com/risemedialibrary-a6397169-ad53-4163-9e08-da3e53f3a413/package.json",
