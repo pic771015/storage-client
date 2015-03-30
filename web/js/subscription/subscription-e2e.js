@@ -21,7 +21,7 @@ function findVisibleSelector(selector) {
     }).then(function(visibleLinks) {
       return visibleLinks[0];
     });
-  }
+  };
 }
 
 module.exports = function(driver) {
