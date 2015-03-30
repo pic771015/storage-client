@@ -15,6 +15,7 @@ module.exports = function(driver, LOCAL, USER, PASSWORD) {
 
   if (LOCAL) {
     driver.get("localhost:8888/_ah/login");
+    driver.findElement({"id": "email"}).clear();
     driver.findElement({"id": "email"}).sendKeys(USER);
     driver.findElement({"css": "label[for='isAdmin']"}).click();
     driver.findElement({"id": "btn-login"}).click();
