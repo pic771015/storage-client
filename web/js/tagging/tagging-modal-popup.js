@@ -10,9 +10,13 @@ locators = {
 };
 
 module.exports = function(driver) {
+  var taggingModal;
+
   driver.findElement(locators.taggingButton).click();
 
   driver.wait(until.elementLocated(locators.taggingModal), 2000, "modal open");
+
+  taggingModal = driver.findElement(locators.taggingModal);
 
   driver.wait
   (until.elementIsVisible
@@ -21,9 +25,7 @@ module.exports = function(driver) {
   driver.sleep(1000);
   driver.findElement(locators.taggingModalCancel).click();
 
-  driver.wait
-  (until.elementIsNotVisible
-  (driver.findElement(locators.taggingModal)), 5000, "modal cancel");
+  driver.wait(until.stalenessOf(taggingModal), 5000, "modal cancel");
 
   driver.sleep(1000);
 };
