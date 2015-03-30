@@ -18,7 +18,7 @@ module.exports = function(driver) {
     };
   };
 
-  obj.waitForSpinner = function waitForSpinner(msg) {
+  obj.waitForSpinner = function waitForSpinner() {
     var until = require("selenium-webdriver").until,
     spinner;
 
