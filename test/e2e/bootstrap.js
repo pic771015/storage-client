@@ -1,13 +1,28 @@
 /*global process */
 "use strict";
 
+var fs = require("fs");
+var isWindows = /^win/.test(process.platform);
 var webdriver = require("selenium-webdriver"),
     args = require("./bootstrap-args.js"),
     chrome = require("selenium-webdriver/chrome"),
     chromeOptions = new chrome.Options(),
     UNCAUGHT_EXCEPTION = webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION;
 
-chromeOptions.setChromeBinaryPath("/usr/bin/chromium");
+if(isWindows) {
+  var x86Path = "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+  var x64Path = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+
+  if(fs.existsSync(x86Path)) {
+    chromeOptions.setChromeBinaryPath(x86Path);
+  }
+  else {
+    chromeOptions.setChromeBinaryPath(x64Path);
+  }
+}
+else {
+  chromeOptions.setChromeBinaryPath("/usr/bin/chromium");
+}
 chromeOptions.addArguments("--disable-web-security");
 chromeOptions.setUserPreferences(
 {"download": 
