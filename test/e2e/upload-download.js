@@ -16,7 +16,7 @@ locators = {
 
 module.exports = function(driver) {
   driver.findElement(locators.fileInputElement).sendKeys(uploadFilePath);
-  driver.wait(until.elementLocated(locators.fileRow), 5000, "file upload");
+  driver.wait(until.elementLocated(locators.fileRow), 9000, "file upload");
 
   driver.findElement(locators.fileCheckbox).click();
   driver.findElement(locators.downloadButton).click();

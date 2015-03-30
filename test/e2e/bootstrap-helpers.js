@@ -1,6 +1,8 @@
 "use strict";
 
-module.exports = function(driver, fs) {
+var fs = require("fs");
+
+module.exports = function(driver) {
   var obj = {};
 
   obj.logAndSnap = function logAndSnap(msg) {
@@ -16,17 +18,22 @@ module.exports = function(driver, fs) {
     };
   };
 
-  obj.waitForSpinner = function waitForSpinner() {
+  obj.waitForSpinner = function waitForSpinner(msg) {
     var until = require("selenium-webdriver").until,
-    spinner = driver.findElement({"css": "div.spinner-backdrop"});
+    spinner;
 
-    driver.wait(until.elementIsNotVisible(spinner), 5000, "spinner hidden");
-    driver.sleep(200);
+    driver.isElementPresent({"css": "div.spinner-backdrop"})
+    .then(function(present) {
+      if (!present) {return;}
+      spinner = driver.findElement({"css": "div.spinner-backdrop"});
+      driver.wait(until.elementIsNotVisible(spinner), 15000, "spinner hidden");
+    });
   };
 
   obj.includeTestFile = function loadTestFile(filepath) {
+    driver.controlFlow().execute(function(){console.log(filepath);});
     require(filepath)(driver);
-    obj.waitForSpinner();
+    obj.waitForSpinner("at end of tasks for " + filepath);
   };
 
   return obj;

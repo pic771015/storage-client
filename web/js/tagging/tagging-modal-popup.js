@@ -5,7 +5,8 @@ locators = {
   "fileCheckbox": {"css": "#filesTable tbody tr:first-child input"},
   "taggingButton": {"css": "button[ng-click='taggingButtonClick()']"},
   "taggingModal": {"css": ".modal-dialog"},
-  "taggingModalCancel": {"css": "button[ng-click='cancel()']"}
+  "taggingModalCancel": {"css": "button[ng-click='cancel()']"},
+  "modalDialog": {"css": "div.modal-dialog"}
 };
 
 module.exports = function(driver) {
@@ -23,4 +24,6 @@ module.exports = function(driver) {
   driver.wait
   (until.elementIsNotVisible
   (driver.findElement(locators.taggingModal)), 5000, "modal cancel");
+
+  driver.sleep(1000);
 };

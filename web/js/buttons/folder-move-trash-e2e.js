@@ -1,13 +1,22 @@
 "use strict";
 
-module.exports = function(casper) {
-  casper.thenClick("#filesTable tbody tr:first-of-type input");
-  casper.thenClick("button[title='Move To Trash']");
+var until = require("selenium-webdriver").until,
 
-  casper.waitForResource(/trash.*files=test-folder%2F/);
+locators = {
+  "folderCheckbox": {"css": "#filesTable tbody tr:nth-child(2) input"},
+  "trashButton": {"css": "button[ng-click='trashButtonClick()']"},
+  "pendingOps": {"css": "div[ng-show='pendingOperations.length > 0']"},
+  "trashFolder": {"css": "a[title='Trash'"},
+  "folderItem": {"css": "a[title='test-folder/']"}
+};
 
-  casper.thenClick("a[title='Trash']");
+module.exports = function(driver) {
+  var pendingOps = driver.findElement(locators.pendingOps);
 
-  casper.waitForUrl(/--TRASH/);
-  casper.waitForSelector("a[title='test-folder/']");
+  driver.findElement(locators.folderCheckbox).click();
+  driver.findElement(locators.trashButton).click();
+  driver.wait(until.elementIsVisible(pendingOps), 9000, "trashing folder");
+  driver.wait(until.elementIsNotVisible(pendingOps), 9000, "folder trashed");
+  driver.findElement(locators.trashFolder).click();
+  driver.wait(until.elementLocated(locators.folderItem), 9000, "folder in trash");
 };
