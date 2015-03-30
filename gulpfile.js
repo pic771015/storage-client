@@ -193,7 +193,8 @@ gulp.task("fonts", ["clean"], function() {
 
 gulp.task("locales", ["clean"], function() {
   return gulp.src(localeFiles)
-    .pipe(gulp.dest("dist/locales"));
+    .pipe(gulp.dest("dist/locales"))
+    .pipe(gulp.dest("web/locales"));
 });
 
 gulp.task("img", ["clean"], function() {

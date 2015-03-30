@@ -1,36 +1,46 @@
 "use strict";
-module.exports = function(casper, pass, fail) {
-  var rvaPresentationUrl = "http://rva.risevision.com/#PRESENTATION_MANAGE/company=f114ad26-949d-44b4-87e9-8528afc76ce4";
-  var expectedUrlFromStorageModal = "https://storage.googleapis.com/risemedialibrary-a6397169-ad53-4163-9e08-da3e53f3a413/test1";
 
-  casper.then(function() {
-    casper.log("loading " + rvaPresentationUrl, "info");
-  });
+var until = require("selenium-webdriver").until,
 
-  casper.thenOpen(rvaPresentationUrl);
-  
-  casper.waitForSelector("div[title='Add Placeholder']",
-  pass("new presentation found"), fail("could not open new presentation"));
+rvaPresentationUrl = "http://rva.risevision.com/#PRESENTATIONS/company=a6397169-ad53-4163-9e08-da3e53f3a413",
+expectedUrlFromStorageModal = "https://storage.googleapis.com/risemedialibrary-a6397169-ad53-4163-9e08-da3e53f3a413/package.json",
 
-  casper.then(function() {
-    casper.mouse.move("div[title='Add Placeholder']");
-    casper.mouse.down("div[title='Add Placeholder']");
-    casper.mouse.up("div[title='Add Placeholder']");
-  });
+locators = {
+  "addPlaceholder": {"css": "div[title='Add Placeholder']"},
+  "addPresentation": {"xpath": "//span[text()='Add']"},
+  "add": {"xpath": "//a[text()='Add']"},
+  "image": {"xpath": "//td[text()='Image']"},
+  "storage": {"xpath": "//div[@class='popupContent']//a/span[text()='Storage']"},
+  "spinner": {"css": "div.spinner-backdrop"},
+  "returnedUrl": {"xpath": "//input[@value='" + expectedUrlFromStorageModal + "']"}
+};
 
-  casper.then(function accessStorageModal() {
-    casper.clickLabel("Add", "a");
-    casper.clickLabel("Image", "td");
-    casper.clickLabel("Storage", "span");
-  });
+module.exports = function(driver) {
+  driver.get(rvaPresentationUrl);
+  driver.wait(until.elementLocated(locators.addPresentation), 15000, "rva open");
+  driver.waitForSpinner("add presentation");
+  driver.findElement(locators.addPresentation).click();
 
-  casper.waitFor(function handleStorageModal() {
-    return casper.evaluate(function findAndClickFile() {
-      return checkDocFramesForTestFile(document);
+  driver.wait(until.elementLocated(locators.addPlaceholder), 15000, "placeholder");
+  driver.findElement(locators.addPlaceholder).click();
 
-      function checkDocFramesForTestFile(doc) {
+  driver.wait(until.elementLocated(locators.add), 1000, "add");
+  driver.sleep(500);
+  driver.findElement(locators.add).click();
+  driver.wait(until.elementLocated(locators.image), 1000, "image");
+  driver.sleep(500);
+  driver.findElement(locators.image).click();
+  driver.wait(until.elementLocated(locators.storage), 1000, "storage");
+  driver.sleep(500);
+  driver.findElement(locators.storage).click();
+
+  driver.wait(function waitForStorage() {
+    return driver.executeScript(function findAndClickFile() {
+      return checkDocFramesForFile(document);
+
+      function checkDocFramesForFile(doc) {
         var frames = doc.querySelectorAll("iframe");
-        var fileLink = doc.querySelector("a[title='test1']");
+        var fileLink = doc.querySelector("a[title='package.json']");
 
         if (fileLink) {
           fileLink.click();
@@ -38,22 +48,22 @@ module.exports = function(casper, pass, fail) {
         } else {
           return Array.prototype.some.call(frames, function(frame){
             var doc = frame.contentDocument;
-            if (doc) {return checkDocFramesForTestFile(doc);}
+            if (doc) {return checkDocFramesForFile(doc);}
             return false;
           });
         }
       }
     });
-  },pass("storage loaded in-app"), fail("storage not loaded"));
+  }, 9000, "storage modal");
 
-  casper.waitFor(function expectUrlInInputField() {
-    return casper.evaluate(function(expectedUrl) {
-      var textBoxElements = document.querySelectorAll("input.rdn-TextBoxLong");
+  driver.wait(function waitForUrlFromStorage() {
+    return driver.executeScript(function findUrl() {
+      var textBoxElements = document.querySelectorAll("input.rdn-TextBoxLong"),
+      expectedUrl = arguments[arguments.length - 1];
+
       return Array.prototype.some.call(textBoxElements, function(el) {
         return el.value === expectedUrl;
       });
     }, expectedUrlFromStorageModal);
-  }, pass("storage modal returned expected url"), fail("expected url not found"));
-
-  casper.wait(900); //prevents hang on exit attempt after successful test runs
+  }, 9000, "storage url");
 };

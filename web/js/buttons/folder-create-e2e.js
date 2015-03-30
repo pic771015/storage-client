@@ -1,18 +1,21 @@
 "use strict";
+var until = require("selenium-webdriver").until;
 
-module.exports = function(casper, pass, fail) {
-  casper.then(function() {
-    this.click("button[ng-click=\"newFolderButtonClick('md')\"]");
-  });
+module.exports = function(driver) {
+  var elementLocators = 
+  {
+    "newFolder": {"css": "button[ng-click=\"newFolderButtonClick('md')\"]"},
+    "dialog": {"css": ".modal-dialog"},
+    "newFolderInput": {"id": "newFolderInput"},
+    "ok": {"css": "button[ng-click='ok()']"},
+    "testFolder": {"css": "a[title='test-folder/']"},
+  };
 
-  casper.waitUntilVisible(".modal-dialog", function() {
-    this.sendKeys("#newFolderInput", "test-folder");
-    this.click("button[ng-click='ok()']");
-  });
+  driver.findElement(elementLocators.newFolder).click();
+  driver.wait(until.elementLocated(elementLocators.dialog), 1000, "new folder dialog");
 
-  casper.waitWhileVisible(".modal-dialog",
-  pass("create folder dialog hidden"), fail("create folder dialog not confirmed"));
+  driver.findElement(elementLocators.newFolderInput).sendKeys("test-folder");
+  driver.findElement(elementLocators.ok).click();
 
-  casper.waitForSelector("a[title='test-folder/']",
-  pass("folder created"), fail("folder not created"));
+  driver.wait(until.elementLocated(elementLocators.testFolder), 5000, "folder found");
 };

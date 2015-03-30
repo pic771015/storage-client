@@ -119,7 +119,7 @@ npm run dev
 
 ### Dependencies
 
-* **Gulp** - is used as a task runner. It lints, runs unit tests and E2E (end to end) tests, minimizes files, etc.  all dependencies for this is in the gulp.js file.
+* **Gulp** - is used as a task runner. It lints, minifies files, etc.  
 * **Bower** - is used as a package manager for javascript libraries and frameworks. All third-party javascript frameworks and libraries are listed as dependencies in the bower.json file.
 * **NPM & Nodejs** - the node package manager is used in hand in hand with gulp to start a server to host the app and all the dependencies needed from using a node server. All these node dependencies are listed in the package.json file
 
@@ -136,15 +136,17 @@ To run unit test for a single run, do
 gulp test-ci
 ```
 
-To run E2E testing, you'll need to supply a login password in an environment variable.
+To run E2E testing, you'll need to supply a user and password in an environment variable.
 ```bash
-JENKINS_PASS=mypass npm run e2e
+E2E_USER=me@sample.com E2E_PASS=mypass npm run e2e
 ```
 
 To run e2e tests against a local client, you need storage-server and storage-client running. An environment variable named LOCAL is needed, and it's value should be *--local*.
 ```bash
-LOCAL=--local JENKINS_PASS=mypass npm run e2e
+LOCAL=--local E2E_USER=me@sample.com E2E_PASS=mypass npm run e2e
 ```
+
+Note that e2e testing requires [Chromedriver](http://chromedriver.storage.googleapis.com/index.html) available in your path.
 
 ## Submitting Issues 
 
