@@ -28,3 +28,4 @@ USER = USER.split("=")[1];
 
 exports.PASSWORD = PASSWORD;
 exports.USER = USER;
+exports.LOCAL = LOCAL;
