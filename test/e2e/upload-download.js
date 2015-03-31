@@ -15,6 +15,7 @@ locators = {
 };
 
 module.exports = function(driver) {
+  driver.logMessage("locating file input element");
   driver.findElement(locators.fileInputElement).sendKeys(uploadFilePath);
   driver.wait(until.elementLocated(locators.fileRow), 9000, "file upload");
 

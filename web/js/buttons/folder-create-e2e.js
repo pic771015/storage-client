@@ -18,4 +18,5 @@ module.exports = function(driver) {
   driver.findElement(elementLocators.ok).click();
 
   driver.wait(until.elementLocated(elementLocators.testFolder), 5000, "folder found");
+  driver.logMessage("folder created");
 };

@@ -37,7 +37,8 @@ var driver = new webdriver.Builder()
   .build();
 
 var helpers = require("./bootstrap-helpers.js")(driver);
-driver.waitForSpinner = helpers.waitForSpinner;
+driver.waitForObstructions = helpers.waitForObstructions;
+driver.logMessage = helpers.logMessage;
 
 driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   helpers.logAndSnap("uncaught exception")();
@@ -47,7 +48,7 @@ driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
 });
 
 require("./storage-sign-in.js")(driver, args.LOCAL, args.USER, args.PASSWORD);
-helpers.waitForSpinner("storage-sign-in");
+helpers.waitForObstructions();
 
 var filePaths = 
 [

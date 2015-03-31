@@ -18,22 +18,35 @@ module.exports = function(driver) {
     };
   };
 
-  obj.waitForSpinner = function waitForSpinner() {
+  obj.waitForObstructions = function waitForObstructions() {
     var until = require("selenium-webdriver").until,
-    spinner;
+    obstruction;
 
-    driver.isElementPresent({"css": "div.spinner-backdrop"})
-    .then(function(present) {
-      if (!present) {return;}
-      spinner = driver.findElement({"css": "div.spinner-backdrop"});
-      driver.wait(until.elementIsNotVisible(spinner), 15000, "spinner hidden");
-    });
+    waitForObstruction({"css": "div.spinner-backdrop"}, "visibility");
+    waitForObstruction({"css": "div.modal-backdrop.fade"}, "staleness");
+
+    function waitForObstruction(selector, condition) {
+      var waitCond = until.elementIsNotVisible;
+      if (condition === "staleness") {waitCond = until.stalenessOf;}
+
+      driver.isElementPresent(selector)
+      .then(function(present) {
+        if (!present) {return;}
+
+        obstruction = driver.findElement(selector);
+        driver.wait(waitCond(obstruction), 15000, "obstruction " + waitCond);
+      });
+    }
+  };
+
+  obj.logMessage = function logMessage(msg) {
+    driver.controlFlow().execute(function(){console.log(msg);});
   };
 
   obj.includeTestFile = function loadTestFile(filepath) {
-    driver.controlFlow().execute(function(){console.log(filepath);});
+    obj.logMessage(filepath);
     require(filepath)(driver);
-    obj.waitForSpinner("at end of tasks for " + filepath);
+    obj.waitForObstructions();
   };
 
   return obj;
