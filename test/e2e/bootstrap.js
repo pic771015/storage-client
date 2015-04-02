@@ -39,6 +39,7 @@ var driver = new webdriver.Builder()
 var helpers = require("./bootstrap-helpers.js")(driver);
 driver.waitForObstructions = helpers.waitForObstructions;
 driver.logMessage = helpers.logMessage;
+driver.findAndClickWhenVisible = helpers.findAndClickWhenVisible;
 
 driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   helpers.logAndSnap("uncaught exception")();

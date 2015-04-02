@@ -1,6 +1,7 @@
 "use strict";
 
-var fs = require("fs");
+var fs = require("fs"),
+until = require("selenium-webdriver").until;
 
 module.exports = function(driver) {
   var obj = {};
@@ -32,6 +33,7 @@ module.exports = function(driver) {
       driver.isElementPresent(selector)
       .then(function(present) {
         if (!present) {return;}
+        console.log("waiting for " + JSON.stringify(selector));
 
         obstruction = driver.findElement(selector);
         driver.wait(waitCond(obstruction), 15000, "obstruction " + waitCond);
@@ -41,6 +43,17 @@ module.exports = function(driver) {
 
   obj.logMessage = function logMessage(msg) {
     driver.controlFlow().execute(function(){console.log(msg);});
+  };
+
+  obj.findAndClickWhenVisible = function findAndClickWhenVisible(selector) {
+    driver.wait(until.elementLocated(selector), 4000, JSON.stringify(selector));
+    driver.findElement(selector).then(function(el) {
+      driver.wait(until.elementIsVisible(el), 6000, JSON.stringify(selector)).then(function() {
+        driver.wait(until.elementIsEnabled(el), 7000, JSON.stringify(selector));
+      }).then(function() {
+        el.click();
+      });
+    });
   };
 
   obj.includeTestFile = function loadTestFile(filepath) {
