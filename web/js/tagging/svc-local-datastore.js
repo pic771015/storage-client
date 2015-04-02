@@ -2,9 +2,8 @@
 
 angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevision.storage.files", "risevision.storage.common"])
 .service("localDatastore",
-  ["LocalTagsConfigFiles", "LocalFiles", "$q", "$stateParams", "GAPIRequestService",
-   "FileListService", "SpinnerService",
-  function(LocalTagsConfigFiles, LocalFiles, $q, $stateParams, requestor, listSvc, spinnerSvc){
+  ["LocalTagsConfigFiles", "LocalFiles", "$q", "$stateParams", "GAPIRequestService", "FileListService", 
+  function(LocalTagsConfigFiles, LocalFiles, $q, $stateParams, requestor, listSvc){
     var svc = {};
     var ds = {fileTagEntries: [], tagConfigs: [], filesWithTags: []};
     svc.statusDetails = {code: 200};
@@ -19,34 +18,28 @@ angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevi
       return deferred.promise;
     };
 
+    // Force initial load
+    svc.refreshConfigTags();
+
     svc.loadLocalData = function(){
-      spinnerSvc.start();
-      svc.statusDetails.code = 202;
+      var deferred = $q.defer();
 
-      var code = 0;
-      var params = {companyId: $stateParams.companyId};
-      var fileTagListQuery = requestor.executeRequest("storage.files.listbytags", params).then(function(resp){
-        ds.fileTagEntries = (resp.files) ? svc.storageObjectsToFileTags(resp.files) : [];
-        code += resp.code;
-      });
-      var tagDefListQuery = svc.refreshConfigTags().then(function(resp){
-        code += resp.code;
-      });
+      svc.statusDetails.code = 200;
 
-      return $q.all([fileTagListQuery, tagDefListQuery]).then(function(){
-        spinnerSvc.stop();
+      // Tags are already being retrieved in files get call
+      ds.fileTagEntries = listSvc.filesDetails.files ? svc.storageObjectsToFileTags(listSvc.filesDetails.files) : [];
 
-        svc.statusDetails.code = (code === 400) ? 200 : 500;
-        ds.filesWithTags = angular.copy(listSvc.filesDetails.files);
-        ds.filesWithTags.forEach(function(i){
-          var filteredTagEntries = ds.fileTagEntries.filter(function(elem){
-            return elem.objectId === i.name;
-          });
-          i.tags = filteredTagEntries;
+      ds.filesWithTags = angular.copy(listSvc.filesDetails.files);
+      ds.filesWithTags.forEach(function(i){
+        var filteredTagEntries = ds.fileTagEntries.filter(function(elem){
+          return elem.objectId === i.name;
         });
-      }, function() {
-        spinnerSvc.stop();
+        i.tags = filteredTagEntries;
       });
+
+      deferred.resolve();
+
+      return deferred.promise;
     };
 
     svc.tagDefUpdate = function(oldName, newName, type, values){

@@ -96,10 +96,7 @@
       </div>
     </div>
   </div>
-  <div id="addTagSettings" ng-show="showAddView">
-    <div ng-include="'partials/tagging/edit-tag-setting.html'"></div>
-  </div>
-  <div id="editTagSettings" ng-show="showEditView">
+  <div id="editTagSettings" ng-show="showAddView || showEditView">
     <div ng-include="'partials/tagging/edit-tag-setting.html'"></div>
   </div>
 </div>
