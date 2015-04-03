@@ -9,6 +9,7 @@ locators = {
   "modalDialog": {"css": "div.modal-dialog"},
   "editLookup": {"css": "div[ng-click='editLookup()']"},
   "editFreeform": {"css": "div[ng-click='editFreeform()']"},
+  "tagTypeEditingModal": {"css": "div[ng-show='!showMainTagView']"},
   "editTimeline": {"css": "div[ng-click='editTimeline()']"},
   "clearAllTimelineTags": {"css": "button[ng-click='clearAllTimelineTags()']"},
   "selectedTagdef1Value1": {"css": "#selectedLookupTags div[title='tagdef1: value1']"},
@@ -36,7 +37,7 @@ module.exports = function(driver) {
   // Display edit lookup section to add a tag
   driver.findAndClickWhenVisible(locators.editLookup);
 
-  driver.wait(until.elementLocated({"css": "#selectedLookupTags"}), 2000, "wait until lookup window is loaded");
+  driver.wait(until.elementIsVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until lookup tag window is loaded");
 
   driver.findElements(locators.selectedTagdef1Value1).then(function(tags) {
     if(tags.length === 0) {
@@ -48,7 +49,7 @@ module.exports = function(driver) {
 
       driver.sleep(500);
       driver.findAndClickWhenVisible(locators.saveButton);
-      driver.wait(until.elementLocated(locators.editLookup), 2000, "edit lookup visible");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until lookup tag window is closed");
     }
   });
 
@@ -56,13 +57,13 @@ module.exports = function(driver) {
   // Display edit lookup section to remove a tag
   driver.findAndClickWhenVisible(locators.editLookup);
 
-  driver.wait(until.elementIsVisible(driver.findElement(locators.cancelButton)), 2000, "wait until lookup window is loaded");
+  driver.wait(until.elementIsVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until lookup tag window is loaded");
 
   driver.findElements(locators.selectedTagdef1Value1).then(function(tags) {
     if(tags.length === 1) {
       driver.findAndClickWhenVisible(locators.selectedTagdef1Value1);
       driver.findAndClickWhenVisible(locators.saveButton);
-      driver.wait(until.elementLocated(locators.editLookup), 2000, "edit lookup visible");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until lookup tag window is closed");
     } else {
       driver.findAndClickWhenVisible(locators.cancelButton);
     }
@@ -71,8 +72,8 @@ module.exports = function(driver) {
   // Display edit freeform section to add a freeform tag
   driver.logMessage("Section 3");
   driver.findAndClickWhenVisible(locators.editFreeform);
+  driver.wait(until.elementIsVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until freeform tag window is loaded");
 
-  driver.wait(until.elementLocated({"css": "#remove-all-freeform-tags-edit"}), 2000, "wait until freeform window is loaded");
 
   driver.findElements(locators.freeformPlaceholder).then(function(tags) {
     if(tags.length === 1) {
@@ -82,7 +83,7 @@ module.exports = function(driver) {
 
       driver.sleep(500);
       driver.findAndClickWhenVisible(locators.saveButton);
-      driver.wait(until.elementLocated(locators.editFreeform), 2000, "edit freeform visible");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until freeform tag window is closed");
     } else {
       driver.findAndClickWhenVisible(locators.cancelButton);
     }
@@ -92,7 +93,7 @@ module.exports = function(driver) {
   // Display edit timeline section
   driver.findAndClickWhenVisible(locators.editTimeline);
 
-  driver.wait(until.elementLocated({"css": ".timeline"}), 2000, "wait until timeline window is loaded");
+  driver.wait(until.elementIsVisible(driver.findElement(locators.tagTypeEditingModal)), 7000, "wait until timeline window is loaded");
 
   driver.findAndClickWhenVisible(locators.saveButton);
 
