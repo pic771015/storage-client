@@ -1,120 +1,33 @@
-<div>
-  <div class="app-header add-bottom add-top">
-    <div class="title-block">
-      <h1 translate="storage-client.header"></h1>
-      <div ng-controller="SubscriptionStatusController" class="store-status-2">
-      <div id="subscription-status" subscription-status
-           product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
-           ng-model="subscriptionStatus.result" show-store-modal="showStoreModal"></div>
+<div ng-controller="PublicReadController"></div>
+
+<div ng-controller="UploadController">
+  <div class="content-box" ng-show="uploader.queue.length > 0">
+    <div class="content-box-body">
+      <div ng-click="isCollapsed = !isCollapsed">
+        <p>
+          <strong translate="storage-client.upload-status"></strong>:
+          <span ng-show="activeUploadCount() === 1" translate="storage-client.uploading-one-file"></span>
+          <span ng-show="activeUploadCount() !== 1" translate="storage-client.uploading-count-files" translate-values="{ count: activeUploadCount() }"></span>
+          <span class="pull-right">
+            <i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isCollapsed]"></i>
+          </span>
+        </p>
+        <hr>
       </div>
-    </div>  
-    <div ng-controller="PublicReadController"></div>
-    <div class="global-actions" ng-controller="TopButtonsController">
-      <label for="file" class="btn btn-lg btn-primary" title="{{'storage-client.upload-file' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
-        <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>
-      </label>
-      <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
-        <i class="fa fa-plus fa-lg"></i> <span translate="storage-client.new-folder"></span>
-      </button>
-      <button type="button" title="select" ng-if="!storageFull" class="btn btn-success btn-lg hidden-sm hidden-md hidden-lg" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-          <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
-      </button>
-    </div>
-  </div>
-</div>
-
-<div>
-  <div class="input-group">
-    <span class="input-group-addon"><i class="fa fa-search"></i></span>
-    <input type="text" class="form-control" placeholder="Search for files or folders" ng-model="query">
-  </div>
-  
-  <div ng-controller="FilesButtonsController">
-  	<div class="bar-wrapper half-top" id="files-toolbar" ng-hide="fileListStatus.code === 404">
-  		<div class="bar">
-  			<div class="col-sm-4">
-          <span ng-class="filesDetails.checkedItemsCount > 0 ? 'hidden-xs' : ''">
-      			<span class="ellipsed current-folder current-folder-icon" ng-show="!isTrashFolder()"><i class="fa fa-folder fa-lg"></i> {{fileListStatus.folder}}</span>
-      			<span class="ellipsed current-folder current-folder-icon" ng-show="isTrashFolder()"><i class="fa fa-folder fa-lg"></i> Trash/{{fileListStatus.folder | trashItemFilter}}</span>
-          </span>
-  			</div>
-
-  			<div class="col-sm-8 text-right">
-          <span ng-show="filesDetails.checkedItemsCount > 0">
-            <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
-          </span>
-          <button type="button" title="select" ng-if="!storageFull" class="btn btn-success btn-lg hidden-xs" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
-            <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
-          </button>
-  				<button type="button" class="btn btn-link" title="Download" ng-click="downloadButtonClick()" ng-hide="!(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0) || filesDetails.localFiles === true"><i class="fa fa-cloud-download fa-2x"></i></button>
-          <button type="button" class="btn btn-link" title="Copy Url" ng-hide="isTrashFolder() || (filesDetails.checkedCount + filesDetails.folderCheckedCount === 0 || filesDetails.checkedCount + filesDetails.folderCheckedCount > 1) || filesDetails.localFiles === true" ng-click="copyUrlButtonClick('lg')"><i class="fa fa-link fa-2x"></i></button>
-  				<button type="button" class="btn btn-link" title="Move To Trash" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1) || filesDetails.localFiles === true"><i class="fa fa-trash-o fa-2x"></i></button>
-          <button type="button" class="btn btn-link" title="Restore From Trash" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-2x"></i><i class="fa fa-share"></i></button>
-  				<button type="button" class="btn btn-link" title="Delete"  ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-2x"></i></button>
-  			</div>
-  		</div>
-  	</div>
-
-    <div class="row" ng-show="pendingOperations.length > 0">
-      <div class="col-md-12">
-        <div class="panel panel-info">
-          <div class="panel-heading" ng-click="isPOCollapsed = !isPOCollapsed">
-            <h3 class="panel-title">
-              <span ng-hide="pendingOperations[0].actionFailed">{{'storage-client.pending-' + pendingOperations[0].action | translate}}...</span>
-              <span ng-hide="!pendingOperations[0].actionFailed">{{statusDetails.message}}</span>
-              <span class="pull-right"><i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isPOCollapsed]"></i></span>
-            </h3>
-          </div>
-          <div class="panel-body" ng-show="!isPOCollapsed">
-            <table class="table">
-              <tbody>
-                <tr ng-repeat="item in pendingOperations">
-                  <td ng-show="!item.actionFailed">{{'storage-client.pending-' + item.action | translate}}</td>
-                  <td ng-show="item.actionFailed">{{'storage-client.failed-' + item.action | translate}}</td>
-                  <td>{{item.name | trashItemFilter}}</td>
-                  <td>
-                    <span class="text-danger" ng-click="removePendingOperation(item)">
-                      <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div ng-show="!isCollapsed">
+        <div ng-repeat="item in uploader.queue">
+          <p>
+            {{item.file.name}}
+            <span class="text-muted add-left add-right"> {{ item.file.size|fileSizeFilter }}</span>
+            <a href="#" ng-click="removeItem(item)">
+              <span translate="common.lremove"></span>
+            </a>
+          </p>
+          <div class="progress inline-progress">
+            <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar"
+                 ng-style="{ 'width': item.progress + '%' }"></div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row" ng-controller="UploadController">
-  <div class="col-md-12">
-    <div class="panel panel-info" ng-show="uploader.queue.length > 0">
-      <div class="panel-heading" ng-click="isCollapsed = !isCollapsed">
-        <h3 class="panel-title"><span translate="storage-client.upload-status"></span>: {{status.message}} <span class="pull-right"> <i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isCollapsed]"></i></span></h3>
-      </div>
-      <div class="panel-body" ng-show="!isCollapsed">
-        <table class="table">
-          <tbody>
-            <tr ng-repeat="item in uploader.queue">
-              <td>{{item.file.name}}</td>
-              <td nowrap>{{ item.file.size|fileSizeFilter }}</td>
-              <td>
-                <span style="float: right" class="inline-cancel" ng-show="item.isUploading" ng-click="removeItem(item)">
-                  <i class="text-danger fa fa-times-circle-o cancel"></i>
-                </span>
-                <span class="text-danger" ng-show="!item.isUploading" ng-click="removeItem(item)">
-                  <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
-                </span>
-
-                <div class="progress inline-progress" ng-show="item.isUploading">
-                  <div class="progress-bar progress-bar-striped progress-bar-success active"
-                    role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>

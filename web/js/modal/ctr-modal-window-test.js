@@ -5,6 +5,17 @@ describe("ModalWindowController", function() {
   var ModalWindowController
      ,scope = {};
 
+  beforeEach(module(function ($provide) {
+    $provide.service("CoreClientService", function() {
+      var svc = {};
+      svc.getCompany = function() {
+        return new Q({ id: 1, name: "" });
+      };
+
+      return svc;
+    });
+  }));
+
   beforeEach(inject(function($controller) {
     ModalWindowController = $controller("ModalWindowController"
                                        ,{$scope: scope});

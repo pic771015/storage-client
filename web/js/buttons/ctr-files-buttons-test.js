@@ -8,28 +8,48 @@ describe("FilesButtonsController", function() {
   var invokedMethod = "";
   beforeEach(module("risevision.storage.buttons.files"));
 
-  beforeEach(inject(function ($controller, $rootScope, $injector, _FileListService_, _DownloadService_) {
+  beforeEach(module(function ($provide) {
+    $provide.service("$modal", function() {
+      return {
+        result: {
+          then: function(confirmCallback, cancelCallback) {
+            //Store the callbacks for later when the user clicks on the OK or Cancel button of the dialog
+            this.confirmCallBack = confirmCallback;
+            this.cancelCallback = cancelCallback;
+          }
+        },
+        close: function( item ) {
+          //The user clicked OK on the modal dialog, call the stored confirm callback with the selected item
+          this.result.confirmCallBack( item );
+        },
+        dismiss: function( type ) {
+          //The user clicked cancel on the modal dialog, call the stored cancel callback
+          this.result.cancelCallback( type );
+        }
+      };
+    });
+
+    $provide.service("GAPIRequestService", function() {
+      var svc = {};
+      svc.executeRequest = function(apiPath) {
+        invokedMethod = apiPath;
+
+        return {
+          then: function() {
+            return { code: 200, message: "" };
+          }
+        };
+      };
+
+      return svc;
+    });
+  }));
+
+  beforeEach(inject(function ($controller, $rootScope, _$modal_, $injector, _FileListService_, _DownloadService_) {
     var $httpBackend = $injector.get("$httpBackend");
     $httpBackend.whenGET(/\.*/).respond(200, {});
     FileListService = _FileListService_;
     DownloadService = _DownloadService_;
-
-    var GAPIRequestService = {};
-  
-    GAPIRequestService.executeRequest = function (apiPath) {
-      invokedMethod = apiPath;
-
-      return {
-      then: function() {
-        if(apiPath === "storage.files.get") {
-          return {code: 200, 
-            files: [{ "name": "test1", "size": 5 }, 
-                { "name": "test2", "size": 3 }]};
-        }
-        return { code: 200, message: "" };
-      }
-      };
-    };
 
     var modal = {};
 
@@ -73,7 +93,7 @@ describe("FilesButtonsController", function() {
     scope = $rootScope.$new();
 
     FilesButtonsController = $controller("FilesButtonsController", {
-      $scope: scope, $modal: modal, GAPIRequestService: GAPIRequestService,
+      $scope: scope, $modal: modal, 
         FileListService: FileListService, DownloadService: DownloadService, $translate: $translate });
     }));
 

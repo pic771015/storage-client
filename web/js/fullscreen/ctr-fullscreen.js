@@ -17,6 +17,8 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common", "r
     target: "_blank"
   }];
 
+  $scope.isCollapsed = true;
+  
   $scope.$on("risevision.user.authorized", function () {
     if(!$scope.userSignedIn) {
       spinnerSvc.start();
@@ -52,12 +54,14 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common", "r
         var filesPath = loc.match(/.*\/files\/.{36}\/(.*)/);
 
         filesPath = filesPath ? filesPath[1] : "";
+        var idxId = filesPath.indexOf("?cid=");
 
-        if(filesPath.indexOf("cid=") >= 0) {
+        if(idxId === 0) {
           $state.go("main.company-root", { companyId: companyId });
         }
         else {
-          $state.go("main.company-folders", { folderPath: filesPath, companyId: companyId });
+          $state.go("main.company-folders", { folderPath: filesPath.substr(0, idxId === -1 ? filesPath.length : idxId),
+                                              companyId: companyId });
         }
         
         $rootScope.$emit("storage-client:company-id-changed", companyId);

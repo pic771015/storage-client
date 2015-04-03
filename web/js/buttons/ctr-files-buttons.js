@@ -26,14 +26,18 @@ angular.module("risevision.storage.buttons.files", ["risevision.storage.gapi", "
 ])
 .controller("FilesButtonsController",
 ["$scope", "$rootScope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
- "GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", 
+ "GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API",
+ "FULLSCREEN", "SELECTOR_TYPE",
 function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN) {
+          STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN, SELECTOR_TYPE) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
 
   $scope.storageFull = FULLSCREEN;
   $scope.showCloseButton = !$scope.storageFull;
+  $scope.selectorType = SELECTOR_TYPE;
+  $scope.singleFileSelector = SELECTOR_TYPE === "single-file";
+  $scope.multipleFileSelector = SELECTOR_TYPE === "multiple-file";
 
   $scope.filesDetails = listSvc.filesDetails;
   $scope.fileListStatus = listSvc.statusDetails;
@@ -75,10 +79,34 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
       { folderPath: "--TRASH--/", companyId: $stateParams.companyId });
   };
 
-  $("#deleteForm").submit(function(event){
+  $("#deleteForm").submit(function(event) {
     event.preventDefault();
     $scope.deleteButtonClick();
   });
+
+  $scope.isDisabledDownloadButton = function() {
+    return !($scope.filesDetails.checkedCount > 0 && $scope.filesDetails.folderCheckedCount === 0) || $scope.filesDetails.localFiles === true;
+  };
+
+  $scope.isDisabledCopyUrlButton = function() {
+    return $scope.isTrashFolder() || 
+           ($scope.filesDetails.checkedCount + $scope.filesDetails.folderCheckedCount === 0 || 
+            $scope.filesDetails.checkedCount + $scope.filesDetails.folderCheckedCount > 1) ||
+           $scope.filesDetails.localFiles === true;
+  };
+
+  $scope.isDisabledTrashButton = function() {
+    return ($scope.filesDetails.checkedCount < 1 && $scope.filesDetails.folderCheckedCount < 1) ||
+           $scope.filesDetails.localFiles === true;
+  };
+
+  $scope.isDisabledRestoreButton = function() {
+    return ($scope.filesDetails.checkedCount < 1 && $scope.filesDetails.folderCheckedCount < 1);
+  };
+
+  $scope.isDisabledDeleteButton = function() {
+    return ($scope.filesDetails.checkedCount < 1 && $scope.filesDetails.folderCheckedCount < 1);
+  };
 
   $scope.downloadButtonClick = function() {
     listSvc.filesDetails.files.forEach(function(file) {
@@ -87,8 +115,8 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     downloadSvc.downloadFiles(getSelectedFiles(), bucketName, 100);
   };
 
-  $scope.deleteButtonClick = function(size) {
-    $scope.confirmDeleteFilesAction(size);
+  $scope.deleteButtonClick = function() {
+    $scope.confirmDeleteFilesAction();
   };
 
   $scope.trashButtonClick = function() {
@@ -115,6 +143,7 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
       fileUrls.push(copyUrl);
       data.params.push(copyUrl);
     });
+    console.log("Message posted to parent window", fileUrls);
     $window.parent.postMessage(fileUrls, "*");
     gadgets.rpc.call("", "rscmd_saveSettings", null, data);
   };
