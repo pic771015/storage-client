@@ -37,7 +37,6 @@ var driver = new webdriver.Builder()
   .build();
 
 var helpers = require("./bootstrap-helpers.js")(driver);
-driver.waitForObstructions = helpers.waitForObstructions;
 driver.logMessage = helpers.logMessage;
 driver.findAndClickWhenVisible = helpers.findAndClickWhenVisible;
 
@@ -49,7 +48,6 @@ driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
 });
 
 require("./storage-sign-in.js")(driver, args.LOCALCLIENT, args.LOCALSERVER, args.USER, args.PASSWORD);
-helpers.waitForObstructions();
 
 var filePaths = 
 [

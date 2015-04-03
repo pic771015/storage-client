@@ -17,9 +17,7 @@ locators = {
 
 module.exports = function(driver) {
   driver.get(rvaPresentationUrl);
-  driver.wait(until.elementLocated(locators.addPresentation), 15000, "rva open");
-  driver.waitForObstructions();
-  driver.findElement(locators.addPresentation).click();
+  driver.findAndClickWhenVisible(locators.addPresentation);
 
   driver.wait(until.elementLocated(locators.addPlaceholder), 15000, "placeholder");
   driver.findElement(locators.addPlaceholder).click();

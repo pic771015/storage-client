@@ -19,8 +19,8 @@ module.exports = function(driver) {
   driver.findElement(locators.fileInputElement).sendKeys(uploadFilePath);
   driver.wait(until.elementLocated(locators.fileRow), 9000, "file upload");
 
-  driver.findElement(locators.fileCheckbox).click();
-  driver.findElement(locators.downloadButton).click();
+  driver.findAndClickWhenVisible(locators.fileCheckbox);
+  driver.findAndClickWhenVisible(locators.downloadButton);
   driver.wait(function fileDownloadCheck() {
     try {
       openFileSync(downloadFilePath, "r");

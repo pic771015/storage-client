@@ -1,7 +1,8 @@
 "use strict";
 
 var fs = require("fs"),
-until = require("selenium-webdriver").until;
+until = require("selenium-webdriver").until,
+promise = require("selenium-webdriver").promise;
 
 module.exports = function(driver) {
   var obj = {};
@@ -19,27 +20,9 @@ module.exports = function(driver) {
     };
   };
 
-  obj.waitForObstructions = function waitForObstructions() {
-    var until = require("selenium-webdriver").until;
-
-    waitForObstruction({"css": "div.spinner-backdrop"}, "visibility");
-    waitForObstruction({"css": "div.modal-backdrop.fade"}, "staleness");
-
-    function waitForObstruction(selector, condition) {
-      var waitCond = until.elementIsNotVisible;
-      if (condition === "staleness") {waitCond = until.stalenessOf;}
-
-      driver.isElementPresent(selector)
-      .then(function(present) {
-        if (!present) {return;}
-        console.log("waiting for " + JSON.stringify(selector));
-        driver.findElements(selector).then(function(els) {
-          if (els.length > 0) {
-            driver.wait(waitCond(els[0]), 15000, "obstruction " + waitCond);
-          }
-        });
-      });
-    }
+  obj.includeTestFile = function loadTestFile(filepath) {
+    obj.logMessage(filepath);
+    require(filepath)(driver);
   };
 
   obj.logMessage = function logMessage(msg) {
@@ -47,21 +30,35 @@ module.exports = function(driver) {
   };
 
   obj.findAndClickWhenVisible = function findAndClickWhenVisible(selector) {
-    var logName = "findAndClickWhenVisible";
-    driver.wait(until.elementLocated(selector), 4000, logName + ":located " + JSON.stringify(selector));
-    driver.findElement(selector).then(function(el) {
-      driver.wait(until.elementIsVisible(el), 6000, logName + ":visible " + JSON.stringify(selector)).then(function() {
-        driver.wait(until.elementIsEnabled(el), 7000, logName + ":enabled " + JSON.stringify(selector));
-      }).then(function() {
-        el.click();
-      });
-    });
-  };
+    var deferUntilElementIsClickable = promise.defer();
 
-  obj.includeTestFile = function loadTestFile(filepath) {
-    obj.logMessage(filepath);
-    require(filepath)(driver);
-    obj.waitForObstructions();
+    driver.wait(until.elementsLocated(selector), 15000, "locate elements: " + JSON.stringify(selector))
+    .then(function() {
+      clickUntilSuccessful(selector);
+      return driver.wait(deferUntilElementIsClickable.promise, 9000, "clickable");
+    });
+
+    function clickUntilSuccessful(selector) {
+      promise.createFlow(function(flow) {
+        tryClicks(0);
+
+        function tryClicks(idx) {
+          flow.execute(function() {
+            driver.findElements(selector).then(function(els) {
+              if (idx === els.length) {idx = 0;}
+              console.log("clicking " + JSON.stringify(selector) + "[" + idx + "]");
+              return els[idx].click();
+            }).then(function clicked() {
+              deferUntilElementIsClickable.fulfill();
+            }, function failedToClick(e) {
+              console.log("failed to click: " + e.name);
+              flow.timeout(500);
+              tryClicks(idx + 1);
+            });
+          });
+        }
+      });
+    }
   };
 
   return obj;

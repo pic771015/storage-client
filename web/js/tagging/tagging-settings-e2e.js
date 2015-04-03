@@ -3,18 +3,32 @@
 var until = require("selenium-webdriver").until,
 
 locators = {
+  offCanvas: {css: "a[class*='navbar-brand'][off-canvas-toggle]"},
   tagConfiguration: { css: "a[ng-href*='displayTagConfigurationMain()']" },
   storageMain: { css: "a[ng-href*='displayStorageMain()']" },
   addTagsButton: { css: "button[ng-click='addTags()']" },
   tagdef1: { css: "div[title='tagdef1']" },
   tagdef2: { css: "div[title='tagdef2']" },
   freeform1: { css: "div[title='freeform1']" },
-  fileListItem: { css: "a[title='package.json']" }
+  fileListItem: { css: "a[title='package.json']" },
+  addTagMenu: { css: "#editTagSettings" }
 };
+
+function showOffCanvasMenuIfSmallScreen(driver) {
+  driver.call(function() {
+    driver.wait(until.elementLocated(locators.offCanvas), 1000, "off-canvas")
+    .then(function() {
+      driver.findElement(locators.offCanvas).click();
+    }).then(null, function(){
+      console.log("small screen off-canvas toggle not located");
+    });
+  });
+}
 
 module.exports = function(driver) {
   var fileListItem;
-  driver.findElement(locators.tagConfiguration).click();
+  showOffCanvasMenuIfSmallScreen(driver);
+  driver.findAndClickWhenVisible(locators.tagConfiguration);
   driver.wait(until.elementLocated(locators.addTagsButton), 5000, "add tag button");
 
   // Create a tag definition
@@ -26,13 +40,14 @@ module.exports = function(driver) {
 
     if(tagdefs.length === 0) {
       driver.findAndClickWhenVisible(locators.addTagsButton);
+      driver.wait(until.elementIsVisible(driver.findElement(locators.addTagMenu)), 4000, "add tag menu");
       
       driver.findElement(selectedTagName).sendKeys("tagdef1");
       driver.findElement(selectedTagValues).sendKeys("value1,value2,value3");
 
       driver.findAndClickWhenVisible(updateOrAddTag);
 
-      driver.wait(until.elementIsNotVisible(driver.findElement(updateOrAddTag)), 5000, "tag definition added");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 4000, "add tag menu");
       driver.wait(until.elementLocated(locators.tagdef1), 5000, "tag list definition refreshed");
     }
   });
@@ -46,14 +61,17 @@ module.exports = function(driver) {
 
     if(tagdefs.length === 0) {
       driver.findAndClickWhenVisible(locators.addTagsButton);
-      
+      driver.wait(until.elementIsVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
+      driver.logMessage("adding tag");
+
       driver.findElement(selectedTagName).sendKeys("tagdef2");
       driver.findElement(selectedTagValues).sendKeys("valuea,valueb,valuec");
+      driver.logMessage("added tagdef2");
 
       driver.findAndClickWhenVisible(updateOrAddTag);
 
-      driver.wait(until.elementIsNotVisible(driver.findElement(updateOrAddTag)), 5000, "tag definition added");
-      driver.wait(until.elementLocated(locators.tagdef2), 5000, "tag definition list refreshed");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
+      driver.wait(until.elementLocated(locators.tagdef2), 15000, "tag definition list refreshed");
     }
   });
 
@@ -66,8 +84,8 @@ module.exports = function(driver) {
     if(tagdefs.length === 1) {
       driver.findAndClickWhenVisible(locators.tagdef2);
 
-      driver.wait(until.elementLocated(selectedTagValues), 5000, "tag definition clicked");
       driver.wait(until.elementIsVisible(driver.findElement(locators.addTagMenu)), 5000, "tag definition clicked");
+      driver.logMessage("addTagMenu is visible");
 
       driver.findElement(selectedTagValues).getAttribute("value").then(function(value) {
         value = value.indexOf("valued") === -1 ? "valuea,valueb,valuec,valued" : "valuea,valueb,valuec";
@@ -77,7 +95,7 @@ module.exports = function(driver) {
 
         driver.findAndClickWhenVisible(updateOrAddTag);
 
-        driver.wait(until.elementIsNotVisible(driver.findElement(updateOrAddTag)), 5000, "tag definition updated");
+        driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
         driver.wait(until.elementLocated(locators.tagdef2), 5000, "tag definition list refreshed");
       });
     }
@@ -92,13 +110,11 @@ module.exports = function(driver) {
     if(tagdefs.length === 1) {
       driver.findAndClickWhenVisible(locators.tagdef2);
 
-      driver.wait(until.elementLocated(openConfirm), 4000, "tag definition clicked");
       driver.findAndClickWhenVisible(openConfirm);
 
-      driver.wait(until.elementLocated(okButton), 5000, "tag definition clicked");
       driver.findAndClickWhenVisible(okButton);
 
-      driver.wait(until.elementLocated(locators.tagdef1), 6000, "tag definition refreshed");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
       driver.wait(until.stalenessOf(tagdefs[0]), 7000, "tag definition deleted");
     }
   });
@@ -118,12 +134,13 @@ module.exports = function(driver) {
 
       driver.findAndClickWhenVisible(updateOrAddTag);
 
-      driver.wait(until.elementIsNotVisible(driver.findElement(updateOrAddTag)), 5000, "tag definition added");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
       driver.wait(until.elementLocated(locators.freeform1), 5000, "tag definition list refreshed");
     }
   });
 
   driver.logMessage("Section 6");
+  showOffCanvasMenuIfSmallScreen(driver);
   driver.findAndClickWhenVisible(locators.storageMain);
   driver.wait(until.elementLocated(locators.fileListItem), 12000, "file listing");
   fileListItem = driver.findElement(locators.fileListItem);
