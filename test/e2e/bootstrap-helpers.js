@@ -46,10 +46,11 @@ module.exports = function(driver) {
   };
 
   obj.findAndClickWhenVisible = function findAndClickWhenVisible(selector) {
-    driver.wait(until.elementLocated(selector), 4000, JSON.stringify(selector));
+    var logName = "findAndClickWhenVisible";
+    driver.wait(until.elementLocated(selector), 4000, logName + ":located " + JSON.stringify(selector));
     driver.findElement(selector).then(function(el) {
-      driver.wait(until.elementIsVisible(el), 6000, JSON.stringify(selector)).then(function() {
-        driver.wait(until.elementIsEnabled(el), 7000, JSON.stringify(selector));
+      driver.wait(until.elementIsVisible(el), 6000, logName + ":visible " + JSON.stringify(selector)).then(function() {
+        driver.wait(until.elementIsEnabled(el), 7000, logName + ":enabled " + JSON.stringify(selector));
       }).then(function() {
         el.click();
       });

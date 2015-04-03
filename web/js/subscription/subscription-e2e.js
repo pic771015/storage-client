@@ -36,11 +36,11 @@ module.exports = function(driver) {
   driver.wait(until.elementLocated(locators.setCompany), 9000, "company listing");
   driver.findElement(locators.setCompany).click();
 
-  driver.wait(until.elementLocated(locators.trial), 5000, "free trial");
+  driver.wait(until.elementLocated(locators.trial), 15000, "free trial");
 
-  driver.wait(until.elementLocated(locators.homeCompany), 5000, "home company");
+  driver.wait(until.elementLocated(locators.homeCompany), 15000, "home company");
   driver.findElement(locators.homeCompany).click();
 
-  driver.wait(until.elementLocated(locators.subs), 5000, "again subscribed");
+  driver.wait(until.elementLocated(locators.subs), 15000, "again subscribed");
 };
 
