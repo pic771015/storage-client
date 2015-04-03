@@ -20,8 +20,7 @@ module.exports = function(driver) {
   };
 
   obj.waitForObstructions = function waitForObstructions() {
-    var until = require("selenium-webdriver").until,
-    obstruction;
+    var until = require("selenium-webdriver").until;
 
     waitForObstruction({"css": "div.spinner-backdrop"}, "visibility");
     waitForObstruction({"css": "div.modal-backdrop.fade"}, "staleness");
@@ -34,9 +33,11 @@ module.exports = function(driver) {
       .then(function(present) {
         if (!present) {return;}
         console.log("waiting for " + JSON.stringify(selector));
-
-        obstruction = driver.findElement(selector);
-        driver.wait(waitCond(obstruction), 15000, "obstruction " + waitCond);
+        driver.findElements(selector).then(function(els) {
+          if (els.length > 0) {
+            driver.wait(waitCond(els[0]), 15000, "obstruction " + waitCond);
+          }
+        });
       });
     }
   };
