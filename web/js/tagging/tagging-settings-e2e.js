@@ -93,14 +93,14 @@ module.exports = function(driver) {
     if(tagdefs.length === 1) {
       driver.findAndClickWhenVisible(locators.tagdef2);
 
-      driver.wait(until.elementLocated(openConfirm), 5000, "tag definition clicked");
+      driver.wait(until.elementLocated(openConfirm), 4000, "tag definition clicked");
       driver.findAndClickWhenVisible(openConfirm);
 
       driver.wait(until.elementLocated(okButton), 5000, "tag definition clicked");
       driver.findAndClickWhenVisible(okButton);
 
-      driver.wait(until.elementLocated(locators.tagdef1), 5000, "tag definition refreshed");
-      driver.wait(until.stalenessOf(tagdefs[0]), 5000, "tag definition deleted");
+      driver.wait(until.elementLocated(locators.tagdef1), 6000, "tag definition refreshed");
+      driver.wait(until.stalenessOf(tagdefs[0]), 7000, "tag definition deleted");
     }
   });
 
@@ -125,7 +125,8 @@ module.exports = function(driver) {
   });
 
   driver.logMessage("Section 6");
-  driver.findElement(locators.storageMain).click();
+  driver.findAndClickWhenVisible(locators.storageMain);
+  driver.wait(until.elementLocated(locators.fileListItem), 12000, "file listing");
   fileListItem = driver.findElement(locators.fileListItem);
   driver.wait(until.elementIsVisible(fileListItem), 5000, "file item");
 };

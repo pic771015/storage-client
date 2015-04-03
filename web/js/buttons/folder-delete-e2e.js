@@ -12,15 +12,10 @@ locators = {
 
 module.exports = function(driver) {
   var pendingOps = driver.findElement(locators.pendingOps);
-  var confirmButton;
 
-  driver.findElement(locators.folderCheckbox).click();
-  driver.findElement(locators.deleteButton).click();
-  driver.wait(until.elementLocated(locators.confirmButton), 9000, "modal open");
-  confirmButton = driver.findElement(locators.confirmButton);
-
-  driver.wait(until.elementIsVisible(confirmButton), 9000, "visible button");
-  confirmButton.click();
+  driver.findAndClickWhenVisible(locators.folderCheckbox);
+  driver.findAndClickWhenVisible(locators.deleteButton);
+  driver.findAndClickWhenVisible(locators.confirmButton);
 
   driver.wait(until.elementIsVisible(pendingOps), 9000, "deleting");
   driver.wait(until.elementIsNotVisible(pendingOps), 9000, "deleted");

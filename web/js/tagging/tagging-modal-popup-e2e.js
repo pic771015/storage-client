@@ -19,8 +19,7 @@ locators = {
 };
 
 module.exports = function(driver) {
-  var taggingModal
-  ,editLookup;
+  var taggingModal;
 
   // Select first available file
   driver.findElement(locators.fileCheckbox).click();
@@ -35,9 +34,7 @@ module.exports = function(driver) {
   driver.wait(until.elementIsVisible(driver.findElement(locators.taggingModalCancel)), 1000, "modal cancel button");
 
   // Display edit lookup section to add a tag
-  editLookup = driver.findElement(locators.editLookup);
-  driver.wait(until.elementIsVisible(editLookup), 2000, "edit lookup");
-  editLookup.click();
+  driver.findAndClickWhenVisible(locators.editLookup);
 
   driver.wait(until.elementLocated({"css": "#selectedLookupTags"}), 2000, "wait until lookup window is loaded");
 

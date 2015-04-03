@@ -15,8 +15,7 @@ module.exports = function(driver) {
   driver.wait(until.elementLocated(elementLocators.dialog), 1000, "new folder dialog");
 
   driver.findElement(elementLocators.newFolderInput).sendKeys("test-folder");
-  driver.findElement(elementLocators.ok).click();
+  driver.findAndClickWhenVisible(elementLocators.ok);
 
-  driver.wait(until.elementLocated(elementLocators.testFolder), 5000, "folder found");
-  driver.logMessage("folder created");
+  driver.wait(until.elementLocated(elementLocators.testFolder), 9000, "folder found");
 };
