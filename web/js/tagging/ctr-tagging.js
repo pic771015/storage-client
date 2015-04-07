@@ -33,6 +33,18 @@ angular.module("risevision.storage.tagging")
   $scope.showLookupEditView = false;
   $scope.showFreeformEditView = false;
   $scope.showTimelineEditView = false;
+
+  $scope.hstep = 1;
+  $scope.mstep = 15;
+  $scope.ismeridian = true;
+  $scope.dateFormat = "dd-MMM-yyyy";
+  $scope.dateOptions = {
+    formatYear: "yy",
+    formatMonth: "MMM",
+    startingDay: 1,
+    showWeeks:"false"
+  };
+
   $scope.clearTimeline = function(){
     $scope.selectedTimeline = {
       duration: 60,
@@ -43,11 +55,12 @@ angular.module("risevision.storage.tagging")
       endDate: null,
       startTime: null,
       endTime: null,
-      setTime: "true",
-      setDate: "true",
+      setTime: "false",
+      setDate: "false",
       timelineRecurrence: "false"
     };
   };
+
   $scope.loadExistingTimeline = function(){
     $scope.timelineTagObj = {
       duration: taggingSvc.tagGroups.timelineTag.values[0].duration,
@@ -58,11 +71,13 @@ angular.module("risevision.storage.tagging")
       endDate: taggingSvc.tagDateStringToDate(taggingSvc.tagGroups.timelineTag.values[0].endDate),
       startTime: taggingSvc.tagTimeStringToDate(taggingSvc.tagGroups.timelineTag.values[0].startTime),
       endTime: taggingSvc.tagTimeStringToDate(taggingSvc.tagGroups.timelineTag.values[0].endTime),
-      setTime: (taggingSvc.tagTimeStringToDate(taggingSvc.tagGroups.timelineTag.values[0].startTime) === null) ? "true" : "false",
-      setDate: (taggingSvc.tagDateStringToDate(taggingSvc.tagGroups.timelineTag.values[0].startDate) === null) ? "true" : "false",
       timelineRecurrence: (taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions === undefined || taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions === null ||
       taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions === "null") ? "false" : "true"
     };
+
+    $scope.timelineTagObj.setDate = $scope.timelineTagObj.startDate ? "true" : "false";
+    $scope.timelineTagObj.setTime = $scope.timelineTagObj.startTime ? "true" : "false";
+
     if (taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions !== undefined &&
       taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions !== null &&
       taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions !== "null") {
@@ -76,9 +91,6 @@ angular.module("risevision.storage.tagging")
       $scope.timelineTagObj.daySelection  = taggingSvc.tagGroups.timelineTag.values[0].recurrenceOptions.recurrenceDaysOfWeek;
     }
   };
-
-
-
 
   $scope.minDate = new Date();
 
@@ -114,7 +126,7 @@ angular.module("risevision.storage.tagging")
   };
 
   $scope.initDates = function() {
-    if($scope.selectedTimeline.startDate === undefined || $scope.selectedTimeline.startDate === null){
+    if($scope.selectedTimeline.setDate === "true" && ($scope.selectedTimeline.startDate === undefined || $scope.selectedTimeline.startDate === null)){
       $scope.selectedTimeline.startDate = new Date();
     } else {
       $scope.selectedTimeline.startDate = null;
@@ -123,7 +135,7 @@ angular.module("risevision.storage.tagging")
   };
 
   $scope.initTimes = function() {
-    if($scope.selectedTimeline.startTime === undefined || $scope.selectedTimeline.startTime === null){
+    if($scope.selectedTimeline.setTime === "true" && ($scope.selectedTimeline.startTime === undefined || $scope.selectedTimeline.startTime === null)){
       var startT = new Date();
       var endT = new Date();
       startT.setHours(8);
@@ -158,24 +170,9 @@ angular.module("risevision.storage.tagging")
     $scope[opened] = true;
   };
 
-  $scope.dateOptions = {
-    formatYear: "yy",
-    formatMonth: "MMM",
-    startingDay: 1,
-    showWeeks:"false"
-  };
-
-  $scope.dateFormat = "dd-MMM-yyyy";
-
-  $scope.hstep = 1;
-  $scope.mstep = 15;
-
-
-  $scope.ismeridian = true;
   $scope.toggleMode = function() {
     $scope.ismeridian = ! $scope.ismeridian;
   };
-
 
   $scope.addToSelectedLookupTag = function(tag){
     taggingSvc.addToSelectedLookupTag(tag);
@@ -368,6 +365,7 @@ angular.module("risevision.storage.tagging")
 
   $scope.editTimeline = function(){
     $scope.waitForResponse = false;
+
     if(taggingSvc.tagGroups.timelineTag === undefined || taggingSvc.tagGroups.timelineTag === null){
       $scope.clearTimeline();
     } else{

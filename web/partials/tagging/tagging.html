@@ -70,8 +70,8 @@
       </div>
       <section>
         <label class="control-label half-bottom" for="everyday">
-          <input type="checkbox" ng-model="selectedTimeline.setDate" ng-true-value="true" ng-false-value="false" name="everyday" ng-click="initDates()"> <strong>Every Day</strong></label>
-        <div class="form-group row" ng-hide="selectedTimeline.setDate === 'true'">
+          <input type="checkbox" ng-model="selectedTimeline.setDate" ng-true-value="'false'" ng-false-value="'true'" name="everyday" ng-click="initDates()"> <strong>Every Day</strong></label>
+        <div class="form-group row" ng-show="selectedTimeline.setDate === 'true'">
           <div class="col-sm-4">
             <label class="control-label">Start Date</label>
             <div class="form-group">
@@ -95,7 +95,7 @@
             </div>
           </div><!--col-sm-6-->
           <div class="col-sm-12" ng-hide="selectedTimeline.endDate == null">
-            <label class="control-label" ><input type="checkbox" ng-true-value="true" ng-false-value="false" ng-model="selectedTimeline.trash"> Move file to Trash after End Date</label>
+            <label class="control-label"><input type="checkbox" ng-true-value="'true'" ng-false-value="'false'" ng-model="selectedTimeline.trash"> Move file to Trash after End Date</label>
           </div>
         </div><!--row-->
         <div class="alert alert-danger" ng-show="selectedTimeline.setDate === 'false' &&
@@ -107,8 +107,8 @@
       </section>
       <section>
         <label class="control-label half-bottom" for="allDay">
-          <input type="checkbox" ng-model="selectedTimeline.setTime" ng-true-value="true" ng-false-value="false" name="allDay" ng-click="initTimes()"> <strong>All Day</strong></label>
-        <div class="row form-group" ng-hide="selectedTimeline.setTime === 'true'">
+          <input type="checkbox" ng-model="selectedTimeline.setTime" ng-true-value="'false'" ng-false-value="'true'" name="allDay" ng-click="initTimes()"> <strong>All Day</strong></label>
+        <div class="row form-group" ng-show="selectedTimeline.setTime === 'true'">
           <div class="col-sm-4">
             <label class="control-label">Start Time</label>
             <div class="time-picker">
@@ -134,19 +134,18 @@
                  ng-model="selectedTimeline.pud"
                  value="{{duration.value}}"
                  id="{{duration.value}}"
-                 name="time"
-                 ng-click="switchPUD()">
+                 name="time">
             {{duration.text}}
           </label>
         </div>
         <div class="form-group">
           <input ng-model="selectedTimeline.duration" type="text" class="form-control" style="width:80px" value="60" ng-disabled="selectedTimeline.pud === 'true'" ng-required="editTimelineTagView">
-          <label class="control-label half-top"><input type="checkbox" ng-model="selectedTimeline.carryon" ng-true-value="true" ng-false-value="false"> Carry On</label>
+          <label class="control-label half-top"><input type="checkbox" ng-model="selectedTimeline.carryon" ng-true-value="'true'" ng-false-value="'false'"> Carry On</label>
         </div>
       </section>
       <section>
         <label class="control-label half-bottom" for="everyday">
-          <input type="checkbox" ng-model="selectedTimeline.timelineRecurrence" name="recurrence" ng-true-value="true" ng-false-value="false" ng-click="defaultRecurrence()"> <strong>Recurrence</strong></label>
+          <input type="checkbox" ng-model="selectedTimeline.timelineRecurrence" name="recurrence" ng-true-value="'true'" ng-false-value="'false'" ng-click="defaultRecurrence()"> <strong>Recurrence</strong></label>
         <div ng-show="selectedTimeline.timelineRecurrence === 'true'">
           <div class="form-group">
             <label ng-repeat="name in names" for="{{name.toLowerCase()}}" class="add-right control-label">
@@ -247,12 +246,12 @@
     <br>
     <div class="button-wrapper text-right" ng-show="!showMainTagView">
       <button class="btn btn-primary btn-fixed-width" ng-disabled="accessDenied || (invalidLookupTag && showLookupEditView) || (changedLookup && showLookupEditView) ||
-      (selectedTimeline.setDate === 'false' &&
-        (selectedTimeline.startDate.getMonth() > selectedTimeline.endDate.getMonth() ||
-        selectedTimeline.startDate.getFullYear() > selectedTimeline.endDate.getFullYear() ||
-        selectedTimeline.startDate.getDate() > selectedTimeline.endDate.getDate()) && showTimelineEditView) ||
-        (selectedTimeline.setTime === 'false' && selectedTimeline.startTime > selectedTimeline.endTime && showTimelineEditView) ||
-      (!selectedTimeline.startDate && selectedTimeline.setDate === 'false') || !timelineForm.$valid || waitForResponse" ng-click="saveChangesFromView()">Apply <i class="fa fa-check"></i></button>
+        (selectedTimeline.setDate === 'true' &&
+          (selectedTimeline.startDate.getMonth() > selectedTimeline.endDate.getMonth() ||
+           selectedTimeline.startDate.getFullYear() > selectedTimeline.endDate.getFullYear() ||
+           selectedTimeline.startDate.getDate() > selectedTimeline.endDate.getDate()) && showTimelineEditView) ||
+        (selectedTimeline.setTime === 'true' && selectedTimeline.startTime > selectedTimeline.endTime && showTimelineEditView) ||
+        (!selectedTimeline.startDate && selectedTimeline.setDate === 'true') || waitForResponse" ng-click="saveChangesFromView()">Apply <i class="fa fa-check"></i></button>
       <button class="btn btn-default btn-fixed-width" ng-disabled="waitForResponse"  ng-click="resetView()">Cancel <i class="fa fa-times"></i></button>
     </div>
   </div>

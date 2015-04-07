@@ -271,7 +271,7 @@ angular.module("risevision.storage.tagging")
         carryon: timelineObj.carryon
       };
 
-      if(timelineObj.setDate === "false"){
+      if(timelineObj.setDate === true || timelineObj.setDate === "true"){
         var startDateInData = (timelineObj.startDate) ? $filter("date")(timelineObj.startDate, "MM/dd/yy") + " 12:00 AM" : null;
         var endDateInData = (timelineObj.endDate) ? $filter("date")(timelineObj.endDate, "MM/dd/yy") + " 12:00 AM" : null;
         svc.selected.timelineTag.startDate = startDateInData;
@@ -281,7 +281,7 @@ angular.module("risevision.storage.tagging")
         svc.selected.timelineTag.endDate = null;
       }
 
-      if(timelineObj.setTime === "false"){
+      if(timelineObj.setTime === true || timelineObj.setTime === "true"){
         var startTimeInData = (timelineObj.startTime) ? $filter("date")(timelineObj.startTime, "h:mm a") : null;
         var endTimeInData = (timelineObj.endTime) ? $filter("date")(timelineObj.endTime, "h:mm a") : null;
         svc.selected.timelineTag.startTime = startTimeInData;
