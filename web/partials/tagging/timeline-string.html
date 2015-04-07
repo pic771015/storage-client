@@ -1,11 +1,11 @@
-<span ng-hide="ngModel.setDate === 'false'">Every Day</span>
+<span ng-show="ngModel.setDate === 'false'">Every Day</span>
 
-<span ng-hide="ngModel.setDate === 'true'">
-    <span>Start {{ngModel.startDate | date:'dd-MMM-yyyy' }}</span> <span>End {{ngModel.endDate | date:'dd-MMM-yyyy' }}</span>
+<span ng-show="ngModel.setDate === 'true'">
+    <span>Start {{ngModel.startDate | date:'dd-MMM-yyyy' }}</span> <span ng-show="ngModel.endDate !== null">End {{ngModel.endDate | date:'dd-MMM-yyyy' }}</span>
 </span>
-<span ng-show="ngModel.trash === 'true' && ngModel.setDate === 'false'">Move to Trash</span>
-<span ng-hide="ngModel.setTime === 'false'">All Day</span>
-<span ng-hide="ngModel.setTime === 'true'">
+<span ng-show="ngModel.trash === 'true' && ngModel.setDate === 'true'">Move to Trash</span>
+<span ng-show="ngModel.setTime === 'false'">All Day</span>
+<span ng-show="ngModel.setTime === 'true'">
     <span>{{ngModel.startTime | date:'shortTime' }}</span><span> to </span> <span>{{ngModel.endTime | date:'shortTime' }}</span>
 </span>
 <span ng-hide="ngModel.pud == 'true'" ng-bind="ngModel.duration + ' Seconds'"></span>
