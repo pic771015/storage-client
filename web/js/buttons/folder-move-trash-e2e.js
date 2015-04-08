@@ -15,8 +15,8 @@ module.exports = function(driver) {
 
   driver.findElement(locators.folderCheckbox).click();
   driver.findElement(locators.trashButton).click();
-  driver.wait(until.elementIsVisible(pendingOps), 9000, "trashing folder");
-  driver.wait(until.elementIsNotVisible(pendingOps), 9000, "folder trashed");
+  driver.wait(until.elementIsVisible(pendingOps), 18000, "trashing folder");
+  driver.wait(until.elementIsNotVisible(pendingOps), 17000, "folder trashed");
   driver.findElement(locators.trashFolder).click();
-  driver.wait(until.elementLocated(locators.folderItem), 9000, "folder in trash");
+  driver.wait(until.elementLocated(locators.folderItem), 5000, "folder in trash");
 };
