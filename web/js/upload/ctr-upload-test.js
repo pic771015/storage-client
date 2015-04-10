@@ -63,6 +63,12 @@ describe("UploadController", function() {
           }
         };
 
+        var localDatastore = {
+          addFileWithTags: function() {
+
+          }
+        };
+
         var $translate = function(key) {
           return {
             then: function(cb) {
@@ -84,7 +90,8 @@ describe("UploadController", function() {
 
         UploadController = $controller("UploadController", {
             $scope: scope, $rootScope: $rootScope, $stateParams: $stateParams,
-            FileUploader: FileUploader, UploadURIService: UploadURIService, FileListService: FileListService,
+            FileUploader: FileUploader, UploadURIService: UploadURIService,
+            FileListService: FileListService, localDatastore: localDatastore,
             $translate: $translate, STORAGE_UPLOAD_CHUNK_SIZE: 1024 });
       });
     });

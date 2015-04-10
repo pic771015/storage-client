@@ -42,6 +42,10 @@ angular.module("risevision.storage.tagging", ["risevision.storage.gapi", "risevi
       return deferred.promise;
     };
 
+    svc.addFileWithTags = function(file) {
+      ds.filesWithTags.push(file);
+    };
+
     svc.tagDefUpdate = function(oldName, newName, type, values){
 
       var tagDefToAdd = (type === "LOOKUP") ? {
