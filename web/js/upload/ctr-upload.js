@@ -2,8 +2,9 @@
 
 angular.module("risevision.storage.upload")
 .controller("UploadController",
-["$scope", "$rootScope", "$stateParams", "FileUploader", "UploadURIService", "FileListService", "$translate", "STORAGE_UPLOAD_CHUNK_SIZE",
-function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $translate, chunkSize) {
+["$scope", "$rootScope", "$stateParams", "FileUploader", "UploadURIService", "FileListService", "localDatastore", 
+ "$translate", "STORAGE_UPLOAD_CHUNK_SIZE",
+function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, localDatastore, $translate, chunkSize) {
   $scope.uploader = uploader;
   $scope.status = {};
 
@@ -53,12 +54,16 @@ function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $transla
       return;
     }
 
-    filesSvc.addFile(
-      {"name": item.file.name
-      ,"updated": {"value": new Date().valueOf().toString()}
-      ,"size": item.file.size
-      ,"type": item.file.type}
-    );
+    var file = {
+      "name": item.file.name,
+      "updated": {"value": new Date().valueOf().toString()},
+      "size": item.file.size,
+      "type": item.file.type,
+      "tags": []
+    };
+
+    filesSvc.addFile(file);
+    localDatastore.addFileWithTags(file);
 
     uploader.removeFromQueue(item);
   };
