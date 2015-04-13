@@ -22,7 +22,7 @@ angular.module("risevision.storage.tagging")
       $scope.selectedValues = $scope.selectedTag.values;
       $scope.showAddView = false;
       $scope.showEditView = false;
-      $scope.showMainView = true;
+      $scope.showMainView = false;
       $scope.oldNameOfTag = "";
       $scope.oldValuesOfTag = "";
       $scope.duplicates = false;

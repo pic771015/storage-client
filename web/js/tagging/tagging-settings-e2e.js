@@ -45,13 +45,11 @@ module.exports = function(driver) {
     var selectedTagValues = { css: "#editTagSettings input[ng-model='selectedTag.values']" };
 
     if(tagdefs.length === 0) {
-      driver.sleep(500);
       driver.findAndClickWhenVisible(locators.addTagsButton);
       
       driver.findElement(selectedTagName).sendKeys("tagdef2");
       driver.findElement(selectedTagValues).sendKeys("valuea,valueb,valuec");
 
-      driver.sleep(500);
       driver.findAndClickWhenVisible(updateOrAddTag);
 
       driver.wait(until.elementIsNotVisible(driver.findElement(updateOrAddTag)), 5000, "tag definition added");
@@ -69,6 +67,7 @@ module.exports = function(driver) {
       driver.findAndClickWhenVisible(locators.tagdef2);
 
       driver.wait(until.elementLocated(selectedTagValues), 5000, "tag definition clicked");
+      driver.wait(until.elementIsVisible(driver.findElement(locators.addTagMenu)), 5000, "tag definition clicked");
 
       driver.findElement(selectedTagValues).getAttribute("value").then(function(value) {
         value = value.indexOf("valued") === -1 ? "valuea,valueb,valuec,valued" : "valuea,valueb,valuec";
