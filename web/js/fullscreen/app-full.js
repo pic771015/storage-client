@@ -22,7 +22,8 @@ angular.module("risevision.storage", [
   "risevision.storage.subscription",
   "risevision.storage.tagging",
   "risevision.storage.throttle",
-  "risevision.storage.upload"
+  "risevision.storage.upload",
+  "risevision.storage.publicread"
 ]);
 
 angular.module("risevision.storage")
