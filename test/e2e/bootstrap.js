@@ -48,11 +48,12 @@ driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   driver.quit().then(function() {process.exit(1);});
 });
 
-require("./storage-sign-in.js")(driver, args.LOCAL, args.USER, args.PASSWORD);
+require("./storage-sign-in.js")(driver, args.LOCALCLIENT, args.LOCALSERVER, args.USER, args.PASSWORD);
 helpers.waitForObstructions();
 
 var filePaths = 
 [
+"../../web/js/publicread/public-read-it.js",
 "../../web/js/subscription/subscription-e2e.js",
 "../../web/js/buttons/folder-create-e2e.js",
 "./upload-download.js",
