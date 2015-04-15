@@ -21,7 +21,7 @@ if(isWindows) {
   }
 }
 else {
-  chromeOptions.setChromeBinaryPath("/usr/bin/chromium");
+  chromeOptions.setChromeBinaryPath("/usr/bin/google-chrome");
 }
 chromeOptions.addArguments("--disable-web-security");
 chromeOptions.setUserPreferences(
