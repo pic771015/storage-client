@@ -2,7 +2,7 @@
 
 var until = require("selenium-webdriver").until;
 
-module.exports = function(driver, LOCAL, USER, PASSWORD) {
+module.exports = function(driver, LOCALCLIENT, LOCALSERVER, USER, PASSWORD) {
   var url = "http://storage.risevision.com",
   signInLocator = {"css": "button.sign-in"},
   spinnerLocator = {"css": "div.spinner-backdrop"},
@@ -13,12 +13,16 @@ module.exports = function(driver, LOCAL, USER, PASSWORD) {
   localApproveLocator = {"id": "submit_approve_access"},
   trashFileLocator = {"css": "a[title='Trash']"};
 
-  if (LOCAL) {
+  if (LOCALSERVER) {
     driver.get("localhost:8888/_ah/login");
     driver.findElement({"id": "email"}).clear();
     driver.findElement({"id": "email"}).sendKeys(USER);
     driver.findElement({"css": "label[for='isAdmin']"}).click();
     driver.findElement({"id": "btn-login"}).click();
+    LOCALCLIENT = true;
+  }
+
+  if (LOCALCLIENT) {
     url = "localhost:8000";
   }
 
@@ -34,7 +38,7 @@ module.exports = function(driver, LOCAL, USER, PASSWORD) {
   driver.findElement(passwordLocator).sendKeys(PASSWORD);
   driver.findElement(googleSignInLocator).click();
 
-  if (LOCAL) {
+  if (LOCALCLIENT) {
     driver.wait(until.elementLocated(localApproveLocator), 4000, "approve");
     driver.wait(until.elementIsEnabled(driver.findElement(localApproveLocator)), 4000);
     driver.findElement(localApproveLocator).click();

@@ -8,6 +8,7 @@
            ng-model="subscriptionStatus.result" show-store-modal="showStoreModal"></div>
       </div>
     </div>  
+    <div ng-controller="PublicReadController"></div>
     <div class="global-actions" ng-controller="TopButtonsController">
       <label for="file" class="btn btn-lg btn-primary" title="{{'storage-client.upload-file' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
         <i class="fa fa-cloud-upload fa-lg"></i> <span translate="storage-client.upload-file"></span>

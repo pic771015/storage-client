@@ -1,9 +1,10 @@
 /*global process */
 "use strict";
 
-var LOCAL, USER, PASSWORD;
+var LOCALCLIENT, LOCALSERVER, USER, PASSWORD;
 
-LOCAL = process.argv.some(function(el) {return el === "--local";});
+LOCALCLIENT = process.argv.some(function(el) {return el === "--local-client";});
+LOCALSERVER = process.argv.some(function(el) {return el === "--local-server";});
 
 USER = process.argv.filter(function(el) {
   return el.indexOf("--user") === 0;
@@ -28,4 +29,5 @@ USER = USER.split("=")[1];
 
 exports.PASSWORD = PASSWORD;
 exports.USER = USER;
-exports.LOCAL = LOCAL;
+exports.LOCALCLIENT = LOCALCLIENT;
+exports.LOCALSERVER = LOCALSERVER;
