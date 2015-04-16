@@ -2,7 +2,6 @@
 "use strict";
 
 var webdriver = require("selenium-webdriver"),
-    phantom = require("selenium-webdriver/phantomjs"),
     UNCAUGHT_EXCEPTION = webdriver.promise.ControlFlow.EventType.UNCAUGHT_EXCEPTION;
 
 var driver = new webdriver.Builder()

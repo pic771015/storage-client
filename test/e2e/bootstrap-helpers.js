@@ -34,7 +34,7 @@ module.exports = function(driver) {
     driver.wait(until.elementLocated(spinnerLocator), 5000, "spinner");
     var spinner = driver.findElement(spinnerLocator);
     driver.wait(until.elementIsNotVisible(spinner), 15000, "wait for spinner");
-  }
+  };
 
   obj.findAndClickWhenVisible = function findAndClickWhenVisible(selector) {
     var deferUntilElementIsClickable = promise.defer();

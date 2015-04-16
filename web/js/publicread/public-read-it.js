@@ -1,7 +1,5 @@
 "use strict";
 
-var until = require("selenium-webdriver").until;
-
 function verifyCompanyId(id) {
   return angular.element
   (document.querySelectorAll
@@ -19,7 +17,7 @@ module.exports = function(driver) {
   driver.wait(controllerStandalonePromise , 7000, "standalone");
   driver.logMessage("public read controller active in standalone client");
 
-  driver.get("http://localhost:8000/modal.html#/files/1234")
+  driver.get("http://localhost:8000/modal.html#/files/1234");
   var controllerModalPromise = driver.executeScript(verifyCompanyId, "1234");
   driver.wait(controllerModalPromise , 9000, "modal");
   driver.logMessage("public read controller active in modal");
