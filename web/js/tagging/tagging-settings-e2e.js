@@ -114,7 +114,7 @@ module.exports = function(driver) {
 
       driver.findAndClickWhenVisible(okButton);
 
-      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 9000, "add tag menu");
+      driver.wait(until.elementIsNotVisible(driver.findElement(locators.addTagMenu)), 19000, "add tag menu");
       driver.wait(until.stalenessOf(tagdefs[0]), 7000, "tag definition deleted");
     }
   });

@@ -29,7 +29,7 @@ module.exports = function(driver, LOCALCLIENT, LOCALSERVER, USER, PASSWORD) {
   driver.get(url);
   driver.wait(until.elementLocated(spinnerLocator), 5000, "find spinner");
   spinner = driver.findElement(spinnerLocator);
-  driver.wait(until.elementIsNotVisible(spinner), 5000, "wait for spinner");
+  driver.wait(until.elementIsNotVisible(spinner), 15000, "wait for spinner");
   driver.findElement(signInLocator).click();
 
   driver.wait(until.elementLocated(emailLocator), 2000, "wait for email field");
