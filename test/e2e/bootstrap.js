@@ -53,14 +53,7 @@ var filePaths =
 [
 "../../web/js/publicread/public-read-it.js",
 "../../web/js/subscription/subscription-e2e.js",
-"../../web/js/buttons/folder-create-e2e.js",
 "./upload-download.js",
-"../../web/js/tagging/tagging-settings-e2e.js",
-"../../web/js/tagging/tagging-modal-popup-e2e.js",
-"../../web/js/buttons/file-trash-e2e.js",
-"../../web/js/buttons/file-restore-trash-e2e.js",
-"../../web/js/buttons/folder-move-trash-e2e.js",
-"../../web/js/buttons/folder-delete-e2e.js",
 "../../web/js/modal/modal-e2e.js"
 ];
 
