@@ -52,8 +52,9 @@
     "dist": "gulp server-dist",
     "ci-build": "gulp config && gulp test-ci && gulp build",
     "setenv": "NODE_ENV=$(select env in dev local prod;do echo $env;break;done) gulp config",
-    "preintegration": "gulp server >/dev/null &",
+    "preintegration": "node server.js &",
     "integration": "node test/integration/bootstrap.js",
+    "postintegration": "kill $(ps aux |grep \"node server\" |grep -v grep |awk '{print $2}')",
     "pree2e": "gsutil rm -f gs://risemedialibrary-a6397169-ad53-4163-9e08-da3e53f3a413/**; rm -rf $HOME/e2e-downloads/storage-client; npm install; bower install",
     "e2e": "node test/e2e/bootstrap.js $LOCAL --user=$E2E_USER --password=$E2E_PASS"
   },
