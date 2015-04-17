@@ -82,5 +82,5 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
 
 angular.module("risevision.common.config")
 .config(["$provide", function($provide) {
-  $provide.value("FULLSCREEN", (window === window.top);
+  $provide.value("FULLSCREEN", (window === window.top));
 }]);

@@ -11,6 +11,7 @@ var server = http.createServer(app);
 var port = process.env.port;
 var root = process.env.root;
 
+app.use(serveStatic(path.join(__dirname)));
 app.use(serveStatic(path.join(__dirname, root)));
 
 // Just send the index.html for other files to support HTML5Mode

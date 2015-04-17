@@ -30,6 +30,7 @@ module.exports = function(driver) {
   };
 
   obj.waitForSpinner = function waitForSpinner() {
+    obj.logMessage("Waiting for spinner");
     var spinnerLocator = {css: "div.spinner-backdrop"};
     driver.wait(until.elementLocated(spinnerLocator), 15000, "spinner");
     var spinner = driver.findElement(spinnerLocator);
