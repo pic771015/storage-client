@@ -8,11 +8,6 @@ function verifyCompanyId(id) {
 }
 
 module.exports = function(driver) {
-  driver.get("http://localhost:8000/files/1234").then(function() {
-    console.log("Connected to localhost");
-  });
-
-  driver.waitForSpinner();
   var controllerStandalonePromise = driver.executeScript(verifyCompanyId, "1234");
   driver.wait(controllerStandalonePromise , 7000, "standalone");
   driver.logMessage("public read controller active in standalone client");

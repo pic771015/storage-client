@@ -20,10 +20,24 @@ driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   driver.quit().then(function() {process.exit(1);});
 });
 
+function connectToLocalhost(driver) {
+  driver.get("http://localhost:8000/files/1234").then(function() {
+    driver.logMessage("Trying to connect to local host");
+    return driver.wait(function() {
+      return driver.executeScript(function() {
+        return document.title.indexOf("Rise") !== -1;
+      });
+    },2000).then(null,function() {return connectToLocalhost(driver);});
+  });
+}
+
 var filePaths = 
 [
 "../../web/js/publicread/public-read-it.js"
 ];
+
+connectToLocalhost(driver);
+driver.waitForSpinner();
 
 filePaths.forEach(function(path) {
   helpers.includeTestFile(path);
