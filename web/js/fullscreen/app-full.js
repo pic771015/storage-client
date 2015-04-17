@@ -2,7 +2,6 @@
 
 angular.module("risevision.storage", [
   "ui.router",
-  "ui.router.util",
   "ui.bootstrap",
   "risevision.widget.common.subscription-status",
   "risevision.common.config",
