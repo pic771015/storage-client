@@ -51,7 +51,6 @@ require("./storage-sign-in.js")(driver, args.LOCALCLIENT, args.LOCALSERVER, args
 
 var filePaths = 
 [
-"../../web/js/publicread/public-read-it.js",
 "../../web/js/subscription/subscription-e2e.js",
 "./upload-download.js",
 "../../web/js/modal/modal-e2e.js"
