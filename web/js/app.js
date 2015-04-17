@@ -4,6 +4,7 @@ angular.module("risevision.storage", [
   "ui.router",
   "ui.bootstrap",
   "risevision.widget.common.subscription-status",
+  "risevision.storage.modal",
   "risevision.common.config",
   "risevision.common.header",
   "risevision.common.loading",
@@ -81,5 +82,5 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
 
 angular.module("risevision.common.config")
 .config(["$provide", function($provide) {
-  $provide.value("FULLSCREEN", (window.location.href.indexOf("modal.html") === -1));
+  $provide.value("FULLSCREEN", (window === window.top);
 }]);

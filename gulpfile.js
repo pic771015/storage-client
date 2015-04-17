@@ -92,7 +92,7 @@ var env = process.env.NODE_ENV || "dev",
       "web/js/tagging/ctr-tags-filter.js",
       "web/js/tagging/ctr-tag-settings.js",
       "web/js/tagging/dtv-timeline.js",
-      "web/js/fullscreen/app-full.js",
+      "web/js/app.js",
 
       "web/js/**/*-test.js"
     ],
