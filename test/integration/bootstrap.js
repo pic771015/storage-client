@@ -37,7 +37,8 @@ function connectToLocalhost(driver) {
 var filePaths = 
 [
 "../../web/js/publicread/public-read-it.js",
-"../../web/js/fullscreen-value-it.js"
+"../../web/js/fullscreen-value-it.js",
+"../../web/js/modal/modal-it.js"
 ];
 
 connectToLocalhost(driver);
