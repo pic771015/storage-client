@@ -5,7 +5,7 @@ window.addEventListener("message", function (event) {
     document.querySelector("iframe").remove();
   } else if (typeof event.data === "string") {
     if (event.data === "close") {
-      document.querySelector("iframe").remove();
+      document.body.removeChild(document.querySelector("iframe"));
     }
   }
 });
