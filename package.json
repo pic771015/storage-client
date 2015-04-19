@@ -41,7 +41,6 @@
     "protractor": "~0.24.0",
     "selenium-webdriver": "*",
     "tiny-lr": "~0.0.5",
-
     "express": "4.11.1",
     "serve-static": "1.8.1"
   },
@@ -59,5 +58,8 @@
     "e2e": "node test/e2e/bootstrap.js $LOCAL --user=$E2E_USER --password=$E2E_PASS"
   },
   "author": "Rise",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "karma-phantomjs-launcher": "^0.1.4"
+  }
 }

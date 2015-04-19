@@ -13,6 +13,7 @@ driver.logMessage = helpers.logMessage;
 driver.findAndClickWhenVisible = helpers.findAndClickWhenVisible;
 driver.waitForSpinner = helpers.waitForSpinner;
 driver.logAndSnap = helpers.logAndSnap;
+driver.waitForTruthyScript = helpers.waitForTruthyScript;
 
 driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   helpers.logAndSnap("uncaught exception")();
