@@ -1,6 +1,5 @@
 "use strict";
-var until = require("selenium-webdriver").until,
-    promise = require("selenium-webdriver").promise;
+var until = require("selenium-webdriver").until;
 
 function close() {
   document.querySelector("iframe")
@@ -12,15 +11,20 @@ function verifyClose() {
   return document.querySelectorAll("iframe").length === 0;
 }
 
+function checkClosed(driver) {
+  return driver.executeScript(verifyClose)
+  .then(function(resp) {
+    if (!resp) {return checkClosed(driver);}
+  });
+}
+
 module.exports = function(driver) {
   driver.get("http://localhost:8000/test/integration/iframe-test.html");
   driver.wait(until.elementLocated({"css": "iframe"}), 2000, "iframe");
 
   driver.executeScript(close);
-  var iframePromise = driver.executeScript(verifyClose)
-  .then(function(resp) {
-    if (!resp) {return promise.rejected("not closed");}
-  });
+
+  var iframePromise = checkClosed(driver);
 
   driver.wait(iframePromise , 2000, "iframe");
   driver.logMessage("modal was closed as expected");
