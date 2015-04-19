@@ -1,5 +1,4 @@
 "use strict";
-var until = require("selenium-webdriver").until;
 
 function closeStorageModal() {
   document.querySelector("iframe")
@@ -9,7 +8,7 @@ function closeStorageModal() {
 
 function isModalOpened() {
   return document.querySelector("iframe")
-  .contentDocument.querySelector("button[ng-click='closeButtonClick()']")
+  .contentDocument.querySelector("button[ng-click='closeButtonClick()']");
 }
 
 function isModalClosed() {
