@@ -25,6 +25,11 @@ angular.module("risevision.storage", [
   "risevision.storage.upload"
 ]);
 
+angular.module("risevision.common.config")
+.config(["$provide", function($provide) {
+  $provide.value("FULLSCREEN", (window === window.top));
+}]);
+
 angular.module("risevision.storage")
 .config(["$compileProvider", function($compileProvider) {
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript):/);
@@ -77,10 +82,4 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
         }]
     }
   });
-}])
-;
-
-angular.module("risevision.common.config")
-.config(["$provide", function($provide) {
-  $provide.value("FULLSCREEN", (window === window.top));
 }]);

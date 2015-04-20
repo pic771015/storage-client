@@ -114,57 +114,61 @@
   </head>
 
   <body>
-    <div class="storage-modal" ng-controller="ModalWindowController" ng-show="!FULLSCREEN">
-      <div class="widget-overlay" ng-click="closeButtonClick()"></div>
-      
-      <div class="widget-wrapper container modal-content" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
-        <div ng-controller="ModalWindowController" class="modal-header"  style="margin-bottom: 10px">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
-          <i class="fa fa-times"></i>
-          </button>
+    <div ng-controller="ModalWindowController">
+      <div class="storage-modal" ng-if="!FULLSCREEN">
+        <div class="widget-overlay" ng-click="closeButtonClick()"></div>
+        
+        <div class="widget-wrapper container modal-content" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
+          <div ng-controller="ModalWindowController" class="modal-header"  style="margin-bottom: 10px">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
+            <i class="fa fa-times"></i>
+            </button>
+          </div>
+
+          <!--Body content-->
+          <div ui-view></div>
         </div>
 
-        <!--Body content-->
-        <div ui-view></div>
+        <div>
+          <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
+        </div>
+        <iframe name="logoutFrame" id="logoutFrame" style='display:none'></iframe>
       </div>
-
-      <div>
-        <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
-      </div>
-      <iframe name="logoutFrame" id="logoutFrame" style='display:none'></iframe>
     </div>
 
-    <div ng-controller="FullScreenController" class="storage-full" ng-show="FULLSCREEN">
-      <analytics analytics-account-id="'UA-82239-1'"></analytics>
+    <div ng-controller="FullScreenController">
+      <div class="storage-full" ng-if="FULLSCREEN===true">
+        <analytics analytics-account-id="'UA-82239-1'"></analytics>
 
-      <common-header nav-options="navOptions" hide-shopping-cart="true" hide-help-menu="true" redirect-to-root="false">
-      </common-header>
+        <common-header nav-options="navOptions" hide-shopping-cart="true" hide-help-menu="true" redirect-to-root="false">
+        </common-header>
 
-      <div class="storage-selector-iframe-full">
-        <div class="container" ng-show="!userState.isLoggedIn() || currentState">
-          <div>&nbsp;</div>
-          <div class="notifications alert alert-info alert-dismissable">
-            <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
-              <span translate="common.required-credentials"></span>
-            </span>
-            <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">
-              <span translate="common.logging-in"></span>
-            </span>
-            <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
-              <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
-            </span>
+        <div class="storage-selector-iframe-full">
+          <div class="container" ng-show="!userState.isLoggedIn() || currentState">
+            <div>&nbsp;</div>
+            <div class="notifications alert alert-info alert-dismissable">
+              <span id="msg-not-authenticated" ng-show="!userState.isLoggedIn()">
+                <span translate="common.required-credentials"></span>
+              </span>
+              <span id="msg-logging-in" ng-show="currentState == 'loggingIn'">
+                <span translate="common.logging-in"></span>
+              </span>
+              <span id="msg-loading-files" ng-show="currentState == 'loadingFiles'">
+                <span translate="storage-client.loading-files" translate-values="{ username: userState.getUsername() }"></span>
+              </span>
+            </div>
+          </div>
+          
+          <div class="storage-modal" ng-show="userSignedIn">
+            <div class="container" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
+              <div ui-view></div>
+            </div>
           </div>
         </div>
-        
-        <div class="storage-modal" ng-show="userSignedIn">
-          <div class="container" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
-            <div ui-view></div>
-          </div>
-        </div>
-      </div>
 
-      <div>
-        <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
+        <div>
+          <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
+        </div>
       </div>
     </div>
   </body>
