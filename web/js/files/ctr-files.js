@@ -5,11 +5,11 @@ angular.module("risevision.storage.files")
 ["$scope", "$stateParams", "$modal", "$log", "$location", "FileListService",
  "OAuthAuthorizationService", "GAPIRequestService", "OAuthStatusService",
  "$window","STORAGE_FILE_URL", "STORAGE_CLIENT_API", "$state", "$translate",
- "FULLSCREEN","TaggingService","localDatastore", "calloutClosingService", "filterFilter",
+ "FULLSCREEN", "calloutClosingService", "filterFilter",
 function ($scope, $stateParams, $modal, $log, $location, listSvc,
 OAuthAuthorizationService, requestSvc, OAuthStatusService,
 $window, STORAGE_FILE_URL, STORAGE_CLIENT_API, $state, $translate, FULLSCREEN,
-taggingSvc,  localData, calloutClosingService, filterFilter) {
+calloutClosingService, filterFilter) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var trashLabel;
 
@@ -17,7 +17,6 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
   $scope.isAuthed = true;
   $scope.filesDetails = listSvc.filesDetails;
   $scope.statusDetails = listSvc.statusDetails;
-  $scope.tagStatusDetails = localData.statusDetails;
   $scope.bucketCreationStatus = {code: 202};
   $scope.currentDecodedFolder = $stateParams.folderPath ? 
                                 decodeURIComponent($stateParams.folderPath) : undefined;
@@ -39,9 +38,7 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
   $scope.login = function() {
     OAuthAuthorizationService.authorize().then(function() {
       $scope.isAuthed = true;
-      listSvc.refreshFilesList().then(function(){
-        localData.loadLocalData();
-      });
+      listSvc.refreshFilesList();
     })
     .then(null, function(errResult) {
       console.log(errResult);
@@ -66,9 +63,7 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
 
   OAuthStatusService.getAuthStatus().then(function() {
     $scope.isAuthed = true;
-    listSvc.refreshFilesList().then(function(){
-      localData.loadLocalData();
-    });
+    listSvc.refreshFilesList();
   }, function() { $scope.isAuthed = false; });
 
   $scope.createBucket = function() {
@@ -93,10 +88,8 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
 
   };
 
-  $scope.selectAllCheckboxes = function(query, filterTags) {
+  $scope.selectAllCheckboxes = function(query) {
     var filteredFiles = filterFilter($scope.filesDetails.files, query);
-
-    filteredFiles = filterFilter(filteredFiles, filterTags);
 
     $scope.filesDetails.checkedCount = 0;
     $scope.filesDetails.folderCheckedCount = 0;
@@ -129,44 +122,8 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
     return file.name.substr(-1) === "/";
   };
 
-  $scope.fileHasTag = function(file){
-    var fileTagEntriesNames = localData.getTagEntries().map(function(i){
-      return i.objectId;
-    });
-    return fileTagEntriesNames.indexOf(file.name) > -1;
-  };
-
   $scope.fileIsTrash = function(file) {
     return file.name === "--TRASH--/";
-  };
-
-  $scope.taggingButtonClick = function(item, command){
-      $scope.selectAllCheckboxes();
-      $scope.selectAllCheckboxes();
-      if(item.isChecked === undefined || item.isChecked === false){
-        item.isChecked = true;
-        $scope.fileCheckToggled(item);
-      }
-      var items = [];
-      items.push(item);
-      //to remember checked files
-      listSvc.taggingCheckedItems = [item.name];
-      listSvc.checkedTagging = true;
-      taggingSvc.taggingButtonClick(items, command);
-  };
-
-  $scope.filterTags = function(){
-    if((taggingSvc.filteredTags === undefined || taggingSvc.filteredTags.length === 0) &&
-    (taggingSvc.filterStartDate === undefined || taggingSvc.filterStartDate === null) &&
-    (taggingSvc.filterEndDate === undefined || taggingSvc.filterEndDate === null)){
-      return;
-    }
-    return function(file){
-        var fileFromDataStore = localData.getFilesWithTags().filter(function(i){
-          return i.name === file.name;
-        })[0];
-        return taggingSvc.filterFile(fileFromDataStore);
-    };
   };
 
   $scope.$on("FileSelectAction", function(event, file) {
@@ -202,5 +159,4 @@ taggingSvc,  localData, calloutClosingService, filterFilter) {
       }
     }
   });
-
 }]);

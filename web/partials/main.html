@@ -24,21 +24,10 @@
 </div>
 
 <div>
-  <div ng-controller="TagsFilterCtrl">
-    <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-search"></i></span>
-      <input type="text" class="form-control" placeholder="Search for files or folders" ng-model="query">
-      <span class="input-group-btn">
-        <button class="btn btn-default" type="button" ng-click="isCollapsed = !isCollapsed"><i class="fa fa-filter"></i> Filters</button>
-      </span>
-    </div>
-
-    <div collapse="isCollapsed" class="content-box">
-      <div class="content-box-body">
-        <ng-include src="'partials/tagging/filter.html'"></ng-include>
-      </div>
-    </div>
-  <div>
+  <div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+    <input type="text" class="form-control" placeholder="Search for files or folders" ng-model="query">
+  </div>
   
   <div ng-controller="FilesButtonsController">
   	<div class="bar-wrapper half-top" id="files-toolbar" ng-hide="fileListStatus.code === 404">
@@ -58,8 +47,7 @@
             <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
           </button>
   				<button type="button" class="btn btn-link" title="Download" ng-click="downloadButtonClick()" ng-hide="!(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0) || filesDetails.localFiles === true"><i class="fa fa-cloud-download fa-2x"></i></button>
-                <button type="button" class="btn btn-link" title="Tagging" ng-click="taggingButtonClick()" ng-hide="isTrashFolder() || !(filesDetails.checkedCount > 0 && filesDetails.folderCheckedCount === 0)"><i class="fa fa-tag fa-2x"></i></button>
-                <button type="button" class="btn btn-link" title="Copy Url" ng-hide="isTrashFolder() || (filesDetails.checkedCount + filesDetails.folderCheckedCount === 0 || filesDetails.checkedCount + filesDetails.folderCheckedCount > 1) || filesDetails.localFiles === true" ng-click="copyUrlButtonClick('lg')"><i class="fa fa-link fa-2x"></i></button>
+          <button type="button" class="btn btn-link" title="Copy Url" ng-hide="isTrashFolder() || (filesDetails.checkedCount + filesDetails.folderCheckedCount === 0 || filesDetails.checkedCount + filesDetails.folderCheckedCount > 1) || filesDetails.localFiles === true" ng-click="copyUrlButtonClick('lg')"><i class="fa fa-link fa-2x"></i></button>
   				<button type="button" class="btn btn-link" title="Move To Trash" ng-click="trashButtonClick()" ng-hide="isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1) || filesDetails.localFiles === true"><i class="fa fa-trash-o fa-2x"></i></button>
           <button type="button" class="btn btn-link" title="Restore From Trash" ng-click="restoreButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-2x"></i><i class="fa fa-share"></i></button>
   				<button type="button" class="btn btn-link" title="Delete"  ng-click="deleteButtonClick()" ng-hide="!isTrashFolder() || (filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1)"><i class="fa fa-trash-o fa-2x"></i></button>

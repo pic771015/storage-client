@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("risevision.storage.buttons.files", ["risevision.storage.gapi", "risevision.common.config", "risevision.storage.download"])
+angular.module("risevision.storage.buttons.files", ["risevision.storage.gapi", "risevision.common.config", "risevision.storage.download", "risevision.storage.files"])
 .controller("CopyUrlCtrl", ["$scope", "$modalInstance", "copyFile", function($scope, $modalInstance, copyFile) {
   $scope.copyFile = copyFile;
 
@@ -27,10 +27,8 @@ angular.module("risevision.storage.buttons.files", ["risevision.storage.gapi", "
 .controller("FilesButtonsController",
 ["$scope", "$rootScope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
  "GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "STORAGE_CLIENT_API", "FULLSCREEN", 
- "TaggingService", "localDatastore",
 function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
-          STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN,
-          taggingSvc, localData) {
+          STORAGE_FILE_URL, downloadSvc, $q, $translate, $state, STORAGE_CLIENT_API, FULLSCREEN) {
   var bucketName = "risemedialibrary-" + $stateParams.companyId;
   var folderSelfLinkUrl = STORAGE_CLIENT_API + bucketName + "/o?prefix=";
 
@@ -271,24 +269,6 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
       return e.isChecked;
     });
   }
-
-  $scope.taggingButtonClick = function(){
-    var fileNames = getSelectedFiles().map(function (i) {
-      return i.name;
-    });
-
-    var filesWithTags = localData.getFilesWithTags().filter(function (i) {
-      return fileNames.indexOf(i.name) > -1;
-    });
-
-    //to remember checked files
-    listSvc.taggingCheckedItems = filesWithTags.map(function (i) {
-      return i.name;
-    });
-
-    listSvc.checkedTagging = true;
-    taggingSvc.taggingButtonClick(filesWithTags, "union");
-  };
 
   function getActivePendingOperations() {
     return $scope.pendingOperations.filter(function(op) {

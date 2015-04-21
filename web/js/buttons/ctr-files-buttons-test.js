@@ -6,13 +6,11 @@ describe("FilesButtonsController", function() {
   var FilesButtonsController, scope;
   var FileListService, DownloadService;
   var invokedMethod = "";
-  var localData;
   beforeEach(module("risevision.storage.buttons.files"));
 
-  beforeEach(inject(function ($controller, $rootScope, _$modal_, $injector, _FileListService_, _DownloadService_, _localDatastore_) {
+  beforeEach(inject(function ($controller, $rootScope, $injector, _FileListService_, _DownloadService_) {
     var $httpBackend = $injector.get("$httpBackend");
     $httpBackend.whenGET(/\.*/).respond(200, {});
-    localData = _localDatastore_;
     FileListService = _FileListService_;
     DownloadService = _DownloadService_;
 
