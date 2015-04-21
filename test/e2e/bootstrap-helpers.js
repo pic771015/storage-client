@@ -30,10 +30,32 @@ module.exports = function(driver) {
   };
 
   obj.waitForSpinner = function waitForSpinner() {
+    obj.logMessage("Waiting for spinner");
     var spinnerLocator = {css: "div.spinner-backdrop"};
     driver.wait(until.elementLocated(spinnerLocator), 15000, "spinner");
     var spinner = driver.findElement(spinnerLocator);
     driver.wait(until.elementIsNotVisible(spinner), 15000, "wait for spinner");
+  };
+
+  obj.waitForTruthyScript = 
+  function waitForTruthyScript(domScriptFunction, timelimitMillis, errorMsg) {
+    return driver.controlFlow().execute(function() {
+      var startMillis = Date.now();
+
+      return check();
+
+      function check() {
+        return driver.executeScript(domScriptFunction)
+        .then(function(resp) {
+          if (Date.now() - startMillis > 5000) {return promise.rejected(errorMsg);}
+
+          if (!resp) {
+            driver.sleep(500);
+            return check();
+          }
+        });
+      }
+    });
   };
 
   obj.findAndClickWhenVisible = function findAndClickWhenVisible(selector) {

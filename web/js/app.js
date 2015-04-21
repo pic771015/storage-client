@@ -2,9 +2,9 @@
 
 angular.module("risevision.storage", [
   "ui.router",
-  "ui.router.util",
   "ui.bootstrap",
   "risevision.widget.common.subscription-status",
+  "risevision.storage.modal",
   "risevision.common.config",
   "risevision.common.header",
   "risevision.common.loading",
@@ -24,6 +24,11 @@ angular.module("risevision.storage", [
   "risevision.storage.throttle",
   "risevision.storage.upload"
 ]);
+
+angular.module("risevision.common.config")
+.config(["$provide", function($provide) {
+  $provide.value("FULLSCREEN", (window === window.top));
+}]);
 
 angular.module("risevision.storage")
 .config(["$compileProvider", function($compileProvider) {
@@ -77,10 +82,4 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
         }]
     }
   });
-}])
-;
-
-angular.module("risevision.common.config")
-.config(["$provide", function($provide) {
-  $provide.value("FULLSCREEN", (window.location.href.indexOf("modal.html") === -1));
 }]);

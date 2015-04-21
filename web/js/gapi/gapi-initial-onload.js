@@ -6,8 +6,9 @@ function handleClientJSLoad() {
   angular.element(document).ready(function() {
     angular.element(document).injector()
     .invoke(["gapiClientService", "$window", "STORAGE_URL", "$q", "$log",
-             "cookieTester",
-    function(gapiClient, $window, STORAGE_URL, $q, $log, cookieTester) {
+             "cookieTester", "FULLSCREEN",
+    function(gapiClient, $window, STORAGE_URL, $q, $log, cookieTester, FULLSCREEN) {
+      if (FULLSCREEN) {return;}
       return cookieTester.checkCookies()
              .then(function() {
                return loadStorageClient();

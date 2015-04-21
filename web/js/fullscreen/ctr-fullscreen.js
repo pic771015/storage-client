@@ -6,8 +6,9 @@ var displayStorageMain = function() {};
 var displayTagConfigurationMain = function() {};
 
 angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
-.controller("FullScreenController", ["$scope", "$rootScope", "$http", "$location", "$timeout", "userState", "$state", "SpinnerService",
-    function($scope, $rootScope, $http, $location, $timeout, userState, $state, spinnerSvc) {
+.controller("FullScreenController", ["$scope", "$rootScope", "$http", "$location", "$timeout", "userState", "$state", "SpinnerService", "FULLSCREEN",
+    function($scope, $rootScope, $http, $location, $timeout, userState, $state, spinnerSvc, FULLSCREEN) {
+  $scope.FULLSCREEN = FULLSCREEN;
   $scope.userState = userState;
   $scope.navOptions = [{
     title: "Platform",

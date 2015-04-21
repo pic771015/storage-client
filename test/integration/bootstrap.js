@@ -12,6 +12,8 @@ var helpers = require("../e2e/bootstrap-helpers.js")(driver);
 driver.logMessage = helpers.logMessage;
 driver.findAndClickWhenVisible = helpers.findAndClickWhenVisible;
 driver.waitForSpinner = helpers.waitForSpinner;
+driver.logAndSnap = helpers.logAndSnap;
+driver.waitForTruthyScript = helpers.waitForTruthyScript;
 
 driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
   helpers.logAndSnap("uncaught exception")();
@@ -21,8 +23,10 @@ driver.controlFlow().addListener(UNCAUGHT_EXCEPTION, function errorHandler(e) {
 });
 
 function connectToLocalhost(driver) {
+  driver.logMessage("Connecting to local host");
+
   driver.get("http://localhost:8000/files/1234").then(function() {
-    driver.logMessage("Trying to connect to local host");
+    driver.logMessage("Retrying local host");
     return driver.wait(function() {
       return driver.executeScript(function() {
         return document.title.indexOf("Rise") !== -1;
@@ -33,7 +37,9 @@ function connectToLocalhost(driver) {
 
 var filePaths = 
 [
-"../../web/js/publicread/public-read-it.js"
+"../../web/js/publicread/public-read-it.js",
+"../../web/js/fullscreen-value-it.js",
+"../../web/js/modal/modal-it.js"
 ];
 
 connectToLocalhost(driver);
