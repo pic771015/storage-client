@@ -6,136 +6,127 @@ angular.module("risevision.storage.filters", ["risevision.common.i18n"])
   var mtr = null;
 
   $translate(["common.jan", "common.feb", "common.mar", "common.apr",
-  	          "common.may", "common.jun", "common.jul", "common.aug",
-  	          "common.sep", "common.oct", "common.nov", "common.dec"])
-  	.then(function(values) {
+              "common.may", "common.jun", "common.jul", "common.aug",
+              "common.sep", "common.oct", "common.nov", "common.dec"])
+    .then(function(values) {
       mtr = values;
     });
 
   return function(timestamp) {
-		if (!timestamp) {
-			return "";
-		}
+    if (!timestamp) {
+      return "";
+    }
+    
+    var oldDate = new Date();
+    var newDate = new Date();
+    var difference = "";
 
-		var monthNames = [ mtr["common.jan"], mtr["common.feb"], mtr["common.mar"], mtr["common.apr"],
-			               mtr["common.may"], mtr["common.jun"], mtr["common.jul"], mtr["common.aug"], 
-			               mtr["common.sep"], mtr["common.oct"], mtr["common.nov"], mtr["common.dec"]];
+    oldDate.setTime(timestamp.value);
+    
+    if (newDate.getYear() > oldDate.getYear() || newDate.getMonth() > oldDate.getMonth() || newDate.getDate() > oldDate.getDate()) {
+      return oldDate.format("dd-MMM-yyyy");
+    }
+    else {
+      var hours = oldDate.getHours();
+      var minutes = oldDate.getMinutes();
+      var ampm = "AM";
 
-		var oldDate = new Date();
-                    oldDate.setTime(timestamp.value);
-		var difference = "";
-		var newDate = new Date();
-		
-		if (newDate.getYear() > oldDate.getYear() || newDate.getMonth() > oldDate.getMonth()) {
-			return oldDate.toLocaleDateString();
-		}
-		else if (newDate.getDate() > oldDate.getDate()) {
-			return monthNames[oldDate.getMonth()] + " " + oldDate.getDate();
-		}
-		else {
-			var hours = oldDate.getHours();
-			hours = !hours ? 12 : hours > 12 ? hours - 12 : hours;
-			var ampm = "AM";
-			if (oldDate.getHours() > 11) {
-				ampm = "PM";
-			}
-		
-			var minutes = oldDate.getMinutes();
-//			if ( hours < 10 ) { hours   = "0" + hours; }
-			if ( minutes < 10 ) { minutes = "0" + minutes; }
+      hours = !hours ? 12 : hours > 12 ? hours - 12 : hours;
+      
+      if (oldDate.getHours() > 11) {
+        ampm = "PM";
+      }
+    
+      if ( minutes < 10 ) { minutes = "0" + minutes; }
 
-			return hours + ":" + minutes + " " + ampm;
-
-			//return oldDate.toLocaleTimeString();
-		}
-		
-		return difference;
-	};
+      return hours + ":" + minutes + " " + ampm;
+    }
+    
+    return difference;
+  };
 }])
 .filter("fileTypeFilter", ["$translate", function($translate) {
-	var folderLabel = "";
+  var folderLabel = "";
 
-    $translate("common.folder").then(function(value) {
-      folderLabel = value;
-    });
+  $translate("common.folder").then(function(value) {
+    folderLabel = value;
+  });
 
-	return function(filename) {
-		var re = /(?:\.([^.]+))?$/
-                   ,ext;
+  return function(filename) {
+    var re = /(?:\.([^.]+))?$/;
 
-                if (filename.substr(-1) === "/") {return folderLabel;}
+    if (filename.substr(-1) === "/") {return folderLabel;}
 
-		ext = re.exec(filename)[1];
+    var ext = re.exec(filename)[1];
 
-		if (ext && ext.length <= 4) {
-			ext = ext.toUpperCase();
-			return ext;
-		}
+    if (ext && ext.length <= 4) {
+      ext = ext.toUpperCase();
+      return ext;
+    }
 
-		return "";
-	};
+    return "";
+  };
 }])
 .filter("fileNameFilter", ["$translate", function($translate) {
-	var trash = "--TRASH--/";
-	
-	var previousFolderLabel = "";
-	var trashLabel = "";
+  var trash = "--TRASH--/";
+  var previousFolderLabel = "";
+  var trashLabel = "";
 
-    $translate(["common.previous-folder", "storage-client.trash"]).then(function(values) {
-      previousFolderLabel = values["common.previous-folder"];
-      trashLabel = values["storage-client.trash"];
-    });
+  $translate(["common.previous-folder", "storage-client.trash"]).then(function(values) {
+    previousFolderLabel = values["common.previous-folder"];
+    trashLabel = values["storage-client.trash"];
+  });
 
-	return function(filename, currentFolder) {
-		if (currentFolder && currentFolder.length > 0) {
-                  if (filename === currentFolder) {
-                    return "/" + previousFolderLabel;
-                  } else {
-                    return filename.substr(currentFolder.length);
-                  }
-		}
-		else if(filename === trash) {
-      	  return trashLabel;
-        }
-        
-		return filename;
-	};
+  return function(filename, currentFolder) {
+    if (currentFolder && currentFolder.length > 0) {
+      if (filename === currentFolder) {
+        return "/" + previousFolderLabel;
+      } else {
+        return filename.substr(currentFolder.length);
+      }
+    }
+    else if(filename === trash) {
+      return trashLabel;
+    }
+    
+    return filename;
+  };
 }])
 .filter("fileSizeFilter", function() {
-	return function(size) {
-		var sizeString = "";
-                if (size === 0) {return "0 bytes";}
+  return function(size) {
+    var sizeString = "";
+    if (size === 0) {return "0 bytes";}
 
-                if (!size) { return "";}
-		
-		if (size < 1000) {
-			sizeString = size + " bytes";
-		}
-		else if (size > 1024 && size < Math.pow(1024, 2)) {
-			sizeString = Math.floor(size / (1024 / 10)) / 10.0 + " KB";
-		}
-		else if (size >= Math.pow(1024, 2) && size < Math.pow(1024, 3)) {
-			sizeString = Math.floor(size / (Math.pow(1024, 2) / 10)) / 10.0 + " MB";
-		}
-		else if (size >= Math.pow(1024, 3)) {
-			sizeString = Math.floor(size / (Math.pow(1024, 3) / 10)) / 10.0 + " GB";
-		}
-		
-		return sizeString;
-	};
+    if (!size) { return "";}
+    
+    if (size < 1000) {
+      sizeString = size + " bytes";
+    }
+    else if (size > 1024 && size < Math.pow(1024, 2)) {
+      sizeString = Math.floor(size / (1024 / 10)) / 10.0 + " KB";
+    }
+    else if (size >= Math.pow(1024, 2) && size < Math.pow(1024, 3)) {
+      sizeString = Math.floor(size / (Math.pow(1024, 2) / 10)) / 10.0 + " MB";
+    }
+    else if (size >= Math.pow(1024, 3)) {
+      sizeString = Math.floor(size / (Math.pow(1024, 3) / 10)) / 10.0 + " GB";
+    }
+    
+    return sizeString;
+  };
 })
 .filter("bandwidthUseFilter",
 ["fileSizeFilterFilter", "$translate", function(fileSizeFilter, $translate) {
-	var lessThan1MB = "";
+  var lessThan1MB = "";
 
-    $translate("storage-client.lessThan1MB").then(function(value) {
-      lessThan1MB = value;
-    });
+  $translate("storage-client.lessThan1MB").then(function(value) {
+    lessThan1MB = value;
+  });
 
   return function bandwidthUseFilter(bytes) {
-  	if(isNaN(bytes)) {
-  		return bytes;
-  	}
+    if(isNaN(bytes)) {
+      return bytes;
+    }
 
     return parseInt(bytes, 10) / 1000000 < 1 ? lessThan1MB :
                                                fileSizeFilter(bytes);
@@ -164,15 +155,15 @@ angular.module("risevision.storage.filters", ["risevision.common.i18n"])
   };
 })
 .filter("trashItemFilter", [function() {
-	return function(itemName) {
-		var trash = "--TRASH--/";
+  return function(itemName) {
+    var trash = "--TRASH--/";
 
-		if(itemName && itemName.indexOf(trash) === 0) {
-			return itemName.substr(trash.length);
-		}
-		else {
-			return itemName;
-		}
-	};
+    if(itemName && itemName.indexOf(trash) === 0) {
+      return itemName.substr(trash.length);
+    }
+    else {
+      return itemName;
+    }
+  };
 }])
 ;

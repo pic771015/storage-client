@@ -16,8 +16,6 @@ var translations = {
   "common.dec": "Dec"
 };
 
-var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-
 Date.prototype.addDays = function(days) {
   var date = new Date(this.valueOf());
   date.setDate(date.getDate() + days);
@@ -163,11 +161,11 @@ describe("Filters: lastModifiedFilter", function() {
     var date3obj = new Date().addMinutes(-1);
     var date3 = { value: date3obj.getTime() };
 
-    expect(filter(date1)).to.equal(date1obj.toLocaleDateString());
+    expect(filter(date1)).to.equal("11-Dec-2002");
 
     // Not run if month changes, because filter uses new Date() internally
     if(new Date().getMonth() === date2obj.getMonth()) {
-      expect(filter(date2)).to.equal(monthNames[date2obj.getMonth()] + " " + date2obj.getDate());
+      expect(filter(date2)).to.equal(date2obj.format("dd-MMM-yyyy"));
     }
 
     // Not run if day changes, because filter uses new Date() internally
