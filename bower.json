@@ -15,7 +15,7 @@
     "rv-subscription-status": "https://github.com/Rise-Vision/component-subscription-status.git#master",
     "rv-common-i18n": "https://github.com/Rise-Vision/common-i18n.git#master",
     "rv-widget-settings-ui-core": "https://github.com/Rise-Vision/widget-settings-ui-core.git",
-    "angular-ui-router": "~0.2.11",
+    "angular-ui-router": "0.2.13",
     "angular-translate": "~2.5.2",
     "angular-translate-loader-static-files": "~2.5.2"
   },
