@@ -85,13 +85,6 @@ var env = process.env.NODE_ENV || "dev",
       "web/js/subscription/ctr-subscription.js",
       "web/js/publicread/svc-public-read.js",
       "web/js/publicread/ctr-public-read.js",
-      "web/js/tagging/svc-local-datastore.js",
-      "web/js/tagging/svc-tagging.js",
-      "web/js/tagging/ctr-tagging.js",
-      "web/js/tagging/ctr-filter-lookup.js",
-      "web/js/tagging/ctr-tags-filter.js",
-      "web/js/tagging/ctr-tag-settings.js",
-      "web/js/tagging/dtv-timeline.js",
       "web/js/app.js",
 
       "web/js/**/*-test.js"

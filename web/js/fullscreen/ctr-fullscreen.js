@@ -2,10 +2,7 @@
 
 "use strict";
 
-var displayStorageMain = function() {};
-var displayTagConfigurationMain = function() {};
-
-angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
+angular.module("risevision.storage.fullscreen", ["risevision.storage.common", "risevision.common.config", "ui.router"])
 .controller("FullScreenController", ["$scope", "$rootScope", "$http", "$location", "$timeout", "userState", "$state", "SpinnerService", "FULLSCREEN",
     function($scope, $rootScope, $http, $location, $timeout, userState, $state, spinnerSvc, FULLSCREEN) {
   $scope.FULLSCREEN = FULLSCREEN;
@@ -50,26 +47,10 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common"])
           link: "http://rva.risevision.com/",
           target: "_blank"
         }, {
-          title: "Storage",
-          link: "javascript:displayStorageMain();",
-          target: "_self"
-        }, {
-          title: "Tag Settings",
-          link: "javascript:displayTagConfigurationMain();",
-          target: "_self"
-        }, {
           title: "Help",
           link: "http://help.risevision.com/#/user/storage/what-is-storage",
           target: "_blank"
         }];
-
-        displayStorageMain = function() {
-          $state.go("main.company-folders", { folderPath: "", companyId: companyId });
-        };
-
-        displayTagConfigurationMain = function() {
-          $state.go("tagConfiguration", { companyId: companyId });
-        };
 
         var loc = window.location.href;
         var filesPath = loc.match(/.*\/files\/.{36}\/(.*)/);

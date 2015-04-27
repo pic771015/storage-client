@@ -1,5 +1,5 @@
 "use strict";
-angular.module("risevision.storage.publicread", ["risevision.storage.oauth", "risevision.storage.gapi"])
+angular.module("risevision.storage.publicread", ["risevision.storage.oauth", "risevision.storage.gapi", "ui.router"])
 .factory("PublicReadService",
 ["OAuthStatusService", "GAPIRequestService",
 function publicReadFactory(OAuthStatusService, requestService) {

@@ -47,7 +47,7 @@ describe("NewFolderCtrl", function() {
       });
     });
 
-    inject(function ($controller, $rootScope, _$modal_, $injector) {
+    inject(function ($controller, $rootScope, $injector) {
       var $httpBackend = $injector.get("$httpBackend");
       $httpBackend.whenGET(/\.*/).respond(200, {});
 

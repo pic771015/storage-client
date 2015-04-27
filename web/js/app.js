@@ -20,7 +20,6 @@ angular.module("risevision.storage", [
   "risevision.storage.publicread",
   "risevision.storage.services",
   "risevision.storage.subscription",
-  "risevision.storage.tagging",
   "risevision.storage.throttle",
   "risevision.storage.upload"
 ]);
@@ -70,16 +69,5 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
   .state("main.company-folders", {
     url: "/:companyId/{folderPath:NotEncodedURL}",
     templateUrl: "partials/file-items.html"
-  })
-  .state("tagConfiguration", {
-    url: "/tagConfiguration/:companyId",
-    templateUrl: "partials/tag-configuration.html",
-    resolve: {
-        meta: ["$rootScope", "$stateParams", "$http", function ($rootScope, $stateParams, $http) {
-            return $http.get("data/metatags.json").success (function(data) {
-                $rootScope.metatag = data.tagConfiguration;
-            });
-        }]
-    }
   });
 }]);
