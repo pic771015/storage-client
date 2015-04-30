@@ -17,10 +17,6 @@ angular.module("risevision.storage.fullscreen", ["risevision.storage.common", "r
     target: "_blank"
   }];
 
-  $http.get("data/metatags.json").success (function(data) {
-    $rootScope.metatag = data.storage;
-  });
-
   $scope.$on("risevision.user.authorized", function () {
     if(!$scope.userSignedIn) {
       spinnerSvc.start();
