@@ -19,7 +19,7 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc, SELECTOR_
   svc.singleFolderSelector = SELECTOR_TYPE === "single-folder";
 
   //on all state Changes do not hold onto checkedFiles list
-  $rootScope.$on("$stateChangeStart", function(){
+  $rootScope.$on("$stateChangeStart", function() {
     svc.checkedTagging = false;
     svc.filesDetails.checkedCount = 0;
     svc.filesDetails.folderCheckedCount = 0;
@@ -27,15 +27,25 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc, SELECTOR_
   });
 
   svc.addFile = function(newFile) {
+    var currentFolder = $stateParams.folderPath ? decodeURIComponent($stateParams.folderPath) : "";
+    var idx = newFile.name.indexOf("/", currentFolder.length);
+    // Handles the case where a file inside a folder was added (since files are not visible, only adds the folder)
+    var fileName = idx >= 0 ? newFile.name.substring(0, idx + 1) : newFile.name;
     var existingFileNameIndex;
+
     for (var i = 0, j = svc.filesDetails.files.length; i < j; i += 1) {
-      if (svc.filesDetails.files[i].name === newFile.name) {
+      if (svc.filesDetails.files[i].name === fileName) {
         existingFileNameIndex = i;
         break;
       }
     }
 
-    if (existingFileNameIndex) {
+    if(idx >= 0) {
+      if(!existingFileNameIndex) {
+        svc.filesDetails.files.push({ name: fileName });
+      }
+    }
+    else if (existingFileNameIndex) {
       svc.filesDetails.files.splice(existingFileNameIndex, 1, newFile);
     } else {
       svc.filesDetails.files.push(newFile);
@@ -137,7 +147,7 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc, SELECTOR_
         }
       }
 
-      if(!parentFolderFound && parentFolder.indexOf(TRASH) === 0) {
+      if(!parentFolderFound && $stateParams.folderPath) {
         resp.files.unshift({ name: parentFolder, currentFolder: true, size: "", updated: null });
       }
 

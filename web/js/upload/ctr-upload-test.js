@@ -5,7 +5,7 @@
 describe("UploadController", function() {
     var UploadController, scope;
     var FileUploader = {}, UploadURIService = {};
-    var $stateParams = {};
+    var $stateParams = { folderPath: "" };
     
     beforeEach(module("risevision.storage.upload"));
 

@@ -85,13 +85,13 @@
         <span class="folder">{{file.name | fileNameFilter:currentDecodedFolder}}</span>
       </td>
       <td ng-if="!fileIsFolder(file)" class="col-sm-6">
-        <span class="file" ng-class='{"throttled-type": file.isThrottled}'>
+        <span class="file" ng-class='{"throttled-type": file.isThrottled && !fileIsFolder(file)}'>
           <a style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;" href="" data-toggle="tooltip" title="{{file.name | fileNameFilter:currentDecodedFolder}}">
-            <i class="fa" ng-class='{"fa-exclamation": file.isThrottled, "icon-red": file.isThrottled}'></i>
+            <i class="fa" ng-class='{"fa-exclamation": file.isThrottled && !fileIsFolder(file), "icon-red": file.isThrottled && !fileIsFolder(file)}'></i>
             {{file.name | fileNameFilter:currentDecodedFolder}}
           </a>
         </span>
-        <div ng-show="file.showThrottledCallout" class="callout callout-red" ng-click="file.showThrottledCallout=false">
+        <div ng-show="file.showThrottledCallout && !fileIsFolder(file)" class="callout callout-red" ng-click="file.showThrottledCallout=false">
           <span class="arrow"></span>
           <strong>File Is Blocked</strong>
           <p>This file is being requested too many times and is blocked. If you have a <a href="http://support.risevision.com" target="_blank">support subscription</a> please open a ticket for assistance with resolving this.  Otherwise, please post in the <a href="http://community.risevision.com" target="_blank">community</a> for help.</p>
