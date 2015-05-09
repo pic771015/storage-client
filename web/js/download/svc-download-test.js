@@ -1,4 +1,6 @@
 "use strict";
+var zip = {};
+
 function getService(serviceName) {
   var injectedService;
   inject([serviceName, function(serviceInstance) {
@@ -10,6 +12,9 @@ function getService(serviceName) {
 describe("Services: Download", function() {
   beforeEach(module("risevision.storage.download"));
   beforeEach(module(function($provide) {
+    zip.BlobWriter = function() { return {}; };
+    zip.createWriter = function() { return {}; };
+
     $provide.service("$window", function() {
       var svc = {};
       svc.filesDownloaded = [];
