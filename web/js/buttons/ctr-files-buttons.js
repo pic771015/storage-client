@@ -98,9 +98,6 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
   };
 
   $scope.downloadButtonClick = function() {
-    listSvc.filesDetails.files.forEach(function(file) {
-      if (file.name.substr(-1) === "/") {file.isChecked = false;}
-    });
     downloadSvc.downloadFiles(getSelectedFiles(), bucketName, 100);
   };
 
