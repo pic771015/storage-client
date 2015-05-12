@@ -25,6 +25,16 @@ function($timeout, $window, requestor, $stateParams) {
     iframe.src = url + "&response-content-disposition=attachment;filename=" + fileName;
   };
 
+  svc.downloadBlob = function(blob, fileName) {
+    var a = document.createElement("a");
+    a.href = window.URL.createObjectURL(blob);
+    a.download = fileName; // Set the file name.
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.click();
+    document.body.appendChild(a);
+  };
+
   svc.downloadFiles = function(files, bucketName, delay) {
     $timeout(function() {
       if (files.length === 0) {
@@ -101,11 +111,7 @@ function($timeout, $window, requestor, $stateParams) {
               console.log("closing zip");
 
               writer.close(function(blob) {
-                var URL = window.webkitRequestFileSystem.webkitURL;
-
-                console.log("URL", URL);
-
-                svc.downloadURL(URL.createObjectURL(blob), encodeURIComponent(folder.name) + ".zip");
+                svc.downloadBlob(blob, folder.name.substr(0, folder.name.length - 1) + ".zip");
               });
             }
           });
