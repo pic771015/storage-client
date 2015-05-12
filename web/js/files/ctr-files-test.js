@@ -7,15 +7,34 @@ var gadgets = {
 };
 
 describe("FileListCtrl", function() {
-
     var $window;
     var FileListCtrl, scope;
     var FileListService;
     var invokedMethod = "";
     var postMessage;
-    
+
     beforeEach(module("risevision.storage.files"));
 
+    beforeEach(module(function ($provide) {
+      $provide.service("GAPIRequestService", function() {
+        var svc = {};
+        svc.executeRequest = function() {
+          var response = { code: 200 };
+          return new Q(response);
+        };
+  
+        return svc;
+      });
+  
+      $provide.service("OAuthAuthorizationService", function() {
+        return {
+          authorize: function() {
+            return new Q(true);
+          }
+        };
+      });
+    }));
+    
     beforeEach(inject(function ($controller, $rootScope, _$window_, $injector) {
         var $httpBackend = $injector.get("$httpBackend");
         $httpBackend.whenGET(/\.*/).respond(200, {});
@@ -85,13 +104,6 @@ describe("FileListCtrl", function() {
         expect(FileListCtrl).to.exist;
     });
 
-    it("should call storage.createBucket", function() {
-        scope.createBucket();
-        scope.$apply();
-
-        expect(invokedMethod).to.equal("storage.createBucket");
-    });
-
     it("should post a message to its parent when a file is clicked", function() {
         var file = FileListService.filesDetails.files[0];
         var call = sinon.spy(gadgets.rpc, "call");
@@ -127,16 +139,26 @@ describe("FileListCtrl", function() {
         expect(scope.fileIsFolder(file)).to.be.equal(true);
     });
 
-    it("should select all files and folders", function() {
-        scope.selectAll = true;
+    it("should select all files and folders in storage full", function() {
+        scope.storageFull = true;
+        scope.selectAll = false;
         scope.selectAllCheckboxes();
 
         expect(scope.filesDetails.checkedCount).to.be.equal(3);
         expect(scope.filesDetails.folderCheckedCount).to.be.equal(1);
     });
 
-    it("should deselect all files and folders", function() {
+    it("should select all files in multiple file selector", function() {
+        scope.singleFileSelector = true;
         scope.selectAll = false;
+        scope.selectAllCheckboxes();
+
+        expect(scope.filesDetails.checkedCount).to.be.equal(3);
+        expect(scope.filesDetails.folderCheckedCount).to.be.equal(0);
+    });
+
+    it("should deselect all files and folders", function() {
+        scope.selectAll = true;
         scope.selectAllCheckboxes();
 
         expect(scope.filesDetails.checkedCount).to.be.equal(0);

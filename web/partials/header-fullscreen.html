@@ -1,0 +1,95 @@
+<div>
+  <div class="app-header add-bottom add-top">
+    <div class="title-block">
+      <h1 translate="storage-client.header"></h1>
+      <div ng-controller="SubscriptionStatusController" class="store-status-2">
+      <div id="subscription-status" subscription-status
+           product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+           ng-model="subscriptionStatus.result" show-store-modal="showStoreModal"></div>
+      </div>
+    </div>
+    <div class="global-actions" ng-controller="TopButtonsController">
+      <label for="file" class="btn btn-lg btn-primary" title="{{'storage-client.upload-file' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
+        <span translate="storage-client.upload-file"></span>
+        <i class="fa fa-cloud-upload icon-right"></i>
+      </label>
+      <button class="btn btn-lg btn-default" type="button" title="{{'storage-client.new-folder' | translate}}" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+        <span translate="storage-client.new-folder"></span>
+        <svg-icon p="iconNewFolder"></svg-icon>
+      </button>
+      <button type="button" title="select" ng-if="!storageFull" class="btn btn-success btn-lg hidden-sm hidden-md hidden-lg" ng-click="selectButtonClick()" ng-hide="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+        <span translate="common.select"></span> <i class="fa fa-check fa-white icon-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div>
+    <div class="input-group">
+      <span class="input-group-addon"><i class="fa fa-search"></i></span>
+      <input type="text" ng-model="$parent.query" class="form-control" placeholder="Search for files or folders">
+    </div>
+  <div>
+  
+  <div ng-controller="FilesButtonsController">
+  	<div class="bar-wrapper half-top" id="files-toolbar" ng-hide="fileListStatus.code === 404">
+  		<div class="bar">
+  			<div class="col-sm-4">
+  			</div>
+
+  			<div class="col-sm-8 text-right">
+          <span ng-show="filesDetails.checkedItemsCount > 0">
+            <span translate="storage-client.selected-items" translate-values="{ count: filesDetails.checkedItemsCount }"></span>
+          </span>
+  				<button type="button" class="btn btn-link" title="Download" ng-click="downloadButtonClick()" ng-disabled="isDisabledDownloadButton()">
+            <i class="fa fa-cloud-download fa-2x" ng-class="{ 'icon-gray': isDisabledDownloadButton() }"></i>
+          </button>
+          <button type="button" class="btn btn-link" title="Copy Url" ng-click="copyUrlButtonClick('lg')" ng-hide="isTrashFolder()" ng-disabled="isDisabledCopyUrlButton()">
+            <i class="fa fa-link fa-2x" ng-class="{ 'icon-gray': isDisabledCopyUrlButton() }"></i>
+          </button>
+  				<button type="button" class="btn btn-link" title="Move To Trash" ng-click="trashButtonClick()" ng-show="!isTrashFolder()" ng-disabled="isDisabledTrashButton()">
+            <i class="fa fa-trash-o fa-2x" ng-class="{ 'icon-gray': isDisabledTrashButton() }"></i>
+          </button>
+          <button type="button" class="btn btn-link" title="Restore From Trash" ng-click="restoreButtonClick()" ng-show="isTrashFolder()" ng-disabled="isDisabledRestoreButton()">
+            <i class="fa fa-trash-o fa-2x" ng-class="{ 'icon-gray': isDisabledRestoreButton() }"></i>
+            <i class="fa fa-share" ng-class="{ 'icon-gray': isDisabledRestoreButton() }"></i>
+          </button>
+  				<button type="button" class="btn btn-link" title="Delete"  ng-click="deleteButtonClick()" ng-show="isTrashFolder()" ng-disabled="isDisabledDeleteButton()">
+            <i class="fa fa-trash-o fa-2x" ng-class="{ 'icon-gray': isDisabledDeleteButton() }"></i>
+          </button>
+  			</div>
+  		</div>
+  	</div>
+
+    <div class="row" ng-show="pendingOperations.length > 0">
+      <div class="col-md-12">
+        <div class="panel panel-info">
+          <div class="panel-heading" ng-click="isPOCollapsed = !isPOCollapsed">
+            <h3 class="panel-title">
+              <span ng-hide="pendingOperations[0].actionFailed">{{'storage-client.pending-' + pendingOperations[0].action | translate}}...</span>
+              <span ng-hide="!pendingOperations[0].actionFailed">{{statusDetails.message}}</span>
+              <span class="pull-right"><i class="fa" ng-class="{false: 'fa-chevron-up', true:'fa-chevron-down'}[!isPOCollapsed]"></i></span>
+            </h3>
+          </div>
+          <div class="panel-body" ng-show="!isPOCollapsed">
+            <table class="table">
+              <tbody>
+                <tr ng-repeat="item in pendingOperations">
+                  <td ng-show="!item.actionFailed">{{'storage-client.pending-' + item.action | translate}}</td>
+                  <td ng-show="item.actionFailed">{{'storage-client.failed-' + item.action | translate}}</td>
+                  <td>{{item.name | trashItemFilter}}</td>
+                  <td>
+                    <span class="text-danger" ng-click="removePendingOperation(item)">
+                      <i class="fa fa-times-circle-o"></i> <span translate="common.lremove"></span>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,8 +3,8 @@ angular.module("risevision.storage.files",
   ["risevision.storage.gapi", "risevision.storage.common", "risevision.storage.services", 
    "risevision.storage.throttle", "risevision.storage.oauth", "risevision.common.config", 
    "risevision.common.i18n", "ui.router"])
-.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope", "SpinnerService",
-function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
+.factory("FileListService", ["LocalFiles", "GAPIRequestService", "$stateParams", "$rootScope", "SpinnerService", "SELECTOR_TYPE", 
+function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc, SELECTOR_TYPE) {
   var svc = {};
 
   svc.filesDetails = {files: []
@@ -13,9 +13,10 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
                      ,folderCheckedCount: 0
                      ,checkedItemsCount: 0};
 
-  svc.statusDetails = {code: 200};
+  svc.statusDetails = {code: 202};
   svc.taggingCheckedItems = [];
   svc.checkedTagging = false;
+  svc.singleFolderSelector = SELECTOR_TYPE === "single-folder";
 
   //on all state Changes do not hold onto checkedFiles list
   $rootScope.$on("$stateChangeStart", function(){
@@ -113,6 +114,10 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
       spinnerSvc.stop();
     });
 
+    function fileIsFolder(file) {
+      return file.name.substr(-1) === "/";
+    }
+
     function processFilesResponse(resp) {
       var TRASH = "--TRASH--/";
       var parentFolder = decodeURIComponent($stateParams.folderPath);
@@ -125,6 +130,7 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
 
         if(file.name === parentFolder) {
           parentFolderFound = true;
+          file.currentFolder = true;
           delete file.size;
           delete file.updated;
           break;
@@ -132,11 +138,15 @@ function (LocalFiles, requestor, $stateParams, $rootScope, spinnerSvc) {
       }
 
       if(!parentFolderFound && parentFolder.indexOf(TRASH) === 0) {
-        resp.files.unshift({ name: parentFolder, size: "", updated: null });
-      }          
+        resp.files.unshift({ name: parentFolder, currentFolder: true, size: "", updated: null });
+      }
 
       svc.filesDetails.files = resp.files || [];
       svc.statusDetails.code = resp.code;
+
+      if(svc.singleFolderSelector) {
+        svc.filesDetails.files = svc.filesDetails.files.filter(function(f) { return fileIsFolder(f); });
+      }
 
       if(!$stateParams.folderPath || !parentFolder || parentFolder === "/") {
         svc.filesDetails.files.splice(1, 0, { name: TRASH, size: "", updated: null });

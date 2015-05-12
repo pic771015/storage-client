@@ -26,7 +26,23 @@ angular.module("risevision.storage", [
 
 angular.module("risevision.common.config")
 .config(["$provide", function($provide) {
-  $provide.value("FULLSCREEN", (window === window.top));
+  var href = window.location.href;
+  var fullscreen = (window === window.top) && (href.indexOf("selector-type") === -1);
+
+  $provide.value("FULLSCREEN", fullscreen);
+
+  if(href.indexOf("selector-type=multiple-file") !== -1) {
+    $provide.value("SELECTOR_TYPE", "multiple-file");
+  }
+  else if(href.indexOf("selector-type=single-folder") !== -1) {
+    $provide.value("SELECTOR_TYPE", "single-folder");
+  }
+  else if(!fullscreen) {
+    $provide.value("SELECTOR_TYPE", "single-file");
+  }
+  else {
+    $provide.value("SELECTOR_TYPE", "");
+  }
 }]);
 
 angular.module("risevision.storage")
@@ -70,4 +86,5 @@ function($urlRouterProvider, $stateProvider, $locationProvider) {
     url: "/:companyId/{folderPath:NotEncodedURL}",
     templateUrl: "partials/file-items.html"
   });
-}]);
+}])
+;

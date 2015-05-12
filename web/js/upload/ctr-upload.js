@@ -9,7 +9,13 @@ function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $transla
   $scope.status = {};
 
   $scope.removeItem = function(item) {
-    $scope.uploader.removeFromQueue(item);
+    uploader.cancelItem(item);
+  };
+
+  $scope.activeUploadCount = function() {
+    return uploader.queue.filter(function(file) {
+      return file.isUploading;
+    }).length;
   };
 
   uploader.onAfterAddingFile = function(fileItem) {

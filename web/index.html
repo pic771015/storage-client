@@ -73,7 +73,7 @@
 
     <script type="text/javascript" src="js/config/config.js"></script>
 
-    <script type="text/javascript" src="js/gapi/gapi-fullscreen.js"></script>
+    <script type="text/javascript" src="js/gapi/gapi-client-load.js"></script>
     <script type="text/javascript" src="js/gapi/svc-gapi-auth.js"></script>
     <script type="text/javascript" src="js/cookies/svc-cookie-tester.js"></script>
     <script type="text/javascript" src="js/cookies/ctr-cookie-tester.js"></script>
@@ -82,6 +82,7 @@
     <script type="text/javascript" src="js/common/filters.js"></script>
     <script type="text/javascript" src="js/common/directives.js"></script>
     <script type="text/javascript" src="js/common/svc-spinner.js"></script>
+    <script type="text/javascript" src="js/external/svc-core-client.js"></script>
 
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/modal/ctr-modal.js"></script>
@@ -104,26 +105,67 @@
     <script type="text/javascript" src="js/publicread/svc-public-read.js"></script>
     <script type="text/javascript" src="js/publicread/ctr-public-read.js"></script>
     <!-- endbuild -->
-    <script type="text/javascript" src="//preview.risevision.com/gadgets/gadgets.min.js"></script>
-    <script type="text/javascript" src="//apis.google.com/js/client.js?onload=handleClientJSLoad"></script>
   </head>
 
   <body>
     <div ng-controller="ModalWindowController">
       <div class="storage-modal" ng-if="!FULLSCREEN">
-        <div class="widget-overlay" ng-click="closeButtonClick()"></div>
+        <div class="modal-content" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
+          <div ng-controller="TopButtonsController">
+            <div class="modal-header" style="margin-bottom: 10px">
+              <button type="button" class="close" data-dismiss="modal" ng-click="closeButtonClick()">
+                <i class="fa fa-times"></i>
+              </button>
+              <h3 class="modal-title" update-title="" translate="storage-client.select-{{SELECTOR_TYPE}}"></h3>
+              <div class="selector-header">
+                <div class="icon-nav pull-right" ng-hide="activeSearch">
+                  <button class="btn btn-link btn-lg" ng-hide="statusDetails.code!==200 || fileListStatus.code===404" ng-click="newFolderButtonClick('md')" ng-disabled="isTrashFolder()">
+                    <svg-icon p="iconNewFolder"></svg-icon>
+                  </button>
+                  <label for="file" style="padding-top: 9px;" class="btn btn-link btn-lg"
+                         ng-hide="statusDetails.code!==200 || fileListStatus.code===404 || singleFolderSelector"
+                         ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
+                    <span class="fa fa-cloud-upload fa-lg"></span>
+                  </label>
+                  <button class="btn btn-link btn-lg" ng-click="activeSearch = !activeSearch">
+                    <span class="fa fa-search fa-lg"></span>
+                  </button>
+                </div>
         
-        <div class="widget-wrapper container modal-content" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
-          <div ng-controller="ModalWindowController" class="modal-header"  style="margin-bottom: 10px">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="closeButtonClick()">
-            <i class="fa fa-times"></i>
-            </button>
+                <div class="description" ng-hide="activeSearch">
+                  <p><strong>{{company.name}}</strong></p>
+                  <p><a href="/files/{{company.id}}" target="_blank" translate="storage-client.open-in-storage-app"></a></p>
+                  <div ng-controller="SubscriptionStatusController" class="store-status-2">
+                    <div id="subscription-status" subscription-status
+                         product-id="{{productId}}" product-code="{{productCode}}" company-id="{{companyId}}"
+                         ng-model="subscriptionStatus.result" show-store-modal="showStoreModal">
+                    </div>
+                  </div>
+                </div>
+        
+                <div class="icon-nav ng-hide" ng-show="activeSearch">
+                  <div class="input-group custom-addon">
+                    <input ng-model="query" type="text" class="form-control" placeholder="Search files or folders">
+                    <span ng-click="activeSearch = !activeSearch" class="input-group-addon clickable"><i class="fa fa-times"></i></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+            <!--Body content-->
+            <div class="modal-body" ui-view></div>
+      
+            <div class="modal-footer" ng-controller="FilesButtonsController" ng-show="multipleFileSelector">
+              <button type="button" title="select" class="btn btn-primary" ng-click="selectButtonClick()" ng-disabled="filesDetails.checkedCount < 1 && filesDetails.folderCheckedCount < 1">
+                <span translate="common.select"></span> <span class="fa fa-check icon-right"></span>
+              </button>
+              <button class="btn btn-default" ng-controller="ModalWindowController" ng-click="closeButtonClick()">
+                <span translate="common.cancel"></span> <span class="fa fa-times icon-right"></span>
+              </button>
+            </div>
           </div>
-
-          <!--Body content-->
-          <div ui-view></div>
         </div>
-
+      
         <div>
           <span us-spinner="{ radius: 24, width: 8, length: 16 }" spinner-key="spn-storage-main"></span>
         </div>
@@ -156,6 +198,7 @@
           
           <div class="storage-modal" ng-show="userSignedIn">
             <div class="container" ng-controller="modalContainerController" ng-click="closeThrottleNotice()">
+              <ng-include src="'partials/header-fullscreen.html'"></ng-include>
               <div ui-view></div>
             </div>
           </div>

@@ -68,29 +68,31 @@ angular.module("risevision.storage.filters", ["risevision.common.i18n"])
   };
 }])
 .filter("fileNameFilter", ["$translate", function($translate) {
-  var trash = "--TRASH--/";
-  var previousFolderLabel = "";
-  var trashLabel = "";
+	var trash = "--TRASH--/";
+	
+	var trashLabel = "";
 
-  $translate(["common.previous-folder", "storage-client.trash"]).then(function(values) {
-    previousFolderLabel = values["common.previous-folder"];
-    trashLabel = values["storage-client.trash"];
-  });
+    $translate(["storage-client.trash"]).then(function(values) {
+      trashLabel = values["storage-client.trash"];
+    });
 
-  return function(filename, currentFolder) {
-    if (currentFolder && currentFolder.length > 0) {
-      if (filename === currentFolder) {
-        return "/" + previousFolderLabel;
-      } else {
-        return filename.substr(currentFolder.length);
-      }
-    }
-    else if(filename === trash) {
-      return trashLabel;
-    }
-    
-    return filename;
-  };
+	return function(filename, currentFolder) {
+		var returnValue = filename;
+
+		if (currentFolder && currentFolder.length > 0) {
+		  if(filename === currentFolder) {
+		  	returnValue = filename.substr(0, filename.lastIndexOf("/", filename.length - 2) + 1);
+		  }
+		  else {
+            returnValue = filename.substr(currentFolder.length);
+		  }
+		}
+		else if(filename === trash) {
+      	  returnValue = trashLabel;
+        }
+        
+		return returnValue || "/";
+	};
 }])
 .filter("fileSizeFilter", function() {
   return function(size) {
