@@ -2,7 +2,7 @@
 
 angular.module("risevision.storage.buttons.top", [])
 .controller("TopButtonsController",
-["$scope", "$rootScope", "$stateParams", "$window","$modal", "$log", "$timeout", "$filter", "FileListService",
+["$scope", "$rootScope", "$stateParams", "$window", "$modal", "$log", "$timeout", "$filter", "FileListService",
 "GAPIRequestService", "STORAGE_FILE_URL", "DownloadService", "$q", "$translate", "$state", "FULLSCREEN", 
   "PublicReadService", 
 function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $filter, listSvc, requestSvc,
@@ -28,6 +28,19 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
     event.preventDefault();
     $scope.deleteButtonClick();
   });
+
+  $scope.showSelectorFileSearch = function() {
+    $scope.activeSearch = !$scope.activeSearch;
+
+    $timeout(function() {
+      $("#selectorQuery").focus();
+    }, 0);
+  };
+
+  $scope.hideSelectorFileSearch = function() {
+    $scope.query = "";
+    $scope.activeSearch = !$scope.activeSearch;
+  };
 
   $scope.newFolderButtonClick = function(size) {
     $scope.shouldBeOpen = true;

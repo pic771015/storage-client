@@ -127,7 +127,7 @@
                          ng-disabled="!(filesDetails.localFiles === false && !isTrashFolder())">
                     <span class="fa fa-cloud-upload fa-lg"></span>
                   </label>
-                  <button class="btn btn-link btn-lg" ng-click="activeSearch = !activeSearch">
+                  <button class="btn btn-link btn-lg" ng-click="showSelectorFileSearch()">
                     <span class="fa fa-search fa-lg"></span>
                   </button>
                 </div>
@@ -145,8 +145,8 @@
         
                 <div class="icon-nav ng-hide" ng-show="activeSearch">
                   <div class="input-group custom-addon">
-                    <input ng-model="query" type="text" class="form-control" placeholder="Search files or folders">
-                    <span ng-click="activeSearch = !activeSearch" class="input-group-addon clickable"><i class="fa fa-times"></i></span>
+                    <input id="selectorQuery" ng-model="query" type="text" class="form-control" placeholder="Search files or folders">
+                    <span ng-click="hideSelectorFileSearch()" class="input-group-addon clickable"><i class="fa fa-times"></i></span>
                   </div>
                 </div>
               </div>
