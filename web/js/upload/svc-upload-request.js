@@ -41,9 +41,11 @@ $translate([uriFailed, uriFailedMail, inactiveSubscription, verifyCompany, acces
           resp.message = verifyCompany({ username: resp.userEmail });
         }
         else if(resp.code === 403){
+          console.log("getResumableUploadURI 403 error", file, resp);
           resp.message = accessDenied;
         }
         else {
+          console.log("getResumableUploadURI generic error", file, resp);
           resp.message = resp.userEmail ? uriFailedMail({ username: resp.userEmail })
                                         : uriFailed;          
         }
@@ -53,7 +55,7 @@ $translate([uriFailed, uriFailedMail, inactiveSubscription, verifyCompany, acces
       }
     })
     .then(null, function(resp) {
-      return $q.reject(resp || "An error ocurred attempting to begin an upload");
+      return $q.reject(typeof(resp) === "string" ? resp : "An error ocurred attempting to begin an upload. Please try again.");
     });
   };
 

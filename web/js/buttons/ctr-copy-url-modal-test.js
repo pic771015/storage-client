@@ -9,7 +9,7 @@ describe("CopyUrlCtrl", function() {
 
   beforeEach(inject(function($controller) {
     CopyUrlCtrl = $controller("CopyUrlCtrl"
-      ,{$scope: scope, $modalInstance: modalInstance, copyFile: copyFile});
+      ,{$scope: scope, $modalInstance: modalInstance, params: { copyFile: copyFile } });
   }));
 
   it("should be defined", function() {

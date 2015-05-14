@@ -1,5 +1,8 @@
 /*jshint expr:true */
 "use strict";
+
+var $stateParams = { folderPath: "" };
+
 function getService(serviceName) {
   var injectedService;
   inject([serviceName, function(serviceInstance) {
@@ -12,6 +15,10 @@ describe("Services: FileListService", function() {
   beforeEach(module("risevision.storage.files"));
 
   beforeEach(module(function ($provide) {
+    $provide.service("$stateParams", function() {
+      return $stateParams;
+    });
+
     $provide.service("GAPIRequestService", function() {
       var svc = {};
       svc.executeRequest = function() {
@@ -49,5 +56,36 @@ describe("Services: FileListService", function() {
     .then(function() {
       expect(fileListSvc.filesDetails.files.length).to.equal(3);
     });
+  });
+
+  it("should add two files", function () {
+    var fileListSvc = getService("FileListService");
+    return fileListSvc.refreshFilesList()
+    .then(function() {
+      fileListSvc.addFile({ name: "file1.txt" });
+      fileListSvc.addFile({ name: "file2.txt" });
+      fileListSvc.addFile({ name: "file2.txt" });
+      expect(fileListSvc.filesDetails.files.length).to.equal(5);
+    });
+  });
+
+  it("should add one folder", function () {
+    var fileListSvc = getService("FileListService");
+    return fileListSvc.refreshFilesList()
+    .then(function() {
+      fileListSvc.addFile({ name: "folder/file1.txt" });
+      fileListSvc.addFile({ name: "folder/file2.txt" });
+      fileListSvc.addFile({ name: "folder/subFolder/file2.txt" });
+      expect(fileListSvc.filesDetails.files.length).to.equal(4);
+    });
+  });
+
+  it("should add one folder inside the current folder", function () {
+    var fileListSvc = getService("FileListService");
+
+    $stateParams.folderPath = "test/";
+    fileListSvc.addFile({ name: "test/folder/file1.txt" });
+    expect(fileListSvc.filesDetails.files.length).to.equal(1);
+    expect(fileListSvc.filesDetails.files[0].name).to.equal("test/folder/");
   });
 });

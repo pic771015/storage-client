@@ -15,7 +15,9 @@ angular.module("risevision.storage.gapi").factory("GAPIRequestService",
     .then(function(resp) {
       return resp.result;
     })
-    .then(null, function() {return $q.reject({message: "api error"});});
+    .then(null, function(err) {
+      return $q.reject({ message: "api error", error: err });
+    });
   };
   return svc;
 }]);

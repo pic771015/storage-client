@@ -54,6 +54,12 @@ angular.module("risevision.storage.upload")
 
       svc.progress = svc.getTotalProgress();
     };
+
+    svc.removeAll = function() {
+      for(var i = svc.queue.length - 1; i >= 0; i--) {
+        svc.removeFromQueue(svc.queue[i]);
+      }
+    };
     
     svc.uploadItem = function(value) {
       var index = svc.getIndexOfItem(value);
@@ -76,6 +82,31 @@ angular.module("risevision.storage.upload")
       if (item && item.isUploading) {
         item.xhr.abort();
       }
+    };
+
+    svc.retryItem = function(value) {
+      var index = svc.getIndexOfItem(value);
+      var item = svc.queue[index];
+      
+      if(!item) { return; }
+
+      item.isReady = false;
+      item.isUploading = false;
+      item.isUploaded = false;
+      item.isSuccess = false;
+      item.isCancel = false;
+      item.isError = false;
+      item.progress = 0;
+
+      svc.onAfterAddingFile(item);
+    };
+
+    svc.getErrorCount = function() {
+      return svc.queue.filter(function(f) { return f.isError === true; }).length;
+    };
+
+    svc.getNotErrorCount = function() {
+      return svc.queue.filter(function(f) { return f.isError === false; }).length;
     };
     
     svc.getIndexOfItem = function(value) {
@@ -273,7 +304,7 @@ angular.module("risevision.storage.upload")
         file: {"lastModifiedDate": angular.copy(file.lastModifiedDate)
               ,"size": file.size
               ,"type": file.type
-              ,"name": file.name},
+              ,"name": file.webkitRelativePath || file.name},
         isReady: false,
         isUploading: false,
         isUploaded: false,

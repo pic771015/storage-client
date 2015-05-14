@@ -18,6 +18,26 @@ function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $transla
     }).length;
   };
 
+  $scope.getErrorCount = function() {
+    return uploader.getErrorCount();
+  };
+
+  $scope.getNotErrorCount = function() {
+    return uploader.getNotErrorCount();
+  };
+
+  $scope.retryFailedUploads = function() {
+    uploader.queue.forEach(function(f) {
+      if(f.isError) {
+        uploader.retryItem(f);
+      }
+    });
+  };
+
+  $scope.cancelAllUploads = function() {
+    uploader.removeAll();
+  };
+
   uploader.onAfterAddingFile = function(fileItem) {
     console.info("onAfterAddingFile", fileItem.file.name);
     fileItem.file.name = decodeURIComponent($stateParams.folderPath || "") +
@@ -36,6 +56,8 @@ function ($scope, $rootScope, $stateParams, uploader, uriSvc, filesSvc, $transla
       uploader.uploadItem(fileItem);
     })
     .then(null, function(resp) {
+      console.log("getURI error", resp);
+      $scope.uploader.notifyErrorItem(fileItem);
       $scope.status.message = resp;
     });
   };

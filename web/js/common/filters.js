@@ -68,31 +68,31 @@ angular.module("risevision.storage.filters", ["risevision.common.i18n"])
   };
 }])
 .filter("fileNameFilter", ["$translate", function($translate) {
-	var trash = "--TRASH--/";
-	
-	var trashLabel = "";
+  var trash = "--TRASH--/";
+  
+  var trashLabel = "";
 
-    $translate(["storage-client.trash"]).then(function(values) {
-      trashLabel = values["storage-client.trash"];
-    });
+  $translate(["storage-client.trash"]).then(function(values) {
+    trashLabel = values["storage-client.trash"];
+  });
 
-	return function(filename, currentFolder) {
-		var returnValue = filename;
+  return function(filename, currentFolder) {
+    var returnValue = filename;
 
-		if (currentFolder && currentFolder.length > 0) {
-		  if(filename === currentFolder) {
-		  	returnValue = filename.substr(0, filename.lastIndexOf("/", filename.length - 2) + 1);
-		  }
-		  else {
-            returnValue = filename.substr(currentFolder.length);
-		  }
-		}
-		else if(filename === trash) {
-      	  returnValue = trashLabel;
-        }
-        
-		return returnValue || "/";
-	};
+    if (currentFolder && currentFolder.length > 0) {
+      if(filename === currentFolder) {
+        returnValue = filename.substr(0, filename.lastIndexOf("/", filename.length - 2) + 1);
+      }
+      else {
+        returnValue = filename.substr(currentFolder.length);
+      }
+    }
+    else if(filename === trash) {
+      returnValue = filename;
+    }
+    
+    return (returnValue || "/").replace(trash, trashLabel + "/");
+  };
 }])
 .filter("fileSizeFilter", function() {
   return function(size) {

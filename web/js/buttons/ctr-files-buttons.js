@@ -1,17 +1,6 @@
 "use strict";
 
 angular.module("risevision.storage.buttons.files", ["risevision.storage.gapi", "risevision.common.config", "risevision.storage.download", "risevision.storage.files"])
-.controller("CopyUrlCtrl", ["$scope", "$modalInstance", "copyFile", function($scope, $modalInstance, copyFile) {
-  $scope.copyFile = copyFile;
-
-  $scope.ok = function() {
-    $modalInstance.close();
-  };
-  $scope.cancel = function() {
-    $modalInstance.dismiss("cancel");
-  };
-}
-])
 .controller("DeleteInstanceCtrl", ["$scope", "$modalInstance", "confirmationMessage",
   function($scope, $modalInstance, confirmationMessage) {
     $scope.confirmationMessage = confirmationMessage;
@@ -151,24 +140,20 @@ function ($scope,$rootScope, $stateParams, $window, $modal, $log, $timeout, $fil
   $scope.copyUrlButtonClick = function(size) {
     var copyFile = getSelectedFiles()[0];
 
-    var modalInstance = $modal.open({
+    $modal.open({
       templateUrl: "partials/copy-url.html",
       controller: "CopyUrlCtrl",
       size: size,
       resolve: {
-        copyFile: function(){
-          return copyFile;
+        params: function() {
+          return  {
+            copyFile: copyFile,
+            bucketName: bucketName,
+            folderSelfLinkUrl: folderSelfLinkUrl,
+            STORAGE_FILE_URL: STORAGE_FILE_URL
+          };
         }
       }
-    });
-
-    modalInstance.opened.then(function(){
-      setTimeout(function() {
-        var copyUrl = copyFile.kind === "folder" ? folderSelfLinkUrl + encodeURIComponent(copyFile.name) : STORAGE_FILE_URL + bucketName + "/" + encodeURIComponent(copyFile.name);
-        $("#copyUrlInput").val(copyUrl);
-        $("#copyUrlInput").focus(function() { $(this).select(); } );
-        $("#copyUrlInput").focus();
-      },0);
     });
   };
 
